@@ -1093,6 +1093,9 @@ html[data-motion="reduced"] .portal-frame img { transform: none !important; }
 .journey-chapter--quote .chapter-art-frame {
   background: #e7e3da;
 }
+.journey-chapter--quote .chapter-art-caption {
+  color: rgba(16,16,16,.68);
+}
 .chapter-quote-block {
   grid-column: 1 / -1;
   display: grid;
