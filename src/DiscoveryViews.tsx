@@ -59,15 +59,15 @@ export function GridView({ artworks, onOpen, onDrift, onGrid, onChromatic }: Com
         <aside className="grid-filters" aria-label="Collection filters">
           <div>
             <span>Era</span>
-            <button className="is-active">2000s <small>{artworks.length}</small></button>
+            <button className="is-active">1888—1890 <small>{artworks.length}</small></button>
           </div>
           <div>
             <span>Movement</span>
-            <button className="is-active">Digital abstraction <small>{artworks.length}</small></button>
+            <button className="is-active">Post-Impressionism <small>{artworks.length}</small></button>
           </div>
           <div>
             <span>Medium</span>
-            <button className="is-active">Generated image <small>{artworks.length}</small></button>
+            <button className="is-active">Oil on canvas <small>{artworks.length}</small></button>
           </div>
           <div>
             <span>Palette</span>
@@ -176,13 +176,13 @@ export function ChromaticView({ artworks, onOpen, onDrift, onGrid, onChromatic }
 
       <div className="chromatic-stage">
         <div className="chromatic-copy">
-          <span className="chromatic-index">Closest match / {primary.id.replace('abstract-', '')}</span>
+          <span className="chromatic-index">Closest chromatic match / {primary.date}</span>
           <h2>{primary.title}</h2>
           <p>{primary.artist} · {primary.date}</p>
           <p className="chromatic-note">
             {secondary
-              ? 'Works below are ranked by their average distance from both selected prototype swatches.'
-              : 'Works below are ranked by visual proximity to this prototype dominant-color swatch.'}
+              ? 'Works below are ranked by their average distance from both selected LUMEN palette swatches.'
+              : 'Works below are ranked by visual proximity to this LUMEN-authored dominant-color swatch.'}
           </p>
           <button className="chromatic-open" onClick={() => onOpen(primary)}>
             Open object <span aria-hidden="true">↗</span>
