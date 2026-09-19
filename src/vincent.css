@@ -359,7 +359,7 @@
   background: #d8cfba;
   color: #171613;
 }
-.vincent-room--bloom .eyebrow { color: #6e6758; }
+.vincent-room--bloom .eyebrow { color: #4b473f; }
 .vincent-room--bloom .vincent-room-number { color: rgba(23,22,19,.17); }
 .vincent-room--bloom .vincent-room-copy { color: rgba(23,22,19,.65); }
 .vincent-room--bloom .vincent-room-copy blockquote {
@@ -503,7 +503,8 @@
 }
 .vincent-artwork-meta em { font-size: 10px; font-style: normal; }
 .vincent-room--bloom .vincent-artwork-meta { border-color: rgba(23,22,19,.16); }
-.vincent-room--bloom .vincent-artwork-meta small { color: rgba(23,22,19,.5); }
+.vincent-room--bloom .vincent-artwork-meta b { color: #39362f; }
+.vincent-room--bloom .vincent-artwork-meta small { color: #514d43; }
 .vincent-artwork--quiet .vincent-artwork-frame { box-shadow: 0 28px 90px rgba(70,60,40,.16); }
 
 .vincent-method-note {
@@ -559,7 +560,7 @@
 .vincent-credits p {
   max-width: 68ch;
   margin: 0;
-  color: rgba(243,240,232,.45);
+  color: rgba(243,240,232,.62);
   font-size: 9px;
   line-height: 1.7;
 }
