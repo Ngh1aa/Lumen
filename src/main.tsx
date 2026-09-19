@@ -4,6 +4,7 @@ import App from './App';
 import './styles.css';
 import './experience.css';
 import './vincent.css';
+import './vincent-atlas.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
