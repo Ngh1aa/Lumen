@@ -7,6 +7,7 @@ const routes = [
   { name: 'grid', hash: '#/grid' },
   { name: 'color', hash: '#/color' },
   { name: 'saved-empty', hash: '#/saved' },
+  { name: 'mood', hash: '#/mood' },
 ];
 
 async function settleVisuals(page: import('@playwright/test').Page) {
@@ -108,6 +109,35 @@ test.describe('visual evidence', () => {
     await page.screenshot({
       path: 'visual-evidence/desktop-1440/saved-populated.png',
       fullPage: true,
+    });
+  });
+
+  test('curated journey @ desktop and mobile', async ({ page }) => {
+    for (const viewport of [
+      { name: 'desktop-1440', width: 1440, height: 1100 },
+      { name: 'mobile-390', width: 390, height: 844 },
+    ]) {
+      fs.mkdirSync(`visual-evidence/${viewport.name}`, { recursive: true });
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto('/#/journey');
+      await page.waitForLoadState('networkidle');
+      await expect(page.locator('.journey')).toBeVisible();
+      await settleVisuals(page);
+      await page.screenshot({
+        path: `visual-evidence/${viewport.name}/journey.png`,
+        fullPage: true,
+      });
+    }
+  });
+
+  test('curated compare chapter @ desktop', async ({ page }) => {
+    fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    await page.goto('/#/journey');
+    await page.locator('.journey-rail button').filter({ hasText: 'Contrast' }).click();
+    await expect(page.locator('#contrast')).toBeInViewport();
+    await page.locator('#contrast').screenshot({
+      path: 'visual-evidence/desktop-1440/journey-compare.png',
     });
   });
 

@@ -1,12 +1,15 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { Artwork, fetchPublicDomainArtworks } from './artworks';
 import { ChromaticView, GridView, SavedView } from './DiscoveryViews';
+import { CuratedJourney, MoodView } from './CulturalExperience';
 
 type Route =
   | { view: 'portal' }
   | { view: 'drift' }
   | { view: 'grid' }
   | { view: 'chromatic' }
+  | { view: 'mood' }
+  | { view: 'journey' }
   | { view: 'saved' }
   | { view: 'detail'; id: string }
   | { view: 'atlas'; id: string };
@@ -17,6 +20,8 @@ function parseRoute(): Route {
   if (parts[0] === 'drift') return { view: 'drift' };
   if (parts[0] === 'grid') return { view: 'grid' };
   if (parts[0] === 'color' || parts[0] === 'chromatic') return { view: 'chromatic' };
+  if (parts[0] === 'mood') return { view: 'mood' };
+  if (parts[0] === 'journey' || parts[0] === 'exhibition') return { view: 'journey' };
   if (parts[0] === 'saved') return { view: 'saved' };
   if (parts[0] === 'artwork' && parts[1]) return { view: 'detail', id: parts[1] };
   if (parts[0] === 'atlas' && parts[1]) return { view: 'atlas', id: parts[1] };
@@ -28,6 +33,8 @@ function routeHash(route: Route) {
   if (route.view === 'drift') return '#/drift';
   if (route.view === 'grid') return '#/grid';
   if (route.view === 'chromatic') return '#/color';
+  if (route.view === 'mood') return '#/mood';
+  if (route.view === 'journey') return '#/journey';
   if (route.view === 'saved') return '#/saved';
   if (route.view === 'detail') return `#/artwork/${route.id}`;
   return `#/atlas/${route.id}`;
@@ -160,6 +167,21 @@ function App() {
             onChromatic={() => navigate({ view: 'chromatic' })}
           />
         )}
+        {route.view === 'mood' && (
+          <MoodView
+            artworks={artworks}
+            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
+            onStory={() => navigate({ view: 'journey' })}
+          />
+        )}
+        {route.view === 'journey' && (
+          <CuratedJourney
+            artworks={artworks}
+            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
+            onMood={() => navigate({ view: 'mood' })}
+            onAtlas={(artwork) => navigate({ view: 'atlas', id: artwork.id })}
+          />
+        )}
         {route.view === 'saved' && (
           <SavedView
             artworks={artworks}
@@ -214,6 +236,8 @@ function Header({ route, active, savedCount, reducedMotion, onNavigate, onMotion
       <nav aria-label="Primary navigation">
         <button className={route.view === 'drift' || route.view === 'grid' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}>Explore</button>
         <button className={route.view === 'chromatic' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'chromatic' })}>Color</button>
+        <button className={route.view === 'mood' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'mood' })}>Mood</button>
+        <button className={route.view === 'journey' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'journey' })}>Exhibition</button>
         <button
           className={route.view === 'atlas' ? 'is-active' : ''}
           onClick={() => onNavigate({ view: 'atlas', id: active?.id || 'abstract-0008' })}
@@ -252,8 +276,11 @@ function MobileDock({
       <button className={activeExplore ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}>
         <span>Drift</span>
       </button>
-      <button className={route.view === 'grid' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'grid' })}>
-        <span>Grid</span>
+      <button className={route.view === 'mood' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'mood' })}>
+        <span>Mood</span>
+      </button>
+      <button className={route.view === 'journey' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'journey' })}>
+        <span>Story</span>
       </button>
       <button className={route.view === 'chromatic' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'chromatic' })}>
         <span>Color</span>
