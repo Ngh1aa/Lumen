@@ -719,7 +719,7 @@ function ThreadAtlas({
   const filtered = threadPaths.filter((thread) =>
     (timeFilter === 'All' || thread.year === timeFilter) &&
     (placeFilter === 'All' || thread.place === placeFilter) &&
-    (themeFilter === 'All' || thread.themes.includes(themeFilter as never))
+    (themeFilter === 'All' || thread.themes.some((theme) => theme === themeFilter))
   );
 
   const updateSpotlight = (event: React.PointerEvent<HTMLDivElement>) => {
