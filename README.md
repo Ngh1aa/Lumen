@@ -12,9 +12,9 @@ LUMEN explores a different archive model: users can move through artworks by col
 
 ## Current status
 
-**Cultural experience complete / Vercel-ready**
+**Museum platform expansion / Exhibition Index in review**
 
-The implemented experience now includes Artwork Portal → Drift / Grid / Color / Mood → Artwork Detail → Relationship Atlas, Saved Collection, and the curated exhibition journey **Signals from a Quiet Machine**. CI, browser QA and rendered visual evidence cover the flagship flows.
+The implemented experience includes Artwork Portal → Drift / Grid / Color / Mood → Artwork Detail → Relationship Atlas, Saved Collection, and **SUPER PROJECT 01 — VINCENT / The Painted Night**. The current milestone adds a platform-level **Museum Entry / Exhibition Index** so LUMEN can hold multiple authored exhibitions without collapsing the museum and a single show into the same navigation level.
 
 ## Project docs
 
