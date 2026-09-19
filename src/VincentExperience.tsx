@@ -163,6 +163,8 @@ const threadPaths = [
     artworkIds: ['cafe', 'bedroom'],
     place: 'Arles',
     placeIndex: 2,
+    year: '1888',
+    themes: ['Night', 'Interior', 'Light'],
     letterId: 'harvest',
     connection: 'Two Arles interiors meet a letter from harvest season: light, work, heat, and the pressure of looking.',
   },
@@ -173,6 +175,8 @@ const threadPaths = [
     artworkIds: ['starry', 'wheat', 'cypresses'],
     place: 'Saint-Rémy',
     placeIndex: 3,
+    year: '1889',
+    themes: ['Field', 'Cypress', 'Sky'],
     letterId: 'cypresses',
     connection: 'The paintings share Saint-Rémy; letter 806 explicitly names Wheatfield and cypresses and a study of cypresses.',
   },
@@ -371,6 +375,14 @@ export function VincentExperience({
           onClick={openAtlas}
         >
           <span aria-hidden="true">✦</span>
+          Atlas
+        </button>
+        <button
+          className="vincent-atlas-trigger"
+          aria-label="Open Vincent thread atlas"
+          onClick={() => setAtlasOpen(true)}
+        >
+          <span aria-hidden="true">⌘</span>
           Atlas
         </button>
         <button
@@ -680,6 +692,170 @@ function LetterNetwork({ focusLetter }: { focusLetter?: string }) {
         <a href={letter.source} target="_blank" rel="noreferrer">Open scholarly letter record ↗</a>
       </article>
     </div>
+  );
+}
+
+
+function ThreadAtlas({
+  open,
+  reducedMotion,
+  savedThreads,
+  onClose,
+  onOpenThread,
+  onSave,
+}: {
+  open: boolean;
+  reducedMotion: boolean;
+  savedThreads: string[];
+  onClose: () => void;
+  onOpenThread: (id: string) => void;
+  onSave: (id: string) => void;
+}) {
+  const [timeFilter, setTimeFilter] = useState('All');
+  const [placeFilter, setPlaceFilter] = useState('All');
+  const [themeFilter, setThemeFilter] = useState('All');
+  const stageRef = useRef<HTMLDivElement | null>(null);
+
+  const filtered = threadPaths.filter((thread) =>
+    (timeFilter === 'All' || thread.year === timeFilter) &&
+    (placeFilter === 'All' || thread.place === placeFilter) &&
+    (themeFilter === 'All' || thread.themes.includes(themeFilter as never))
+  );
+
+  const updateSpotlight = (event: React.PointerEvent<HTMLDivElement>) => {
+    if (reducedMotion || !stageRef.current || !window.matchMedia('(pointer:fine)').matches) return;
+    const rect = stageRef.current.getBoundingClientRect();
+    stageRef.current.style.setProperty('--atlas-x', ((event.clientX - rect.left) / rect.width * 100) + '%');
+    stageRef.current.style.setProperty('--atlas-y', ((event.clientY - rect.top) / rect.height * 100) + '%');
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  const themes = Array.from(new Set(threadPaths.flatMap((thread) => [...thread.themes])));
+
+  return (
+    <section className="vincent-atlas-layer" role="dialog" aria-modal="true" aria-labelledby="vincent-atlas-title">
+      <header className="vincent-atlas-header">
+        <div>
+          <p>VINCENT / KNOWLEDGE MODE</p>
+          <h2 id="vincent-atlas-title">Thread Atlas</h2>
+          <span>Filter by time, place, or theme. Follow only connections with explicit provenance.</span>
+        </div>
+        <button onClick={onClose} aria-label="Close Vincent thread atlas">×</button>
+      </header>
+
+      <div className="vincent-atlas-filters">
+        <AtlasFilter label="Time" value={timeFilter} options={['All', '1888', '1889']} onChange={setTimeFilter} />
+        <AtlasFilter label="Place" value={placeFilter} options={['All', 'Arles', 'Saint-Rémy']} onChange={setPlaceFilter} />
+        <AtlasFilter label="Theme" value={themeFilter} options={['All', ...themes]} onChange={setThemeFilter} />
+      </div>
+
+      <div
+        ref={stageRef}
+        className="vincent-atlas-stage"
+        onPointerMove={updateSpotlight}
+        data-empty={filtered.length === 0 ? 'true' : 'false'}
+      >
+        <div className="vincent-atlas-spotlight" aria-hidden="true" />
+        <div className="vincent-atlas-axis axis-time" aria-hidden="true">TIME</div>
+        <div className="vincent-atlas-axis axis-place" aria-hidden="true">PLACE</div>
+        <div className="vincent-atlas-axis axis-theme" aria-hidden="true">THEME</div>
+
+        {filtered.length === 0 && (
+          <div className="vincent-atlas-empty" role="status">
+            <span>NO VERIFIED THREAD</span>
+            <h3>No connection matches all three filters.</h3>
+            <p>Try widening one dimension rather than inventing a relationship.</p>
+          </div>
+        )}
+
+        <div className="vincent-atlas-network">
+          {filtered.map((thread, index) => {
+            const letter = letterNodes.find((item) => item.id === thread.letterId)!;
+            const selectedWorks = thread.artworkIds.map((id) => works[id]).filter(Boolean);
+            return (
+              <article
+                key={thread.id}
+                className={'vincent-atlas-thread atlas-thread-' + index}
+                style={{ '--thread-accent': selectedWorks[0]?.accent || '#315fad' } as CSSProperties}
+              >
+                <button className="vincent-atlas-thread-core" onClick={() => onOpenThread(thread.id)}>
+                  <span>{thread.year} · {thread.place}</span>
+                  <strong>{thread.title}</strong>
+                  <small>{thread.eyebrow}</small>
+                </button>
+                <div className="vincent-atlas-thread-art" aria-label={'Artworks in ' + thread.title}>
+                  {selectedWorks.map((work) => (
+                    <a key={work.id} href={work.sourceUrl} target="_blank" rel="noreferrer">
+                      <img src={work.image} alt="" />
+                      <span>{work.title}</span>
+                    </a>
+                  ))}
+                </div>
+                <div className="vincent-atlas-thread-meta">
+                  <span>{thread.themes.join(' / ')}</span>
+                  <span>{letter.date} · {letter.label}</span>
+                </div>
+                <div className="vincent-atlas-thread-actions">
+                  <button onClick={() => onOpenThread(thread.id)}>Trace thread →</button>
+                  <button
+                    disabled={savedThreads.includes(thread.id)}
+                    onClick={() => onSave(thread.id)}
+                  >
+                    {savedThreads.includes(thread.id) ? 'Saved ✓' : 'Save +'}
+                  </button>
+                </div>
+              </article>
+            );
+          })}
+        </div>
+      </div>
+
+      <footer className="vincent-atlas-footer">
+        <span>VERIFIED RELATIONSHIPS ONLY</span>
+        <p>Atlas filters never manufacture missing links. Empty combinations remain visibly empty.</p>
+      </footer>
+    </section>
+  );
+}
+
+function AtlasFilter({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: string[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <fieldset className="vincent-atlas-filter">
+      <legend>{label}</legend>
+      <div>
+        {options.map((option) => (
+          <button
+            key={option}
+            type="button"
+            aria-pressed={value === option}
+            className={value === option ? 'is-active' : ''}
+            onClick={() => onChange(option)}
+          >
+            {option}
+          </button>
+        ))}
+      </div>
+    </fieldset>
   );
 }
 
