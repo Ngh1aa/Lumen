@@ -249,10 +249,18 @@ SUPER PROJECT 01 should eventually expose:
 - layered browser-generated ambient sound instead of a single oscillator;
 - new smoke and visual-evidence coverage for these interactions.
 
+## Milestone 5 — implemented in this branch
+- cultural Thread Navigator that joins artwork → place → letter instead of leaving rooms isolated;
+- Arles thread: Café Terrace at Night + Bedroom in Arles → Arles → harvest-period correspondence;
+- Saint-Rémy thread: The Starry Night + Wheat Field with Cypresses + Cypresses → Saint-Rémy → letter 806;
+- thread-aware jumps focus the relevant place or letter when the visitor enters those rooms;
+- “Save this thread” persists locally without requiring an account;
+- artwork-level “Follow thread” affordances turn viewing into a non-linear discovery path;
+- dedicated desktop/mobile visual evidence and Playwright coverage.
+
 ## Later milestones
 1. true tiled deep zoom using a museum/IIIF source only if source stability is proven.
-2. richer spatial place map with artwork-to-place transitions.
-3. larger letter graph with artwork references and date filtering.
-4. Canva-made campaign assets.
-5. portfolio case study mode.
-6. optional WebGL shader only if performance budgets pass.
+2. expand the thread system into artwork-date-place-letter filtering.
+3. campaign assets and exhibition poster studies authored in Canva.
+4. portfolio case study mode with decision evidence and visual QA.
+5. optional WebGL shader only if performance budgets pass.
