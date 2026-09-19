@@ -238,3 +238,99 @@
 @media (prefers-reduced-motion:reduce){
   .vincent-atlas-spotlight{display:none}
 }
+
+
+/* Phase 2 — cinematic arrival from the exhibition index */
+.vincent-entry-index{
+  position:absolute;
+  top:112px;
+  right:36px;
+  z-index:3;
+  padding:8px 10px;
+  border:1px solid rgba(255,255,255,.22);
+  background:rgba(5,8,13,.26);
+  color:rgba(255,255,255,.74);
+  font:600 8px/1 "DM Sans",sans-serif;
+  letter-spacing:.18em;
+  backdrop-filter:blur(10px);
+  animation:vincent-entry-index-in 720ms cubic-bezier(.16,1,.3,1) both 180ms;
+}
+.vincent-threshold-copy>p:first-child,
+.vincent-threshold-copy .vincent-lede,
+.vincent-threshold-copy>button{
+  animation:vincent-entry-rise 760ms cubic-bezier(.16,1,.3,1) both;
+}
+.vincent-threshold-copy>p:first-child{animation-delay:140ms}
+.vincent-threshold-copy .vincent-lede{animation-delay:260ms}
+.vincent-threshold-copy>button{animation-delay:340ms}
+.vincent-threshold-copy>button{
+  position:relative;
+  overflow:hidden;
+  transition:
+    border-color 180ms ease,
+    background-color 180ms ease,
+    transform 180ms cubic-bezier(.16,1,.3,1);
+}
+.vincent-threshold-copy>button::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  background:rgba(240,232,215,.12);
+  transform:translateY(104%);
+  transition:transform 380ms cubic-bezier(.16,1,.3,1);
+}
+.vincent-threshold-copy>button:hover,
+.vincent-threshold-copy>button:focus-visible{
+  border-color:rgba(255,255,255,.72);
+  background:rgba(7,9,13,.58);
+}
+.vincent-threshold-copy>button:hover::after,
+.vincent-threshold-copy>button:focus-visible::after{
+  transform:translateY(0);
+}
+.vincent-threshold-copy>button:active{
+  transform:scale(.985);
+}
+.vincent-full-bleed{
+  transform:scale(1.018);
+}
+@keyframes vincent-entry-rise{
+  from{
+    opacity:0;
+    transform:translateY(18px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+@keyframes vincent-entry-index-in{
+  from{
+    opacity:0;
+    transform:translateY(-10px);
+  }
+  to{
+    opacity:1;
+    transform:translateY(0);
+  }
+}
+@media (max-width:700px){
+  .vincent-entry-index{
+    top:92px;
+    right:14px;
+    font-size:7px;
+  }
+}
+@media (prefers-reduced-motion:reduce){
+  .vincent-entry-index,
+  .vincent-threshold-copy>p:first-child,
+  .vincent-threshold-copy .vincent-lede,
+  .vincent-threshold-copy>button{
+    animation:none!important;
+  }
+  .vincent-threshold-copy>button,
+  .vincent-threshold-copy>button::after{
+    transition:none!important;
+  }
+}

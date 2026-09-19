@@ -277,3 +277,67 @@ test.describe('visual evidence', () => {
     });
   });
 });
+
+
+test.describe('phase 2 cinematic continuity', () => {
+  test.use({ reducedMotion: 'no-preference' });
+
+  test('Exhibition Index pointer reveal and VINCENT arrival @ desktop', async ({ page }) => {
+    fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    await page.goto('/#/exhibitions');
+    await page.waitForLoadState('networkidle');
+    await settleVisuals(page);
+
+    const media = page.locator('.museum-feature-media');
+    await media.scrollIntoViewIfNeeded();
+    const box = await media.boundingBox();
+    if (box) {
+      await media.hover({
+        position: {
+          x: Math.max(1, box.width * 0.62),
+          y: Math.max(1, Math.min(box.height * 0.42, 620)),
+        },
+      });
+    }
+    const cursor = page.locator('.museum-feature-cursor');
+    await expect(cursor).toBeVisible();
+    await expect.poll(() => cursor.evaluate((node) => getComputedStyle(node).opacity)).toBe('1');
+    await media.screenshot({
+      path: 'visual-evidence/desktop-1440/exhibitions-pointer-reveal.png',
+    });
+
+    await page.getByRole('button', { name: /Enter exhibition/i }).click();
+    await expect(page).toHaveURL(/#\/exhibition\/vincent$/);
+    await page.waitForTimeout(180);
+    await page.screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-handoff.png',
+    });
+
+    await expect(page.locator('#threshold')).toBeVisible();
+    await page.waitForTimeout(800);
+    await page.locator('#threshold').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-arrival-settled.png',
+    });
+  });
+
+  test('VINCENT arrival remains composed @ tablet and mobile', async ({ page }) => {
+    for (const viewport of [
+      { name: 'tablet-768', width: 768, height: 1024 },
+      { name: 'mobile-390', width: 390, height: 844 },
+    ]) {
+      fs.mkdirSync('visual-evidence/' + viewport.name, { recursive: true });
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto('/#/exhibitions');
+      await page.waitForLoadState('networkidle');
+      await page.getByRole('button', { name: /Enter exhibition/i }).click();
+      await expect(page).toHaveURL(/#\/exhibition\/vincent$/);
+      await page.waitForTimeout(900);
+      await page.locator('#threshold').screenshot({
+        path: 'visual-evidence/' + viewport.name + '/vincent-arrival.png',
+      });
+      const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+      expect(overflow).toBe(false);
+    }
+  });
+});

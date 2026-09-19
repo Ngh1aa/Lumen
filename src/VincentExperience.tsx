@@ -396,11 +396,17 @@ export function VincentExperience({
       </nav>
 
       <section id="threshold" className="vincent-room vincent-threshold">
-        <img src={works.starry.image} alt="" className="vincent-full-bleed" />
+        <img
+          src={works.starry.image}
+          alt=""
+          className="vincent-full-bleed"
+          style={{ viewTransitionName: 'vincent-hero-art' } as CSSProperties}
+        />
         <div className="vincent-night-wash" aria-hidden="true" />
+        <span className="vincent-entry-index" aria-hidden="true">01 / EXHIBITION</span>
         <div className="vincent-threshold-copy">
           <p>SUPER PROJECT 01 / LUMEN</p>
-          <h1 id="vincent-title"><span>VINCENT</span><em>The Painted Night</em></h1>
+          <h1 id="vincent-title" style={{ viewTransitionName: 'vincent-title' } as CSSProperties}><span>VINCENT</span><em>The Painted Night</em></h1>
           <p className="vincent-lede">Enter through color. Stay for the weather inside the paint.</p>
           <button onClick={() => goTo(1)}>Enter the night ↓</button>
         </div>

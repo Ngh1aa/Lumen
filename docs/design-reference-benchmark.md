@@ -188,3 +188,44 @@ The Exhibition Index is a new **platform/overview** page role, materially differ
 
 ### Visual signature test
 Without the LUMEN wordmark, the page should still read as LUMEN through **oversized editorial serif + archival index labels + artwork-led image field + explicit evidence/method language + restrained contextual light**.
+
+
+## 2026-09-20 — Phase 2: cinematic continuity
+
+### Decision problem
+The Museum Index now establishes LUMEN as a platform, but entering VINCENT still behaves like a normal SPA route change. Phase 2 must make the transition itself communicate **continuity**: the visitor is not opening another page; the featured artwork becomes the threshold of the exhibition.
+
+### Current 21st.dev reference intelligence
+Current 21st.dev gallery collections include Shared Element Gallery, Image Reveal, Immersive Scroll Gallery, Hero Gallery Scroll Animation and Project Showcase. The catalogue also contains many implementations that need no dependency beyond React/Tailwind. A recent 21st.dev spotlight analysis recommends writing pointer coordinates directly to CSS variables instead of routing high-frequency pointer state through React.
+
+### Transfer
+- **Shared element:** The Starry Night is the single continuity object between the Museum Index and VINCENT threshold.
+- **Title continuity:** VINCENT / The Painted Night uses the same named transition to preserve reading context.
+- **Pointer reveal:** the featured image field reacts to pointer position through direct CSS-variable writes; React does not rerender per frame.
+- **Reveal affordance:** a local ENTER / 01 marker follows the pointer as supplemental feedback while the native pointer remains intact.
+- **Arrival choreography:** secondary threshold copy reveals after the shared image/title establish orientation.
+- **No dependency expansion:** native View Transitions + transforms/opacity + CSS are sufficient.
+
+### Rejected
+- full-site custom cursor;
+- WebGL/GSAP solely for spectacle;
+- scroll hijacking;
+- large motion under reduced-motion;
+- copying 21st.dev component source, palettes or demo media.
+
+### Motion spec
+| Trigger | From → To | Job | Timing | Reduced motion |
+|---|---|---|---|---|
+| Enter VINCENT | Index Starry Night → full threshold artwork | continuity/orientation | ~880ms, editorial ease-out | instant route update |
+| Enter VINCENT | Index title → threshold title | continuity/hierarchy | ~760ms | instant |
+| Pointer over feature | static image field → subtle multi-depth image response + ENTER marker | feedback/delight | 180–420ms | disabled |
+| Threshold mount | kicker/lede/action rise 18px | hierarchy | 760ms with short stagger | disabled |
+| CTA hover/focus | surface reveal | feedback | 180–420ms | instant state |
+
+### Phase 2 acceptance
+- identical named transition contracts exist at source and destination;
+- native navigation still succeeds when View Transitions are unavailable;
+- touch has no required hover behavior;
+- reduced motion loses no content/action;
+- 1440 / 768 / 390 rendered evidence is captured and manually inspected;
+- no new animation dependency.
