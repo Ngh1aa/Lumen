@@ -179,3 +179,59 @@ Navigation, typography, index labels, rule lines, artwork-driven accent and moti
 ### Future inventory
 
 Search, Artists, Timeline, Collections Index and Visit remain possible future routes, but they are **not part of this milestone**. Add them only if research or portfolio narrative proves a concrete need.
+
+
+## Milestone 6 visual direction — VINCENT Thread Atlas
+
+### Visual signature
+**A constellation wall assembled from paintings, archival fragments and editorial lines.**
+
+If the LUMEN/VINCENT wordmark disappears, the Atlas should still read as the same exhibition because:
+- artwork thumbnails act as illuminated objects;
+- thin archival relationship lines sit behind them;
+- serif object titles contrast with indexed grotesk metadata;
+- cobalt/wheat accents indicate lens state rather than decorate the canvas.
+
+### Composition family
+This is a fourth composition family inside the exhibition, distinct from the vertical rooms and the side Thread Navigator:
+
+`spatial constellation → focused object reading → semantic relationship path`
+
+Desktop:
+- dark spatial canvas;
+- central selected artwork;
+- related artworks distributed around it;
+- letter nodes are smaller archival objects;
+- radial lens control floats near the canvas edge;
+- context rail explains *why* each connection exists.
+
+Mobile:
+- graph canvas is removed;
+- lens selector remains;
+- selected object becomes a large artwork card;
+- connected objects become an ordered vertical path;
+- relation reason is always visible without hover.
+
+### Motion contract
+| Trigger | Purpose | Behavior | Reduced motion |
+|---|---|---|---|
+| lens switch | ORIENT | lines fade/reconnect, selected state changes | instant |
+| node select | CONNECT | focused node gains scale/contrast; reading panel updates | instant emphasis |
+| open/close Atlas | REVEAL | opacity + short horizontal disclosure | instant |
+| relation trace | HIERARCHY | selected path line gets stronger | static strong line |
+
+No autonomous orbiting. No parallax. No drag-to-pan requirement.
+
+### Do
+- let image/object scale carry hierarchy;
+- keep lines low contrast until selected;
+- show relation rationale as plain language;
+- keep provenance adjacent to the focused object;
+- use asymmetry and negative space.
+
+### Do not
+- use neon graph aesthetics;
+- add dashboard cards/KPIs;
+- animate every node continuously;
+- depend on hover;
+- show more dimensions than TIME / PLACE / THEME in this milestone.

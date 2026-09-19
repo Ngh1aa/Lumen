@@ -150,22 +150,117 @@ test('Mood discovery exposes nine editorial paths and explicit rationale', async
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
-test('curated exhibition exposes all six chapters, reflection prompts and exit actions', async ({ page }) => {
+test('VINCENT super project exposes nine sensory rooms and rights-safe music controls', async ({ page }) => {
   await page.goto('/#/exhibition');
-  await expect(page.getByRole('heading', { name: /Signals from a quiet machine/i })).toBeVisible();
-  await expect(page.locator('.journey-chapter')).toHaveCount(6);
+  await expect(page.getByRole('heading', { name: /VINCENT The Painted Night/i })).toBeVisible();
+  await expect(page.locator('.vincent-room')).toHaveCount(9);
   await expect(page.locator('#threshold')).toBeVisible();
 
-  await page.locator('.journey-rail button').filter({ hasText: 'Noise' }).click();
-  await expect(page.locator('#noise')).toBeInViewport();
-  await expect(page.locator('#noise .chapter-question')).toBeVisible();
+  const rail = page.locator('.vincent-room-links button');
+  await expect(rail).toHaveCount(9);
+  await rail.filter({ hasText: 'Brush' }).click();
+  await expect(page.locator('#brush')).toBeInViewport();
+  const zoom = page.getByLabel('Brush detail zoom');
+  await expect(zoom).toHaveValue('1.7');
+  await page.getByRole('button', { name: /Zoom in brush detail/i }).click();
+  await expect(zoom).toHaveValue('2.2');
 
-  await page.locator('#signal').scrollIntoViewIfNeeded();
-  await expect(page.getByRole('button', { name: /Save this journey/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Explore by mood/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Continue drifting from here/i })).toBeVisible();
-  await expect(page.locator('.journey-credits')).toContainText('prototype content');
+  await rail.filter({ hasText: 'Places' }).click();
+  await expect(page.locator('#places')).toBeInViewport();
+  await expect(page.locator('.vincent-place-stops button')).toHaveCount(5);
+  await page.locator('.vincent-place-stops button').filter({ hasText: 'Saint-Rémy' }).click();
+  await expect(page.locator('.vincent-place-reading')).toContainText('Saint-Rémy');
+
+  await rail.filter({ hasText: 'Letters' }).click();
+  await expect(page.locator('#letters')).toBeInViewport();
+  await expect(page.locator('.letter-node')).toHaveCount(4);
+  await page.locator('.letter-node').filter({ hasText: 'HARVEST' }).click();
+  await expect(page.locator('.vincent-letter-reading')).toContainText('21 Jun 1888');
+  await expect(page.getByRole('link', { name: /Open scholarly letter record/i })).toBeVisible();
+
+  await rail.filter({ hasText: 'Vincent' }).click();
+  await expect(page.locator('#vincent')).toBeInViewport();
+  await expect(page.getByRole('link', { name: /official song story/i })).toBeVisible();
+
+  const sound = page.getByRole('button', { name: /Sound off/i });
+  await expect(sound).toHaveAttribute('aria-pressed', 'false');
+  await sound.click();
+  await expect(page.getByRole('button', { name: /Sound on/i })).toHaveAttribute('aria-pressed', 'true');
+
+  await rail.filter({ hasText: 'Afterlight' }).click();
+  await expect(page.getByRole('button', { name: /Return to Drift/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Explore by Color/i })).toBeVisible();
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
+});
+
+
+test('VINCENT cultural threads connect artwork, place and letter and persist saves', async ({ page }) => {
+  await page.goto('/#/exhibition');
+
+  await page.getByRole('button', { name: /Open thread navigator/i }).click();
+  const drawer = page.locator('.vincent-thread-drawer');
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByRole('heading', { name: /Arles \/ Night \/ Interior/i })).toBeVisible();
+
+  const saintRemy = drawer.getByRole('button', { name: /Saint-Rémy \/ Field \/ Cypress/i });
+  await saintRemy.click();
+  await expect(drawer.getByRole('heading', { name: /Saint-Rémy \/ Field \/ Cypress/i })).toBeVisible();
+  await expect(drawer.locator('.vincent-thread-artworks a')).toHaveCount(3);
+  await expect(drawer).toContainText('Wheatfield and cypresses');
+
+  await drawer.getByRole('button', { name: /Save this thread/i }).click();
+  await expect(drawer.getByRole('status')).toContainText('Saved to this browser');
+  await expect.poll(async () => page.evaluate(() => localStorage.getItem('lumen-vincent-threads'))).toContain('saint-remy-field');
+
+  await drawer.getByRole('button', { name: /Enter place room/i }).click();
+  await expect(page.locator('#places')).toBeInViewport();
+  await expect(page.locator('.vincent-place-reading')).toContainText('Saint-Rémy');
+
+  await page.getByRole('button', { name: /Open thread navigator/i }).click();
+  await page.locator('.vincent-thread-tabs button').filter({ hasText: 'Saint-Rémy' }).click();
+  await page.locator('.vincent-thread-drawer').getByRole('button', { name: /Enter letter room/i }).click();
+  await expect(page.locator('#letters')).toBeInViewport();
+  await expect(page.locator('.vincent-letter-reading')).toContainText('28 Sep 1889');
+  await expect(page.locator('.vincent-letter-reading')).toContainText('CYPRESSES');
+
+  await page.getByRole('button', { name: /Open thread navigator/i }).click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.vincent-thread-drawer')).toHaveCount(0);
+  await expect(seriousAxeViolations(page)).resolves.toEqual([]);
+});
+
+
+
+test('VINCENT Thread Atlas filters verified cultural threads without inventing links', async ({ page }) => {
+  await page.goto('/#/exhibition');
+
+  await page.getByRole('button', { name: /Open Vincent thread atlas/i }).click();
+  const atlas = page.locator('.vincent-atlas-layer');
+  await expect(atlas).toBeVisible();
+  await expect(atlas.getByRole('heading', { name: 'Thread Atlas' })).toBeVisible();
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(2);
+
+  const time1889 = atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Time' }).getByRole('button', { name: '1889' });
+  await time1889.click();
+  await expect(time1889).toHaveAttribute('aria-pressed', 'true');
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(1);
+  await expect(atlas).toContainText('Saint-Rémy / Field / Cypress');
+
+  const arles = atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Place' }).getByRole('button', { name: 'Arles' });
+  await arles.click();
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(0);
+  await expect(atlas.getByRole('status')).toContainText('No connection matches');
+
+  await atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Time' }).getByRole('button', { name: 'All' }).click();
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(1);
+  await expect(atlas).toContainText('Arles / Night / Interior');
+
+  await atlas.getByRole('button', { name: /Save \+/i }).click();
+  await expect.poll(async () => page.evaluate(() => localStorage.getItem('lumen-vincent-threads'))).toContain('arles-night');
+
+  await expect(seriousAxeViolations(page)).resolves.toEqual([]);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.vincent-atlas-layer')).toHaveCount(0);
 });
 
 test('Artwork Detail exposes technical provenance, zoom and three continuation threads', async ({ page }) => {
@@ -229,11 +324,14 @@ test('unknown routes resolve to a useful 404 recovery state', async ({ page }) =
   await expect(page.getByRole('heading', { name: /Follow what catches/i })).toBeVisible();
 });
 
-test('curated journey media renders', async ({ page }) => {
+test('VINCENT exhibition media renders', async ({ page }) => {
   await page.goto('/#/exhibition');
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  await page.waitForFunction(() => {
-    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.journey img'));
-    return images.length >= 7 && images.every((image) => image.complete && image.naturalWidth > 0);
+  await page.evaluate(() => {
+    document.querySelectorAll<HTMLImageElement>('.vincent-experience img').forEach((image) => { image.loading = 'eager'; });
+    window.scrollTo(0, document.body.scrollHeight);
   });
+  await page.waitForFunction(() => {
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.vincent-experience img'));
+    return images.length >= 8 && images.every((image) => image.complete && image.naturalWidth > 0);
+  }, undefined, { timeout: 30000 });
 });

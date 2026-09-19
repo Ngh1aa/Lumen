@@ -141,7 +141,7 @@ test.describe('visual evidence', () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto('/#/exhibition');
       await page.waitForLoadState('networkidle');
-      await expect(page.locator('.journey')).toBeVisible();
+      await expect(page.locator('.vincent-experience')).toBeVisible();
       await settleVisuals(page);
       await page.screenshot({
         path: 'visual-evidence/' + viewport.name + '/exhibition.png',
@@ -150,15 +150,80 @@ test.describe('visual evidence', () => {
     }
   });
 
-  test('Noise comparison chapter @ desktop', async ({ page }) => {
+  test('VINCENT deep interaction rooms @ desktop', async ({ page }) => {
     fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto('/#/exhibition');
-    await page.locator('.journey-rail button').filter({ hasText: 'Noise' }).click();
-    await expect(page.locator('#noise')).toBeInViewport();
-    await page.locator('#noise').screenshot({
-      path: 'visual-evidence/desktop-1440/exhibition-noise.png',
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Brush' }).click();
+    await expect(page.locator('#brush')).toBeInViewport();
+    await page.locator('#brush').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-brush.png',
     });
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Places' }).click();
+    await expect(page.locator('#places')).toBeInViewport();
+    await page.locator('#places').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-places.png',
+    });
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Letters' }).click();
+    await expect(page.locator('#letters')).toBeInViewport();
+    await page.locator('#letters').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-letters.png',
+    });
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Vincent' }).click();
+    await expect(page.locator('#vincent')).toBeInViewport();
+    await page.locator('#vincent').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-music.png',
+    });
+  });
+
+
+  test('VINCENT thread navigator @ desktop and mobile', async ({ page }) => {
+    for (const viewport of [
+      { name: 'desktop-1440', width: 1440, height: 1100 },
+      { name: 'mobile-390', width: 390, height: 844 },
+    ]) {
+      fs.mkdirSync('visual-evidence/' + viewport.name, { recursive: true });
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto('/#/exhibition');
+      await page.getByRole('button', { name: /Open thread navigator/i }).click();
+      await page.locator('.vincent-thread-tabs button').filter({ hasText: 'Saint-Rémy' }).click();
+      await expect(page.locator('.vincent-thread-drawer')).toBeVisible();
+      await page.screenshot({
+        path: 'visual-evidence/' + viewport.name + '/vincent-thread-navigator.png',
+        fullPage: true,
+      });
+      await page.locator('.vincent-thread-close').click();
+      await expect(page.locator('.vincent-thread-drawer')).toHaveCount(0);
+    }
+  });
+
+
+
+  test('VINCENT Thread Atlas @ desktop and mobile', async ({ page }) => {
+    for (const viewport of [
+      { name: 'desktop-1440', width: 1440, height: 1100 },
+      { name: 'mobile-390', width: 390, height: 844 },
+    ]) {
+      fs.mkdirSync('visual-evidence/' + viewport.name, { recursive: true });
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto('/#/exhibition');
+      await page.waitForLoadState('networkidle');
+      await page.getByRole('button', { name: /Open Vincent thread atlas/i }).click();
+      const atlas = page.locator('.vincent-atlas-layer');
+      await expect(atlas).toBeVisible();
+      await atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Theme' }).getByRole('button', { name: 'Cypress' }).click();
+      await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(1);
+      await page.screenshot({
+        path: 'visual-evidence/' + viewport.name + '/vincent-thread-atlas.png',
+        fullPage: true,
+      });
+      await atlas.getByRole('button', { name: /Close Vincent thread atlas/i }).click();
+      await expect(page.locator('.vincent-atlas-layer')).toHaveCount(0);
+    }
   });
 
   test('accessibility settings and high-contrast evidence', async ({ page }) => {

@@ -1,0 +1,1006 @@
+.vincent-atlas-layer{
+  position:fixed;
+  inset:0;
+  z-index:120;
+  color:#f4efe5;
+}
+.vincent-atlas-scrim{
+  position:absolute;
+  inset:0;
+  background:rgba(3,5,9,.78);
+  backdrop-filter:blur(14px);
+}
+.vincent-atlas{
+  position:absolute;
+  inset:24px;
+  overflow:auto;
+  background:
+    radial-gradient(circle at 64% 38%,rgba(49,95,173,.13),transparent 30%),
+    radial-gradient(circle at 26% 74%,rgba(231,184,75,.07),transparent 24%),
+    #080a0f;
+  border:1px solid rgba(255,255,255,.16);
+  box-shadow:0 32px 120px rgba(0,0,0,.55);
+}
+.vincent-atlas-header{
+  position:sticky;
+  top:0;
+  z-index:20;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:28px;
+  padding:24px 28px 20px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  background:rgba(8,10,15,.9);
+  backdrop-filter:blur(18px);
+}
+.vincent-atlas-header p,
+.vincent-atlas-semantic header>span{
+  margin:0;
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.17em;
+  color:rgba(255,255,255,.58);
+}
+.vincent-atlas-header h2{
+  margin:10px 0 0;
+  font:500 clamp(46px,5vw,82px)/.78 "Cormorant Garamond",serif;
+  letter-spacing:-.05em;
+}
+.vincent-atlas-header h2 em{
+  color:#e7b84b;
+  font-weight:500;
+}
+.vincent-atlas-header-actions{
+  display:flex;
+  align-items:center;
+  gap:16px;
+}
+.vincent-atlas-header-actions>span{
+  font-size:9px;
+  letter-spacing:.12em;
+  color:rgba(255,255,255,.52);
+  text-transform:uppercase;
+}
+.vincent-atlas-header-actions button{
+  width:46px;
+  height:46px;
+  border:1px solid rgba(255,255,255,.22);
+  background:transparent;
+  color:inherit;
+  font-size:28px;
+  cursor:pointer;
+}
+
+.vincent-atlas-lenses{
+  position:absolute;
+  z-index:12;
+  right:42px;
+  top:132px;
+  width:190px;
+  height:190px;
+}
+.vincent-atlas-lens-core{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:72px;
+  aspect-ratio:1;
+  transform:translate(-50%,-50%);
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  border:1px solid rgba(255,255,255,.2);
+  border-radius:50%;
+  background:#0b0e14;
+  box-shadow:0 0 50px rgba(49,95,173,.16);
+}
+.vincent-atlas-lens-core span{
+  font-size:7px;
+  letter-spacing:.15em;
+  color:rgba(255,255,255,.48);
+}
+.vincent-atlas-lens-core strong{
+  margin-top:5px;
+  font-size:10px;
+  letter-spacing:.12em;
+}
+.vincent-atlas-lenses>button{
+  --angle:calc(-90deg + (var(--lens-index) * 120deg));
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:72px;
+  min-height:46px;
+  transform:
+    translate(-50%,-50%)
+    rotate(var(--angle))
+    translateY(-74px)
+    rotate(calc(var(--angle) * -1));
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(8,10,15,.9);
+  color:rgba(255,255,255,.62);
+  cursor:pointer;
+  transition:border-color .22s ease,color .22s ease,background .22s ease;
+}
+.vincent-atlas-lenses>button.is-active{
+  border-color:#e7b84b;
+  color:#fff;
+  background:#15130e;
+}
+.vincent-atlas-lenses>button span{
+  display:block;
+  font-size:7px;
+  letter-spacing:.12em;
+}
+.vincent-atlas-lenses>button strong{
+  display:block;
+  margin-top:4px;
+  font-size:9px;
+  letter-spacing:.11em;
+}
+
+.vincent-atlas-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.5fr) minmax(320px,.5fr);
+  min-height:760px;
+}
+.vincent-atlas-canvas{
+  position:relative;
+  min-height:760px;
+  overflow:hidden;
+  border-right:1px solid rgba(255,255,255,.1);
+  background:
+    linear-gradient(to right,transparent calc(50% - .5px),rgba(255,255,255,.035) 50%,transparent calc(50% + .5px)),
+    linear-gradient(to bottom,transparent calc(50% - .5px),rgba(255,255,255,.035) 50%,transparent calc(50% + .5px));
+}
+.vincent-atlas-lines{
+  position:absolute;
+  inset:5%;
+  width:90%;
+  height:90%;
+  overflow:visible;
+  pointer-events:none;
+}
+.vincent-atlas-lines line{
+  stroke:rgba(240,232,215,.36);
+  stroke-width:.18;
+  vector-effect:non-scaling-stroke;
+}
+.vincent-atlas-orbit{
+  fill:none;
+  stroke:rgba(255,255,255,.08);
+  stroke-width:.14;
+  stroke-dasharray:1.5 2.5;
+}
+.vincent-atlas-orbit.is-outer{
+  stroke:rgba(255,255,255,.045);
+}
+
+.vincent-atlas-node{
+  position:absolute;
+  left:var(--node-x);
+  top:var(--node-y);
+  transform:translate(-50%,-50%);
+  z-index:4;
+  appearance:none;
+  border:1px solid rgba(255,255,255,.2);
+  background:#0d1016;
+  color:inherit;
+  cursor:pointer;
+  text-align:left;
+  transition:
+    left .48s cubic-bezier(.16,1,.3,1),
+    top .48s cubic-bezier(.16,1,.3,1),
+    transform .28s ease,
+    opacity .28s ease,
+    border-color .28s ease;
+}
+.vincent-atlas-node.is-artwork{
+  width:112px;
+  padding:7px;
+}
+.vincent-atlas-node.is-artwork img{
+  width:100%;
+  aspect-ratio:4/5;
+  object-fit:cover;
+  filter:saturate(.86);
+}
+.vincent-atlas-node.is-artwork>span,
+.vincent-atlas-node.is-letter>span{
+  display:block;
+  margin-top:7px;
+  font-size:7px;
+  letter-spacing:.12em;
+  color:rgba(255,255,255,.52);
+}
+.vincent-atlas-node.is-artwork>strong{
+  display:block;
+  margin-top:4px;
+  font:500 12px/1.03 "Cormorant Garamond",serif;
+}
+.vincent-atlas-node.is-letter{
+  width:84px;
+  aspect-ratio:1;
+  border-radius:50%;
+  padding:10px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  background:#17140e;
+  border-color:rgba(231,184,75,.28);
+}
+.vincent-atlas-node.is-letter strong{
+  margin-top:4px;
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.08em;
+}
+.vincent-atlas-node.is-letter small{
+  margin-top:5px;
+  font-size:7px;
+  font-weight:600;
+  letter-spacing:.14em;
+  color:rgba(255,255,255,.72);
+}
+.vincent-atlas-node.is-selected{
+  z-index:8;
+  transform:translate(-50%,-50%) scale(1.18);
+  border-color:#f0e8d7;
+  box-shadow:0 20px 60px rgba(0,0,0,.4),0 0 0 1px rgba(231,184,75,.2);
+}
+.vincent-atlas-node.is-dim{
+  opacity:.22;
+}
+.vincent-atlas-node.is-dim:hover,
+.vincent-atlas-node.is-dim:focus-visible{
+  opacity:.72;
+}
+.vincent-atlas-canvas-label{
+  position:absolute;
+  left:26px;
+  bottom:24px;
+  max-width:250px;
+}
+.vincent-atlas-canvas-label span{
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.15em;
+}
+.vincent-atlas-canvas-label p{
+  margin:8px 0 0;
+  color:rgba(255,255,255,.5);
+  font-size:10px;
+  line-height:1.5;
+}
+
+.vincent-atlas-reading{
+  min-width:0;
+  padding:160px 32px 40px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.vincent-atlas-kicker{
+  margin:0;
+  font-size:9px;
+  letter-spacing:.15em;
+  color:rgba(255,255,255,.56);
+}
+.vincent-atlas-reading>img{
+  width:min(100%,320px);
+  max-height:340px;
+  object-fit:contain;
+  object-position:left center;
+  margin:20px 0 26px;
+}
+.vincent-atlas-reading h3{
+  margin:0;
+  font:500 clamp(46px,5vw,78px)/.82 "Cormorant Garamond",serif;
+  letter-spacing:-.045em;
+}
+.vincent-atlas-meta{
+  margin:14px 0 0;
+  font-size:10px;
+  letter-spacing:.1em;
+  color:#e7b84b;
+  text-transform:uppercase;
+}
+.vincent-atlas-note{
+  max-width:38ch;
+  margin:24px 0 0;
+  color:rgba(255,255,255,.7);
+  font-size:13px;
+  line-height:1.7;
+}
+.vincent-atlas-reading>a{
+  align-self:flex-start;
+  margin-top:24px;
+  padding-bottom:5px;
+  border-bottom:1px solid rgba(255,255,255,.4);
+  color:inherit;
+  text-decoration:none;
+  font-size:11px;
+}
+.vincent-atlas-method{
+  margin-top:34px;
+  padding-top:16px;
+  border-top:1px solid rgba(255,255,255,.12);
+  color:rgba(255,255,255,.55);
+  font-size:10px;
+  line-height:1.55;
+}
+
+.vincent-atlas-semantic{
+  display:grid;
+  grid-template-columns:minmax(260px,.6fr) minmax(0,1.4fr);
+  gap:5vw;
+  padding:56px 28px 70px;
+  border-top:1px solid rgba(255,255,255,.11);
+}
+.vincent-atlas-semantic header h3{
+  margin:14px 0 16px;
+  font:500 clamp(36px,4vw,62px)/.9 "Cormorant Garamond",serif;
+}
+.vincent-atlas-semantic header p{
+  max-width:38ch;
+  margin:0;
+  color:rgba(255,255,255,.55);
+  font-size:11px;
+  line-height:1.6;
+}
+.vincent-atlas-semantic ol{
+  list-style:none;
+  margin:0;
+  padding:0;
+  border-top:1px solid rgba(255,255,255,.14);
+}
+.vincent-atlas-semantic li{
+  display:grid;
+  grid-template-columns:34px minmax(170px,.7fr) 1fr;
+  gap:18px;
+  align-items:center;
+  min-height:86px;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.vincent-atlas-semantic li>span{
+  font-size:8px;
+  letter-spacing:.12em;
+  color:rgba(255,255,255,.42);
+}
+.vincent-atlas-semantic li button{
+  appearance:none;
+  border:0;
+  background:transparent;
+  color:inherit;
+  text-align:left;
+  padding:12px 0;
+  cursor:pointer;
+}
+.vincent-atlas-semantic li button strong{
+  display:block;
+  font:500 20px/1 "Cormorant Garamond",serif;
+}
+.vincent-atlas-semantic li button small{
+  display:block;
+  margin-top:7px;
+  color:rgba(255,255,255,.52);
+  font-size:8px;
+  letter-spacing:.08em;
+}
+.vincent-atlas-semantic li p{
+  margin:0;
+  color:rgba(255,255,255,.65);
+  font-size:11px;
+  line-height:1.5;
+}
+
+@media (max-width:1100px){
+  .vincent-atlas{
+    inset:14px;
+  }
+  .vincent-atlas-layout{
+    grid-template-columns:1fr;
+  }
+  .vincent-atlas-canvas{
+    min-height:680px;
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.1);
+  }
+  .vincent-atlas-reading{
+    padding:54px 28px;
+    display:grid;
+    grid-template-columns:minmax(220px,.5fr) minmax(0,1fr);
+    column-gap:34px;
+    align-items:center;
+  }
+  .vincent-atlas-reading>img{
+    grid-row:1/7;
+    margin:0;
+  }
+  .vincent-atlas-lenses{
+    top:126px;
+    right:26px;
+  }
+}
+
+@media (max-width:700px){
+  .vincent-atlas-scrim{
+    backdrop-filter:none;
+  }
+  .vincent-atlas{
+    inset:0;
+    border:0;
+  }
+  .vincent-atlas-header{
+    padding:16px 16px 14px;
+  }
+  .vincent-atlas-header p{
+    font-size:7px;
+  }
+  .vincent-atlas-header h2{
+    font-size:12vw;
+  }
+  .vincent-atlas-header-actions>span{
+    display:none;
+  }
+  .vincent-atlas-header-actions button{
+    width:44px;
+    height:44px;
+  }
+  .vincent-atlas-lenses{
+    position:static;
+    width:auto;
+    height:auto;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:1px;
+    padding:12px 16px;
+    background:rgba(255,255,255,.1);
+  }
+  .vincent-atlas-lens-core{
+    display:none;
+  }
+  .vincent-atlas-lenses>button{
+    position:static;
+    width:auto;
+    min-height:48px;
+    transform:none;
+  }
+  .vincent-atlas-layout{
+    display:block;
+    min-height:0;
+  }
+  .vincent-atlas-canvas{
+    display:none;
+  }
+  .vincent-atlas-reading{
+    padding:34px 16px 42px;
+    display:block;
+    border-bottom:1px solid rgba(255,255,255,.1);
+  }
+  .vincent-atlas-reading>img{
+    width:100%;
+    max-height:56vh;
+    object-position:center;
+    margin:18px 0 24px;
+  }
+  .vincent-atlas-reading h3{
+    font-size:16vw;
+  }
+  .vincent-atlas-semantic{
+    display:block;
+    padding:36px 16px 100px;
+  }
+  .vincent-atlas-semantic ol{
+    margin-top:28px;
+  }
+  .vincent-atlas-semantic li{
+    grid-template-columns:28px 1fr;
+    gap:10px 14px;
+    padding:14px 0;
+  }
+  .vincent-atlas-semantic li p{
+    grid-column:2;
+  }
+  .vincent-atlas-semantic li button{
+    min-height:44px;
+  }
+}
+
+.vincent-atlas[data-motion="reduced"] .vincent-atlas-node{
+  transition:none;
+}
+
+@media (prefers-reduced-motion:reduce){
+  .vincent-atlas-node,
+  .vincent-atlas-lenses>button{
+    transition:none;
+  }
+  .vincent-atlas-scrim{
+    backdrop-filter:none;
+  }
+}
+
+
+/* Curated-thread Atlas — source-of-truth interaction model */
+.vincent-atlas-intro{
+  display:grid;
+  grid-template-columns:minmax(0,1.15fr) minmax(280px,.55fr);
+  gap:8vw;
+  align-items:end;
+  padding:72px 28px 54px;
+  border-bottom:1px solid rgba(255,255,255,.11);
+}
+.vincent-atlas-intro>div>span,
+.vincent-atlas-filter>span,
+.vincent-atlas-method-footer span{
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.16em;
+  color:rgba(255,255,255,.5);
+}
+.vincent-atlas-intro h3{
+  max-width:12ch;
+  margin:16px 0 0;
+  font:500 clamp(48px,6vw,92px)/.82 "Cormorant Garamond",serif;
+  letter-spacing:-.05em;
+}
+.vincent-atlas-intro h3 em{
+  color:#e7b84b;
+  font-weight:500;
+}
+.vincent-atlas-intro>p{
+  max-width:48ch;
+  margin:0;
+  color:rgba(255,255,255,.64);
+  font-size:12px;
+  line-height:1.7;
+}
+
+.vincent-atlas-filter-deck{
+  position:sticky;
+  top:116px;
+  z-index:18;
+  display:grid;
+  grid-template-columns:1fr 1fr 1.35fr minmax(150px,.55fr);
+  border-bottom:1px solid rgba(255,255,255,.12);
+  background:#0a0c11;
+}
+.vincent-atlas-filter{
+  min-width:0;
+  padding:20px 22px 22px;
+  border-right:1px solid rgba(255,255,255,.1);
+}
+.vincent-atlas-filter>span{
+  display:block;
+  margin-bottom:14px;
+}
+.vincent-atlas-filter>div{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.vincent-atlas-filter button,
+.vincent-atlas-filter-summary button{
+  appearance:none;
+  min-height:36px;
+  padding:8px 11px;
+  border:1px solid rgba(255,255,255,.16);
+  background:transparent;
+  color:rgba(255,255,255,.65);
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.06em;
+  cursor:pointer;
+  transition:background .2s ease,border-color .2s ease,color .2s ease;
+}
+.vincent-atlas-filter button:hover,
+.vincent-atlas-filter button:focus-visible{
+  border-color:rgba(231,184,75,.7);
+  color:#fff;
+}
+.vincent-atlas-filter button.is-active{
+  border-color:#e7b84b;
+  background:#e7b84b;
+  color:#11100c;
+}
+.vincent-atlas-filter-summary{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  justify-content:center;
+  padding:18px 22px;
+}
+.vincent-atlas-filter-summary>span{
+  font:500 34px/.9 "Cormorant Garamond",serif;
+}
+.vincent-atlas-filter-summary p{
+  margin:8px 0 0;
+  color:rgba(255,255,255,.52);
+  font-size:9px;
+  line-height:1.4;
+  text-transform:uppercase;
+  letter-spacing:.09em;
+}
+.vincent-atlas-filter-summary button{
+  align-self:flex-start;
+  margin-top:12px;
+}
+
+.vincent-atlas-field{
+  min-height:560px;
+}
+.vincent-atlas-thread{
+  --atlas-x:50%;
+  --atlas-y:50%;
+  position:relative;
+  display:grid;
+  grid-template-columns:72px minmax(360px,1.05fr) minmax(300px,.82fr) 130px;
+  gap:28px;
+  align-items:center;
+  min-height:520px;
+  padding:52px 28px;
+  overflow:hidden;
+  border-bottom:1px solid rgba(255,255,255,.12);
+  isolation:isolate;
+}
+.vincent-atlas-thread::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  opacity:.42;
+  background:
+    radial-gradient(520px circle at var(--atlas-x) var(--atlas-y),rgba(49,95,173,.2),transparent 48%),
+    linear-gradient(90deg,rgba(255,255,255,.012),transparent 35%);
+  pointer-events:none;
+  transition:opacity .24s ease;
+}
+.vincent-atlas-thread:nth-child(even)::before{
+  background:
+    radial-gradient(520px circle at var(--atlas-x) var(--atlas-y),rgba(231,184,75,.11),transparent 48%),
+    linear-gradient(90deg,rgba(255,255,255,.012),transparent 35%);
+}
+.vincent-atlas-thread-index{
+  align-self:start;
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.vincent-atlas-thread-index>span{
+  font:500 36px/.9 "Cormorant Garamond",serif;
+  color:#e7b84b;
+}
+.vincent-atlas-thread-index small{
+  writing-mode:vertical-rl;
+  max-height:170px;
+  color:rgba(255,255,255,.45);
+  font:600 8px/1.2 "DM Sans",sans-serif;
+  letter-spacing:.13em;
+}
+
+.vincent-atlas-thread-media{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  min-width:0;
+}
+.vincent-atlas-thread-media figure{
+  min-width:0;
+  margin:0;
+}
+.vincent-atlas-thread-media figure:nth-child(2){
+  transform:translateY(28px);
+}
+.vincent-atlas-thread-media figure:nth-child(3){
+  transform:translateY(-18px);
+}
+.vincent-atlas-thread-media img{
+  display:block;
+  width:100%;
+  aspect-ratio:4/5;
+  object-fit:cover;
+  filter:saturate(.9) contrast(.98);
+}
+.vincent-atlas-thread-media figcaption{
+  margin-top:8px;
+}
+.vincent-atlas-thread-media figcaption span{
+  display:block;
+  color:rgba(255,255,255,.45);
+  font-size:7px;
+  letter-spacing:.1em;
+}
+.vincent-atlas-thread-media figcaption strong{
+  display:block;
+  margin-top:3px;
+  font:500 13px/1 "Cormorant Garamond",serif;
+}
+
+.vincent-atlas-thread-copy>p:first-child{
+  margin:0;
+  color:#e7b84b;
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.13em;
+  text-transform:uppercase;
+}
+.vincent-atlas-thread-copy h3{
+  max-width:11ch;
+  margin:16px 0 0;
+  font:500 clamp(42px,4.6vw,72px)/.82 "Cormorant Garamond",serif;
+  letter-spacing:-.045em;
+}
+.vincent-atlas-thread-themes{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-top:20px;
+}
+.vincent-atlas-thread-themes span{
+  padding:5px 8px;
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.65);
+  font-size:8px;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+}
+.vincent-atlas-thread-connection{
+  max-width:42ch;
+  margin:24px 0 0;
+  color:rgba(255,255,255,.67);
+  font-size:11px;
+  line-height:1.65;
+}
+.vincent-atlas-letter-link{
+  display:block;
+  max-width:420px;
+  margin-top:26px;
+  padding:14px 0 0;
+  border-top:1px solid rgba(255,255,255,.14);
+  color:inherit;
+  text-decoration:none;
+}
+.vincent-atlas-letter-link>span{
+  display:block;
+  color:#e7b84b;
+  font-size:8px;
+  letter-spacing:.11em;
+}
+.vincent-atlas-letter-link>strong{
+  display:block;
+  margin-top:8px;
+  font:500 23px/1 "Cormorant Garamond",serif;
+}
+.vincent-atlas-letter-link>small{
+  display:block;
+  margin-top:8px;
+  color:rgba(255,255,255,.5);
+  font-size:9px;
+  line-height:1.5;
+}
+
+.vincent-atlas-thread-actions{
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  gap:12px;
+  padding-left:18px;
+  border-left:1px solid rgba(255,255,255,.1);
+}
+.vincent-atlas-thread-actions button{
+  appearance:none;
+  min-height:46px;
+  padding:10px 12px;
+  border:1px solid rgba(255,255,255,.18);
+  background:transparent;
+  color:inherit;
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.06em;
+  cursor:pointer;
+}
+.vincent-atlas-thread-actions button:hover,
+.vincent-atlas-thread-actions button:focus-visible{
+  border-color:#e7b84b;
+}
+.vincent-atlas-thread-actions .vincent-atlas-save{
+  border-color:#e7b84b;
+  color:#e7b84b;
+}
+.vincent-atlas-thread-actions .vincent-atlas-save:disabled{
+  border-color:rgba(255,255,255,.12);
+  color:rgba(255,255,255,.35);
+  cursor:default;
+}
+
+.vincent-atlas-empty{
+  display:flex;
+  min-height:560px;
+  flex-direction:column;
+  justify-content:center;
+  align-items:flex-start;
+  padding:70px max(28px,10vw);
+}
+.vincent-atlas-empty>span{
+  color:#e7b84b;
+  font:600 9px/1 "DM Sans",sans-serif;
+  letter-spacing:.16em;
+}
+.vincent-atlas-empty h3{
+  max-width:10ch;
+  margin:18px 0 0;
+  font:500 clamp(54px,7vw,102px)/.8 "Cormorant Garamond",serif;
+  letter-spacing:-.05em;
+}
+.vincent-atlas-empty p{
+  max-width:48ch;
+  margin:24px 0 0;
+  color:rgba(255,255,255,.58);
+  font-size:12px;
+  line-height:1.65;
+}
+.vincent-atlas-empty button{
+  min-height:46px;
+  margin-top:28px;
+  padding:10px 15px;
+  border:1px solid #e7b84b;
+  background:transparent;
+  color:#e7b84b;
+  cursor:pointer;
+}
+
+.vincent-atlas-method-footer{
+  display:grid;
+  grid-template-columns:minmax(220px,.5fr) minmax(0,1fr);
+  gap:6vw;
+  padding:44px 28px 58px;
+  background:#f0e7d4;
+  color:#11100d;
+}
+.vincent-atlas-method-footer strong{
+  display:block;
+  margin-top:9px;
+  font:500 34px/.9 "Cormorant Garamond",serif;
+}
+.vincent-atlas-method-footer p{
+  max-width:68ch;
+  margin:0;
+  font-size:11px;
+  line-height:1.7;
+}
+.vincent-atlas-method-footer span{
+  color:#605c55;
+}
+
+@media (hover:hover) and (pointer:fine){
+  .vincent-atlas-thread:hover::before{
+    opacity:.7;
+  }
+}
+
+@media (max-width:1100px){
+  .vincent-atlas-filter-deck{
+    grid-template-columns:1fr 1fr;
+  }
+  .vincent-atlas-filter:nth-child(2){
+    border-right:0;
+  }
+  .vincent-atlas-filter-summary{
+    border-left:1px solid rgba(255,255,255,.1);
+  }
+  .vincent-atlas-thread{
+    grid-template-columns:54px minmax(300px,1fr) minmax(270px,.85fr);
+  }
+  .vincent-atlas-thread-actions{
+    grid-column:2/4;
+    flex-direction:row;
+    padding:18px 0 0;
+    border-left:0;
+    border-top:1px solid rgba(255,255,255,.1);
+  }
+}
+
+@media (max-width:700px){
+  .vincent-atlas-intro{
+    grid-template-columns:1fr;
+    gap:24px;
+    padding:38px 16px 32px;
+  }
+  .vincent-atlas-intro h3{
+    font-size:15vw;
+  }
+  .vincent-atlas-filter-deck{
+    grid-template-columns:1fr;
+  }
+  .vincent-atlas-filter,
+  .vincent-atlas-filter:nth-child(2){
+    padding:16px;
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.1);
+  }
+  .vincent-atlas-filter button,
+  .vincent-atlas-filter-summary button{
+    min-height:44px;
+  }
+  .vincent-atlas-filter-summary{
+    padding:16px;
+    border-left:0;
+  }
+  .vincent-atlas-thread{
+    display:block;
+    min-height:0;
+    padding:34px 16px 44px;
+  }
+  .vincent-atlas-thread-index{
+    flex-direction:row;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .vincent-atlas-thread-index small{
+    writing-mode:horizontal-tb;
+    max-height:none;
+  }
+  .vincent-atlas-thread-media{
+    margin-top:24px;
+  }
+  .vincent-atlas-thread-media figure:nth-child(2),
+  .vincent-atlas-thread-media figure:nth-child(3){
+    transform:none;
+  }
+  .vincent-atlas-thread-media figcaption strong{
+    font-size:11px;
+  }
+  .vincent-atlas-thread-copy{
+    margin-top:34px;
+  }
+  .vincent-atlas-thread-copy h3{
+    font-size:14vw;
+  }
+  .vincent-atlas-thread-actions{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    margin-top:28px;
+    padding:18px 0 0;
+    border-left:0;
+    border-top:1px solid rgba(255,255,255,.1);
+  }
+  .vincent-atlas-method-footer{
+    grid-template-columns:1fr;
+    gap:18px;
+    padding:34px 16px 96px;
+  }
+  .vincent-atlas-empty{
+    min-height:480px;
+    padding:50px 16px 90px;
+  }
+  .vincent-atlas-empty h3{
+    font-size:17vw;
+  }
+}
+
+.vincent-atlas[data-motion="reduced"] .vincent-atlas-thread::before{
+  display:none;
+}
+@media (prefers-reduced-motion:reduce){
+  .vincent-atlas-thread::before{
+    display:none;
+  }
+}
+
+
+/* Keep zero-match recovery from occluding the persistent filter controls. */
+.vincent-atlas-empty{
+  position:relative;
+  z-index:1;
+}
+.vincent-atlas-filter-deck{
+  isolation:isolate;
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+@media (max-width:700px){
+  .vincent-atlas-filter-deck{
+    position:relative;
+    top:auto;
+    z-index:1;
+    box-shadow:none;
+  }
+}

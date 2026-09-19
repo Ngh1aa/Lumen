@@ -121,3 +121,41 @@ QA gate:
 - mobile overflow checks;
 - rendered screenshots at 1440 / 1024 / 768 / 390;
 - manual rendered inspection before calling the UI visually verified.
+
+
+## Milestone 6 reference benchmark — VINCENT Thread Atlas
+
+### Decision problem
+Turn the current two curated Vincent threads into an explorable cultural knowledge surface without making the exhibition feel like analytics software.
+
+### References inspected
+| Reference | Type | State inspected | Transferable principle | Reject |
+|---|---|---|---|---|
+| 21st.dev React Graph Library collection | Pattern registry | network / graph component catalogue | nodes + edges can expose changing relationships without changing the underlying objects | dashboard chrome, chart-first composition, copied source/media |
+| 21st.dev Radial Menu | Community interaction component | circular selection with keyboard support | a compact radial selector can make a spatial mode switch feel intentional | literal floating action-menu styling, dependency stack solely for motion |
+| 21st.dev Gallery collections | Pattern registry | immersive / circular / interactive galleries | artwork should remain the dominant visual object while controls stay peripheral | WebGL/3D merely for spectacle |
+| Existing LUMEN Thread Navigator | Product truth | artwork → place → letter drawer | provenance-aware chains are already understandable and should become Atlas data | replacing the readable chain with graph-only navigation |
+
+### Extracted design DNA
+- **Graph is a lens, not the content.** Artwork remains visually dominant.
+- **Three lenses only:** TIME / PLACE / THEME. More dimensions would turn the room into a filtering tool.
+- **Spatial continuity:** selecting a lens rearranges emphasis/lines, not the entire product shell.
+- **Readable equivalence:** every graph relationship must also exist in a semantic list.
+- **Mobile transformation:** no compressed node map. Mobile becomes an ordered “constellation path” with the same selected lens.
+- **No new animation dependency:** SVG + React state + CSS are sufficient for this milestone.
+- **Reduced motion:** line/node state changes become instant; no orbiting or continuous motion.
+
+### Do not copy
+- 21st.dev demo palettes, iconography, animation timing, or component source.
+- generic neon-network visual language.
+- draggable infinite canvases that harm orientation.
+- graph labels that require hover to understand.
+
+### Acceptance handoff
+The Thread Atlas may be implemented only if:
+- artwork nodes remain the strongest visual anchors;
+- the active relationship type is always explicit in text;
+- keyboard users can select every lens and every node;
+- mobile has a non-graph primary presentation;
+- provenance/source actions remain available;
+- browser + axe + rendered visual evidence are collected.
