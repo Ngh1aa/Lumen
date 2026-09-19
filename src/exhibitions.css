@@ -51,7 +51,7 @@
   padding:17px 0;
   border-top:1px solid rgba(255,255,255,.14);
   border-bottom:1px solid rgba(255,255,255,.14);
-  color:rgba(243,240,232,.48);
+  color:rgba(243,240,232,.62);
   font-size:8px;
   letter-spacing:.12em;
   text-transform:uppercase;
@@ -169,7 +169,7 @@
 }
 .current-exhibition-actions p{
   margin:13px 0 0;
-  color:rgba(243,240,232,.45);
+  color:rgba(243,240,232,.62);
   font-size:8px;
   line-height:1.55;
 }
@@ -269,7 +269,7 @@
   font-weight:500;
 }
 .exhibition-ledger .eyebrow{
-  color:rgba(21,19,14,.56);
+  color:#5f5b54;
 }
 .exhibition-ledger dl{
   margin:0;
@@ -284,7 +284,7 @@
   border-bottom:1px solid rgba(21,19,14,.22);
 }
 .exhibition-ledger dt{
-  color:rgba(21,19,14,.55);
+  color:#5f5b54;
   font-size:8px;
   letter-spacing:.11em;
   text-transform:uppercase;
@@ -341,7 +341,7 @@
 }
 .exhibition-discovery-paths button>span,
 .exhibition-discovery-paths small{
-  color:rgba(243,240,232,.45);
+  color:rgba(243,240,232,.62);
   font-size:8px;
   line-height:1.5;
 }
@@ -389,7 +389,7 @@
   font-weight:500;
 }
 .exhibition-capacity-ledger small{
-  color:rgba(243,240,232,.5);
+  color:rgba(243,240,232,.62);
   font-size:9px;
   line-height:1.55;
 }
