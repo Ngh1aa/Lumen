@@ -378,14 +378,6 @@ export function VincentExperience({
           Atlas
         </button>
         <button
-          className="vincent-atlas-trigger"
-          aria-label="Open Vincent thread atlas"
-          onClick={() => setAtlasOpen(true)}
-        >
-          <span aria-hidden="true">⌘</span>
-          Atlas
-        </button>
-        <button
           className="vincent-thread-trigger"
           aria-label="Open thread navigator"
           onClick={() => setThreadOpen(true)}
