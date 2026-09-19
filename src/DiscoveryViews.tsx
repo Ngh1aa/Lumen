@@ -99,6 +99,25 @@ export function GridView({ artworks, onOpen, onDrift, onGrid, onChromatic }: Com
           ))}
         </div>
       </div>
+
+      <section className="collection-editorial museum-reveal" aria-labelledby="collection-editorial-title">
+        <div className="collection-editorial-copy">
+          <p className="eyebrow">A slower index</p>
+          <h2 id="collection-editorial-title">Order until<br /><em>curiosity interrupts.</em></h2>
+          <p>
+            The grid is not the destination. It is a calm place to compare scale, temperature and rhythm before one object
+            pulls you back into a less predictable path.
+          </p>
+        </div>
+        <div className="collection-triptych" aria-label="A small editorial selection">
+          {visible.slice(0, 3).map((artwork, index) => (
+            <button key={artwork.id} onClick={() => onOpen(artwork)} style={{ '--triptych-accent': artwork.accent } as CSSProperties}>
+              <img src={artwork.image} alt={artwork.alt} loading="lazy" />
+              <span><b>{String(index + 1).padStart(2, '0')}</b><strong>{artwork.title}</strong><small>{artwork.paletteName}</small></span>
+            </button>
+          ))}
+        </div>
+      </section>
     </section>
   );
 }
@@ -204,6 +223,20 @@ export function ChromaticView({ artworks, onOpen, onDrift, onGrid, onChromatic }
           </button>
         ))}
       </div>
+
+      <section className="chromatic-essay museum-reveal" aria-labelledby="chromatic-essay-title">
+        <div className="chromatic-spectrum" aria-hidden="true">
+          {ranked.slice(0, 8).map((artwork) => <i key={artwork.id} style={{ background: artwork.accent }} />)}
+        </div>
+        <div>
+          <p className="eyebrow">Color is not a filter</p>
+          <h2 id="chromatic-essay-title">It is a way<br /><em>to move.</em></h2>
+        </div>
+        <p>
+          LUMEN keeps color relational: each choice changes the field around it instead of collapsing the collection into
+          a rigid category. The swatches remain named so the path also makes sense without color perception.
+        </p>
+      </section>
     </section>
   );
 }

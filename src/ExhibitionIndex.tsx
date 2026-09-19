@@ -161,6 +161,31 @@ export function ExhibitionIndex({
         </div>
       </section>
 
+      <section className="museum-wings museum-reveal" aria-labelledby="museum-wings-title">
+        <header>
+          <p>MUSEUM UNIVERSE / FOUR WINGS</p>
+          <h2 id="museum-wings-title">One museum.<br /><em>Four ways to sense.</em></h2>
+          <p>
+            LUMEN grows as a family of rooms, not a family of templates. Each wing keeps the same curatorial ethics
+            while changing the interaction metaphor around its medium.
+          </p>
+        </header>
+        <div className="museum-wing-grid">
+          <button type="button" className="museum-wing museum-wing--live" onClick={onExplore}>
+            <span>01 / LIVE</span><strong>CANVAS</strong><small>Painting · drift through color</small><i aria-hidden="true">↗</i>
+          </button>
+          <article className="museum-wing">
+            <span>02 / CONCEPT</span><strong>RESONANCE</strong><small>Music · move through time</small><i aria-hidden="true">~</i>
+          </article>
+          <article className="museum-wing">
+            <span>03 / CONCEPT</span><strong>FRAME</strong><small>Cinema · scrub through light</small><i aria-hidden="true">▱</i>
+          </article>
+          <article className="museum-wing">
+            <span>04 / CONCEPT</span><strong>THRESHOLD</strong><small>Space · move through scale</small><i aria-hidden="true">□</i>
+          </article>
+        </div>
+      </section>
+
       <section className="museum-next" aria-labelledby="museum-next-title">
         <div className="museum-next-index">02</div>
         <div>

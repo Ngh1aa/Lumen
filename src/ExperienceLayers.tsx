@@ -67,6 +67,23 @@ export function AboutView({
         </div>
       </section>
 
+      <section className="about-section sensory-equivalence museum-reveal" aria-labelledby="sensory-title">
+        <div>
+          <p className="eyebrow">Sensory equivalence</p>
+          <h2 id="sensory-title">One idea.<br /><em>More than one sense.</em></h2>
+          <p className="sensory-lede">
+            If a room depends on one sense, LUMEN gives the same idea another route. Accessibility becomes part of the
+            art direction rather than a utility layer added at the end.
+          </p>
+        </div>
+        <div className="sensory-grid">
+          <article><span>01 / Vision</span><h3>Artwork → language</h3><p>Alt text and editorial description preserve subject, atmosphere and orientation.</p></article>
+          <article><span>02 / Color</span><h3>Hue → naming</h3><p>Every chromatic path carries a readable name and relationship, never color alone.</p></article>
+          <article><span>03 / Motion</span><h3>Drift → sequence</h3><p>Reduced-motion mode turns spatial movement into a stable reading order without losing the route.</p></article>
+          <article><span>04 / Space</span><h3>Atlas → list</h3><p>Visual relationships have a semantic list equivalent with the reason for each connection exposed.</p></article>
+        </div>
+      </section>
+
       <section className="about-section about-sources" aria-labelledby="sources-title">
         <div>
           <p className="eyebrow">Open access / credits</p>

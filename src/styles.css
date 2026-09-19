@@ -1361,3 +1361,339 @@ html[data-motion="reduced"] .portal-frame img { transform: none !important; }
 }
 
 html[data-motion="reduced"] .journey-progress span { transition: none !important; }
+
+
+/* Sensory rebalance — art-first Drift + richer discovery pages */
+.drift-section {
+  position: relative;
+  overflow: clip;
+}
+.drift-atmosphere {
+  position: absolute;
+  inset: 74px 0 auto;
+  height: min(70vh, 760px);
+  pointer-events: none;
+  overflow: hidden;
+  opacity: .72;
+}
+.drift-atmosphere i {
+  position: absolute;
+  width: clamp(180px, 24vw, 420px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  filter: blur(80px);
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+  animation: lumen-float 14s ease-in-out infinite alternate;
+}
+.drift-atmosphere i:nth-child(1) { left: -8vw; top: 10%; }
+.drift-atmosphere i:nth-child(2) { right: 4vw; top: 5%; animation-delay: -5s; transform: scale(.72); }
+.drift-atmosphere i:nth-child(3) { left: 44%; top: 35%; animation-delay: -9s; transform: scale(.5); opacity: .55; }
+@keyframes lumen-float {
+  to { transform: translate3d(5vw, 4vh, 0) scale(1.08); }
+}
+.drift-intro {
+  position: relative;
+  z-index: 2;
+  min-height: 34vh;
+  padding-bottom: 34px;
+}
+.drift-copy {
+  margin: 0;
+  align-self: end;
+}
+.drift-copy > p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.72;
+  font-size: 13px;
+  max-width: 430px;
+}
+.drift-index-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 22px;
+  padding: 0 0 7px;
+  border: 0;
+  border-bottom: 1px solid rgba(255,255,255,.28);
+  background: none;
+  color: var(--gallery-ivory);
+  cursor: pointer;
+  font-size: 9px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.drift-grid {
+  position: relative;
+  z-index: 2;
+  row-gap: clamp(54px, 7vw, 108px);
+  padding-top: 58px;
+}
+.drift-card {
+  transform-origin: center;
+  transition: transform .55s cubic-bezier(.16,1,.3,1);
+}
+.drift-card:hover { transform: translate3d(0,-5px,0); }
+.drift-card:nth-child(2n) .drift-image-wrap { transform: rotate(.45deg); }
+.drift-card:nth-child(3n) .drift-image-wrap { transform: rotate(-.38deg); }
+.drift-compass {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: .7fr 1.3fr;
+  gap: 6vw;
+  align-items: end;
+  margin-top: clamp(70px,9vw,130px);
+  padding: 30px 0 4px;
+  border-top: 1px solid var(--line);
+}
+.drift-compass > div:first-child > span {
+  color: var(--muted);
+  font-size: 9px;
+  letter-spacing: .15em;
+  text-transform: uppercase;
+}
+.drift-compass > div:first-child > p {
+  max-width: 36ch;
+  margin: 14px 0 0;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.65;
+}
+.drift-compass-actions {
+  display: grid;
+  grid-template-columns: repeat(3,minmax(0,1fr));
+  border-top: 1px solid rgba(255,255,255,.22);
+}
+.drift-compass-actions button {
+  min-height: 92px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 18px 16px;
+  border: 0;
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--gallery-ivory);
+  cursor: pointer;
+  text-align: left;
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  transition: background .3s ease, transform .3s ease;
+}
+.drift-compass-actions button:last-child { border-right: 0; }
+.drift-compass-actions button:hover,
+.drift-compass-actions button:focus-visible {
+  background: color-mix(in srgb,var(--accent) 10%,rgba(255,255,255,.03));
+  transform: translateY(-3px);
+}
+
+.collection-editorial {
+  display: grid;
+  grid-template-columns: .68fr 1.32fr;
+  gap: 7vw;
+  align-items: start;
+  margin-top: clamp(100px,12vw,180px);
+  padding-top: 54px;
+  border-top: 1px solid var(--line);
+}
+.collection-editorial-copy h2,
+.chromatic-essay h2,
+.sensory-equivalence h2 {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: clamp(48px,6.4vw,104px);
+  line-height: .86;
+  letter-spacing: -.045em;
+  font-weight: 500;
+}
+.collection-editorial-copy h2 em,
+.chromatic-essay h2 em,
+.sensory-equivalence h2 em { color: var(--accent); font-weight: 500; }
+.collection-editorial-copy > p:last-child {
+  max-width: 42ch;
+  margin: 28px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+.collection-triptych {
+  display: grid;
+  grid-template-columns: 1.1fr .82fr .68fr;
+  gap: 14px;
+  align-items: end;
+}
+.collection-triptych button {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+.collection-triptych button:nth-child(2) { transform: translateY(8vh); }
+.collection-triptych button:nth-child(3) { transform: translateY(3vh); }
+.collection-triptych img {
+  width: 100%;
+  aspect-ratio: 4/5;
+  object-fit: cover;
+  background: color-mix(in srgb,var(--triptych-accent) 34%,#151515);
+  transition: transform .7s cubic-bezier(.16,1,.3,1), filter .4s ease;
+}
+.collection-triptych button:hover img,
+.collection-triptych button:focus-visible img { transform: scale(.985); filter: saturate(1.1); }
+.collection-triptych button > span {
+  display: grid;
+  grid-template-columns: 24px 1fr;
+  gap: 8px;
+  margin-top: 10px;
+  color: var(--muted);
+  font-size: 8px;
+  line-height: 1.4;
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.collection-triptych strong {
+  color: var(--gallery-ivory);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.collection-triptych small { grid-column: 2; }
+
+.chromatic-essay {
+  display: grid;
+  grid-template-columns: .4fr .75fr .55fr;
+  gap: 5vw;
+  align-items: end;
+  margin-top: clamp(110px,12vw,180px);
+  padding-top: 56px;
+  border-top: 1px solid var(--line);
+}
+.chromatic-spectrum {
+  min-height: 300px;
+  display: grid;
+  grid-template-columns: repeat(8,1fr);
+  overflow: hidden;
+}
+.chromatic-spectrum i {
+  display: block;
+  min-width: 0;
+  transform-origin: bottom;
+  transition: transform .5s cubic-bezier(.16,1,.3,1);
+}
+.chromatic-spectrum i:nth-child(2n) { transform: scaleY(.78); }
+.chromatic-spectrum i:nth-child(3n) { transform: scaleY(.58); }
+.chromatic-essay:hover .chromatic-spectrum i { transform: scaleY(1); }
+.chromatic-essay > p {
+  margin: 0;
+  max-width: 42ch;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+
+.sensory-equivalence {
+  align-items: start;
+}
+.sensory-lede {
+  max-width: 46ch;
+  margin-top: 28px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.75;
+}
+.sensory-grid {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  background: var(--line);
+  gap: 1px;
+}
+.sensory-grid article {
+  min-height: 230px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 24px;
+  background: var(--museum-black);
+  transition: background .3s ease, transform .3s ease;
+}
+.sensory-grid article:hover {
+  background: color-mix(in srgb,var(--accent) 8%,#0b0b0b);
+  transform: translateY(-2px);
+}
+.sensory-grid span {
+  margin-bottom: auto;
+  color: var(--muted);
+  font-size: 8px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+}
+.sensory-grid h3 {
+  margin: 36px 0 8px;
+  font-family: var(--serif);
+  font-size: clamp(25px,2.6vw,42px);
+  line-height: .95;
+  font-weight: 500;
+}
+.sensory-grid p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.65;
+}
+
+@supports (animation-timeline: view()) {
+  .museum-reveal {
+    animation: lumen-enter both linear;
+    animation-timeline: view();
+    animation-range: entry 5% cover 28%;
+  }
+  @keyframes lumen-enter {
+    from { transform: translate3d(0,42px,0); }
+    to { transform: none; }
+  }
+}
+
+@media (max-width: 900px) {
+  .drift-intro { min-height: 38vh; }
+  .drift-compass,
+  .collection-editorial,
+  .chromatic-essay { grid-template-columns: 1fr; }
+  .drift-compass-actions { margin-top: 12px; }
+  .collection-triptych { margin-top: 36px; }
+  .chromatic-spectrum { min-height: 180px; }
+  .sensory-grid { margin-top: 42px; }
+}
+@media (max-width: 620px) {
+  .drift-section { padding-bottom: 72px; }
+  .drift-intro { min-height: 34vh; }
+  .drift-atmosphere { height: 55vh; opacity: .52; }
+  .drift-grid { padding-top: 38px; }
+  .drift-card { margin-bottom: 46px; }
+  .drift-compass { margin-top: 42px; gap: 24px; }
+  .drift-compass-actions { grid-template-columns: 1fr; }
+  .drift-compass-actions button {
+    min-height: 64px;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .collection-triptych {
+    grid-template-columns: 1fr 1fr;
+    gap: 28px 12px;
+  }
+  .collection-triptych button:nth-child(2),
+  .collection-triptych button:nth-child(3) { transform: none; }
+  .collection-triptych button:first-child { grid-column: 1 / -1; }
+  .chromatic-spectrum { min-height: 120px; }
+  .sensory-grid { grid-template-columns: 1fr; }
+  .sensory-grid article { min-height: 180px; }
+}
+html[data-motion="reduced"] .drift-atmosphere i,
+html[data-motion="reduced"] .museum-reveal {
+  animation: none !important;
+  transform: none !important;
+}

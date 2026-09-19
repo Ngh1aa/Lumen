@@ -30,9 +30,10 @@ test('flagship journey moves from Portal to Drift, preview, Detail and Atlas', a
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
-test('Drift controls pause, speed and keyboard traversal remain usable', async ({ page }) => {
+test('Drift stays compact, art-first and keyboard traversable', async ({ page }) => {
   await page.goto('/#/drift');
-  await expect(page.locator('.drift-art')).toHaveCount(13);
+  await expect(page.locator('.drift-art')).toHaveCount(8);
+  await expect(page.locator('.drift-control-bar')).toHaveCount(0);
 
   const first = page.locator('.drift-art').first();
   const second = page.locator('.drift-art').nth(1);
@@ -40,10 +41,9 @@ test('Drift controls pause, speed and keyboard traversal remain usable', async (
   await page.keyboard.press('ArrowRight');
   await expect(second).toBeFocused();
 
-  await page.getByRole('button', { name: 'Pause drift' }).click();
-  await expect(page.locator('.drift-section')).toHaveClass(/is-paused/);
-  await page.getByRole('button', { name: 'Fast' }).click();
-  await expect(page.locator('.drift-section')).toHaveAttribute('data-speed', 'fast');
+  await expect(page.getByRole('button', { name: /Follow color/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Follow feeling/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Follow a thread/i })).toBeVisible();
 });
 
 test('mobile core pages do not introduce horizontal overflow', async ({ page }) => {
@@ -86,7 +86,7 @@ test('Exhibitions index establishes LUMEN as a museum platform and enters VINCEN
 
 test('public-domain artwork imagery renders in the browser', async ({ page }) => {
   await page.goto('/#/drift');
-  await expect(page.locator('.drift-art')).toHaveCount(13);
+  await expect(page.locator('.drift-art')).toHaveCount(8);
   await page.evaluate(() => {
     document.querySelectorAll<HTMLImageElement>('.drift-image-wrap img').forEach((image) => {
       image.loading = 'eager';
@@ -95,7 +95,7 @@ test('public-domain artwork imagery renders in the browser', async ({ page }) =>
   });
   await page.waitForFunction(() => {
     const images = Array.from(document.querySelectorAll<HTMLImageElement>('.drift-image-wrap img'));
-    return images.length === 13 && images.every((image) => image.complete && image.naturalWidth > 0);
+    return images.length === 8 && images.every((image) => image.complete && image.naturalWidth > 0);
   });
   await page.evaluate(() => window.scrollTo(0, 0));
 });
