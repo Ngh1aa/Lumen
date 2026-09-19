@@ -38,7 +38,7 @@ Home / Artwork Portal
 
 ## Collection data
 
-The prototype queries the Art Institute of Chicago public API for artworks explicitly filtered to public-domain records and renders images through its IIIF endpoint. A small public-domain fallback is included for API failure.
+The prototype uses a small, deterministic set of public-domain digital artworks hosted on Wikimedia Commons. Each object links back to its Commons file page. This replaced the earlier Art Institute IIIF runtime dependency after rendered QA showed the remote IIIF images returning 403 in the cloud browser. The fix lives at the data/media owner layer rather than hiding the failure with colored placeholders.
 
 ## Accessibility / resilience
 
