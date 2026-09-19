@@ -88,3 +88,67 @@
 
 .vincent-letter-reading .eyebrow{color:#4b463f;opacity:1}
 .vincent-letter-reading .vincent-paraphrase{color:#5a544c;opacity:1}
+
+
+/* SUPER PROJECT 01 — Milestone 5 / Cultural threads */
+.vincent-thread-trigger{appearance:none;border:0;border-top:1px solid rgba(255,255,255,.12);background:transparent;color:inherit;text-align:left;min-height:42px;display:grid;grid-template-columns:28px 1fr;align-items:center;padding-top:8px;margin-top:auto;opacity:.82;cursor:pointer;font:500 11px/1 "DM Sans",sans-serif}
+.vincent-sound{margin-top:0}
+.vincent-follow-thread{appearance:none;border:0;background:transparent;color:inherit;padding:8px 0 0;text-align:left;cursor:pointer;font:600 10px/1.2 "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid currentColor;width:max-content}
+.vincent-artwork figcaption .vincent-follow-thread{grid-column:1/-1;margin-top:4px}
+.vincent-room-note-wrap{display:flex;justify-content:center;align-items:center;gap:22px;flex-wrap:wrap;margin-top:24px}
+.vincent-room-note-wrap .vincent-room-note{margin:0}
+.vincent-room-interior .vincent-follow-thread{color:#16120e}
+
+.vincent-thread-layer{position:fixed;inset:0;z-index:90;display:grid;grid-template-columns:1fr minmax(420px,40vw)}
+.vincent-thread-backdrop{position:absolute;inset:0;border:0;background:rgba(2,5,9,.68);backdrop-filter:blur(8px);cursor:default}
+.vincent-thread-drawer{position:relative;grid-column:2;height:100dvh;overflow:auto;background:#0b0d11;color:#f3eee1;border-left:1px solid rgba(255,255,255,.14);padding:28px;box-shadow:-30px 0 80px rgba(0,0,0,.36)}
+.vincent-thread-header{display:flex;justify-content:space-between;gap:24px;align-items:flex-start;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.13)}
+.vincent-thread-header span,.vincent-thread-chain>section>span{font:600 9px/1 "DM Sans",sans-serif;letter-spacing:.16em;color:rgba(255,255,255,.6)}
+.vincent-thread-header h2{font:500 clamp(42px,4vw,70px)/.86 "Cormorant Garamond",serif;letter-spacing:-.04em;margin:12px 0 0}
+.vincent-thread-close{appearance:none;width:44px;height:44px;border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;font-size:26px;cursor:pointer}
+.vincent-thread-tabs{display:grid;grid-template-columns:1fr 1fr;margin:24px 0;border:1px solid rgba(255,255,255,.12)}
+.vincent-thread-tabs button{appearance:none;border:0;border-right:1px solid rgba(255,255,255,.1);background:transparent;color:inherit;text-align:left;min-height:88px;padding:14px;cursor:pointer;opacity:.48}
+.vincent-thread-tabs button:last-child{border-right:0}
+.vincent-thread-tabs button.is-active{opacity:1;background:rgba(255,255,255,.045)}
+.vincent-thread-tabs span{display:block;font-size:8px;letter-spacing:.14em}
+.vincent-thread-tabs strong{display:block;margin-top:8px;font:500 13px/1.25 "DM Sans",sans-serif}
+.vincent-thread-connection{font:500 italic clamp(22px,2.2vw,32px)/1.1 "Cormorant Garamond",serif;color:#d9d0bd;margin:26px 0 34px}
+.vincent-thread-chain{display:grid;gap:12px}
+.vincent-thread-chain>section{border:1px solid rgba(255,255,255,.12);padding:16px;background:rgba(255,255,255,.018)}
+.vincent-thread-artworks{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:14px}
+.vincent-thread-artworks a{display:flex;flex-direction:column;gap:5px;color:inherit;text-decoration:none;min-width:0}
+.vincent-thread-artworks img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;filter:saturate(.9)}
+.vincent-thread-artworks strong{font-size:10px;line-height:1.2}
+.vincent-thread-artworks small{font-size:9px;color:rgba(255,255,255,.55)}
+.vincent-thread-link-card{display:grid;grid-template-columns:1fr auto;align-items:end;gap:8px 14px}
+.vincent-thread-link-card>span{grid-column:1/-1}
+.vincent-thread-link-card h3{font:500 clamp(34px,3vw,54px)/.85 "Cormorant Garamond",serif;margin:4px 0}
+.vincent-thread-link-card p{grid-column:1;margin:0;font-size:11px;color:rgba(255,255,255,.58)}
+.vincent-thread-link-card button{grid-column:2;grid-row:2/4;align-self:stretch;min-width:132px;border:1px solid rgba(255,255,255,.16);background:transparent;color:inherit;cursor:pointer}
+.vincent-thread-footer{display:flex;gap:14px;align-items:center;margin-top:24px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12)}
+.vincent-thread-footer button{min-height:46px;border:1px solid rgba(255,255,255,.3);background:#f0e8d7;color:#111;padding:0 16px;cursor:pointer}
+.vincent-thread-footer button.is-saved,.vincent-thread-footer button:disabled{background:transparent;color:#f0e8d7;opacity:.72;cursor:default}
+.vincent-thread-footer span{font-size:10px;color:rgba(255,255,255,.56)}
+
+.letter-node-3{left:20%;top:78%}
+
+@media (max-width:1024px){
+  .vincent-thread-layer{grid-template-columns:1fr minmax(390px,56vw)}
+}
+@media (max-width:700px){
+  .vincent-thread-trigger{min-width:62px;margin:0 0 0 4px;border-top:0;border-left:1px solid rgba(255,255,255,.12);padding:0 0 0 8px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;font-size:9px}
+  .vincent-sound{min-width:62px}
+  .vincent-thread-layer{display:block}
+  .vincent-thread-drawer{position:absolute;left:0;right:0;bottom:0;height:min(82dvh,720px);border-left:0;border-top:1px solid rgba(255,255,255,.14);padding:20px}
+  .vincent-thread-header h2{font-size:12vw}
+  .vincent-thread-tabs{grid-template-columns:1fr}
+  .vincent-thread-tabs button{border-right:0;border-bottom:1px solid rgba(255,255,255,.1);min-height:68px}
+  .vincent-thread-tabs button:last-child{border-bottom:0}
+  .vincent-thread-artworks{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vincent-thread-link-card{grid-template-columns:1fr}
+  .vincent-thread-link-card button{grid-column:1;grid-row:auto;min-height:44px}
+  .vincent-thread-footer{align-items:flex-start;flex-direction:column}
+}
+@media (prefers-reduced-motion:reduce){
+  .vincent-thread-backdrop{backdrop-filter:none}
+}
