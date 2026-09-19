@@ -1,9 +1,13 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { Artwork, fetchPublicDomainArtworks } from './artworks';
+import { ChromaticView, GridView, SavedView } from './DiscoveryViews';
 
 type Route =
   | { view: 'portal' }
   | { view: 'drift' }
+  | { view: 'grid' }
+  | { view: 'chromatic' }
+  | { view: 'saved' }
   | { view: 'detail'; id: string }
   | { view: 'atlas'; id: string };
 
@@ -11,6 +15,9 @@ function parseRoute(): Route {
   const hash = window.location.hash.replace(/^#/, '');
   const parts = hash.split('/').filter(Boolean);
   if (parts[0] === 'drift') return { view: 'drift' };
+  if (parts[0] === 'grid') return { view: 'grid' };
+  if (parts[0] === 'color' || parts[0] === 'chromatic') return { view: 'chromatic' };
+  if (parts[0] === 'saved') return { view: 'saved' };
   if (parts[0] === 'artwork' && parts[1]) return { view: 'detail', id: parts[1] };
   if (parts[0] === 'atlas' && parts[1]) return { view: 'atlas', id: parts[1] };
   return { view: 'portal' };
@@ -19,6 +26,9 @@ function parseRoute(): Route {
 function routeHash(route: Route) {
   if (route.view === 'portal') return '#/';
   if (route.view === 'drift') return '#/drift';
+  if (route.view === 'grid') return '#/grid';
+  if (route.view === 'chromatic') return '#/color';
+  if (route.view === 'saved') return '#/saved';
   if (route.view === 'detail') return `#/artwork/${route.id}`;
   return `#/atlas/${route.id}`;
 }
@@ -127,6 +137,35 @@ function App() {
             loading={loading}
             onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
             onOpenAtlas={(artwork) => navigate({ view: 'atlas', id: artwork.id })}
+            onGrid={() => navigate({ view: 'grid' })}
+            onChromatic={() => navigate({ view: 'chromatic' })}
+          />
+        )}
+        {route.view === 'grid' && (
+          <GridView
+            artworks={artworks}
+            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
+            onDrift={() => navigate({ view: 'drift' })}
+            onGrid={() => navigate({ view: 'grid' })}
+            onChromatic={() => navigate({ view: 'chromatic' })}
+          />
+        )}
+        {route.view === 'chromatic' && (
+          <ChromaticView
+            artworks={artworks}
+            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
+            onDrift={() => navigate({ view: 'drift' })}
+            onGrid={() => navigate({ view: 'grid' })}
+            onChromatic={() => navigate({ view: 'chromatic' })}
+          />
+        )}
+        {route.view === 'saved' && (
+          <SavedView
+            artworks={artworks}
+            savedIds={saved}
+            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
+            onRemove={toggleSaved}
+            onExplore={() => navigate({ view: 'drift' })}
           />
         )}
         {route.view === 'detail' && active && (
@@ -172,16 +211,23 @@ function Header({ route, active, savedCount, reducedMotion, onNavigate, onMotion
         LU<span>•</span>MEN
       </button>
       <nav aria-label="Primary navigation">
-        <button className={route.view === 'drift' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}>Explore</button>
+        <button className={route.view === 'drift' || route.view === 'grid' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}>Explore</button>
+        <button className={route.view === 'chromatic' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'chromatic' })}>Color</button>
         <button
           className={route.view === 'atlas' ? 'is-active' : ''}
-          onClick={() => onNavigate({ view: 'atlas', id: active?.id || '27992' })}
+          onClick={() => onNavigate({ view: 'atlas', id: active?.id || 'abstract-0008' })}
         >
           Atlas
         </button>
       </nav>
       <div className="header-tools">
-        <span className="saved-count" aria-label={`${savedCount} saved artworks`}>{String(savedCount).padStart(2, '0')} saved</span>
+        <button
+          className={`saved-count saved-button ${route.view === 'saved' ? 'is-active' : ''}`}
+          aria-label={`${savedCount} saved artworks`}
+          onClick={() => onNavigate({ view: 'saved' })}
+        >
+          {String(savedCount).padStart(2, '0')} saved
+        </button>
         <button className="motion-toggle" onClick={onMotionToggle} aria-pressed={reducedMotion}>
           Motion {reducedMotion ? 'reduced' : 'on'}
         </button>
@@ -241,11 +287,15 @@ function Drift({
   loading,
   onOpen,
   onOpenAtlas,
+  onGrid,
+  onChromatic,
 }: {
   artworks: Artwork[];
   loading: boolean;
   onOpen: (artwork: Artwork) => void;
   onOpenAtlas: (artwork: Artwork) => void;
+  onGrid: () => void;
+  onChromatic: () => void;
 }) {
   return (
     <section className="drift-section" aria-labelledby="drift-title">
@@ -260,6 +310,8 @@ function Drift({
       <div className="mode-strip" role="group" aria-label="Explore mode">
         <span>Mode</span>
         <button className="is-active">Drift</button>
+        <button onClick={onGrid}>Grid</button>
+        <button onClick={onChromatic}>Color</button>
         <button onClick={() => artworks[0] && onOpenAtlas(artworks[0])}>Atlas</button>
         <span className="mode-note">{loading ? 'Loading open collection…' : `${artworks.length} public-domain works loaded`}</span>
       </div>
