@@ -150,21 +150,29 @@ test('Mood discovery exposes nine editorial paths and explicit rationale', async
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
-test('curated exhibition exposes all six chapters, reflection prompts and exit actions', async ({ page }) => {
+test('VINCENT super project exposes eight sensory rooms and rights-safe music controls', async ({ page }) => {
   await page.goto('/#/exhibition');
-  await expect(page.getByRole('heading', { name: /Signals from a quiet machine/i })).toBeVisible();
-  await expect(page.locator('.journey-chapter')).toHaveCount(6);
+  await expect(page.getByRole('heading', { name: /VINCENT The Painted Night/i })).toBeVisible();
+  await expect(page.locator('.vincent-room')).toHaveCount(8);
   await expect(page.locator('#threshold')).toBeVisible();
 
-  await page.locator('.journey-rail button').filter({ hasText: 'Noise' }).click();
-  await expect(page.locator('#noise')).toBeInViewport();
-  await expect(page.locator('#noise .chapter-question')).toBeVisible();
+  const rail = page.locator('.vincent-room-links button');
+  await expect(rail).toHaveCount(8);
+  await rail.filter({ hasText: 'Brush' }).click();
+  await expect(page.locator('#brush')).toBeInViewport();
 
-  await page.locator('#signal').scrollIntoViewIfNeeded();
-  await expect(page.getByRole('button', { name: /Save this journey/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Explore by mood/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Continue drifting from here/i })).toBeVisible();
-  await expect(page.locator('.journey-credits')).toContainText('prototype content');
+  await rail.filter({ hasText: 'Vincent' }).click();
+  await expect(page.locator('#vincent')).toBeInViewport();
+  await expect(page.getByRole('link', { name: /official song story/i })).toBeVisible();
+
+  const sound = page.getByRole('button', { name: /Sound off/i });
+  await expect(sound).toHaveAttribute('aria-pressed', 'false');
+  await sound.click();
+  await expect(page.getByRole('button', { name: /Sound on/i })).toHaveAttribute('aria-pressed', 'true');
+
+  await rail.filter({ hasText: 'Afterlight' }).click();
+  await expect(page.getByRole('button', { name: /Return to Drift/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Explore by Color/i })).toBeVisible();
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
@@ -229,11 +237,14 @@ test('unknown routes resolve to a useful 404 recovery state', async ({ page }) =
   await expect(page.getByRole('heading', { name: /Follow what catches/i })).toBeVisible();
 });
 
-test('curated journey media renders', async ({ page }) => {
+test('VINCENT exhibition media renders', async ({ page }) => {
   await page.goto('/#/exhibition');
-  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
-  await page.waitForFunction(() => {
-    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.journey img'));
-    return images.length >= 7 && images.every((image) => image.complete && image.naturalWidth > 0);
+  await page.evaluate(() => {
+    document.querySelectorAll<HTMLImageElement>('.vincent-experience img').forEach((image) => { image.loading = 'eager'; });
+    window.scrollTo(0, document.body.scrollHeight);
   });
+  await page.waitForFunction(() => {
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.vincent-experience img'));
+    return images.length >= 8 && images.every((image) => image.complete && image.naturalWidth > 0);
+  }, undefined, { timeout: 30000 });
 });
