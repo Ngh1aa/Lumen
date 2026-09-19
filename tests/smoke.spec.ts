@@ -153,13 +153,30 @@ test('Mood discovery exposes nine editorial paths and explicit rationale', async
 test('VINCENT super project exposes eight sensory rooms and rights-safe music controls', async ({ page }) => {
   await page.goto('/#/exhibition');
   await expect(page.getByRole('heading', { name: /VINCENT The Painted Night/i })).toBeVisible();
-  await expect(page.locator('.vincent-room')).toHaveCount(8);
+  await expect(page.locator('.vincent-room')).toHaveCount(9);
   await expect(page.locator('#threshold')).toBeVisible();
 
   const rail = page.locator('.vincent-room-links button');
-  await expect(rail).toHaveCount(8);
+  await expect(rail).toHaveCount(9);
   await rail.filter({ hasText: 'Brush' }).click();
   await expect(page.locator('#brush')).toBeInViewport();
+  const zoom = page.getByLabel('Brush detail zoom');
+  await expect(zoom).toHaveValue('1.7');
+  await page.getByRole('button', { name: /Zoom in brush detail/i }).click();
+  await expect(zoom).toHaveValue('2.2');
+
+  await rail.filter({ hasText: 'Places' }).click();
+  await expect(page.locator('#places')).toBeInViewport();
+  await expect(page.locator('.vincent-place-stops button')).toHaveCount(5);
+  await page.locator('.vincent-place-stops button').filter({ hasText: 'Saint-Rémy' }).click();
+  await expect(page.locator('.vincent-place-reading')).toContainText('Saint-Rémy');
+
+  await rail.filter({ hasText: 'Letters' }).click();
+  await expect(page.locator('#letters')).toBeInViewport();
+  await expect(page.locator('.letter-node')).toHaveCount(3);
+  await page.locator('.letter-node').filter({ hasText: 'HARVEST' }).click();
+  await expect(page.locator('.vincent-letter-reading')).toContainText('21 Jun 1888');
+  await expect(page.getByRole('link', { name: /Open scholarly letter record/i })).toBeVisible();
 
   await rail.filter({ hasText: 'Vincent' }).click();
   await expect(page.locator('#vincent')).toBeInViewport();
