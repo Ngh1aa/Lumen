@@ -1,7 +1,8 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { Artwork, fetchPublicDomainArtworks } from './artworks';
 import { ChromaticView, GridView, SavedView } from './DiscoveryViews';
-import { CuratedJourney, MoodView } from './CulturalExperience';
+import { MoodView } from './CulturalExperience';
+import { VincentJourney } from './VincentExperience';
 import {
   AboutView,
   AccessibilityPanel,
@@ -230,7 +231,7 @@ function App() {
         )}
 
         {route.view === 'journey' && (
-          <CuratedJourney
+          <VincentJourney
             artworks={artworks}
             onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
             onMood={() => navigate({ view: 'mood' })}
@@ -290,7 +291,7 @@ function App() {
 
       <footer className="site-footer">
         <div><strong>LUMEN</strong><span>Digital Museum of Visual Culture</span></div>
-        <p>Public-domain prototype media · explainable discovery paths · reduced-motion alternatives.</p>
+        <p>Van Gogh public-domain collection · VINCENT featured exhibition · soundtrack optional · reduced-motion alternatives.</p>
       </footer>
 
       <QuickPreview
@@ -338,7 +339,7 @@ function Header({ route, active, savedCount, onNavigate, onSettings }: HeaderPro
         <button className={route.view === 'saved' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'saved' })}>Collection</button>
         <button
           className={route.view === 'atlas' ? 'is-active' : ''}
-          onClick={() => onNavigate({ view: 'atlas', id: active?.id || 'abstract-0008' })}
+          onClick={() => onNavigate({ view: 'atlas', id: active?.id || 'starry-night' })}
         >
           Atlas
         </button>
@@ -435,11 +436,11 @@ function Portal({
   return (
     <section className="portal portal--expanded" aria-labelledby="portal-title" onWheel={onWheel}>
       <div className="portal-grid" aria-hidden="true" />
-      <p className="portal-kicker">Digital museum / visual culture / 2026</p>
+      <p className="portal-kicker">LUMEN / Digital museum / Super Project 01</p>
       <h1 id="portal-title" className="portal-title">
-        <span>DON'T SEARCH</span>
-        <span>FOR <em>ART.</em></span>
-        <span>DRIFT INTO IT.</span>
+        <span>ENTER</span>
+        <span>THROUGH <em>COLOR.</em></span>
+        <span>STAY FOR FEELING.</span>
       </h1>
 
       <div className="portal-frame" ref={frameRef} onPointerMove={onPointerMove}>
@@ -461,16 +462,16 @@ function Portal({
       </div>
 
       <div className="portal-bottom portal-bottom--expanded">
-        <p>Follow a color, a feeling, or a thread between works. There is no wrong way in.</p>
+        <p>A miniature museum for looking slowly: drift through Van Gogh by color, mood, place and the relationships between works.</p>
         <div className="portal-entries">
           <button className="enter-button" onClick={onEnter}><span>Start drifting</span><span aria-hidden="true">↗</span></button>
-          <button onClick={onExhibition}>Enter the exhibition <span aria-hidden="true">↗</span></button>
+          <button onClick={onExhibition}>Enter VINCENT <span aria-hidden="true">↗</span></button>
           <button onClick={onMood}>Pick a mood <span aria-hidden="true">↗</span></button>
         </div>
       </div>
 
       <div className="portal-index portal-index--stats" aria-hidden="true">
-        {artworks.length || '—'} works · 9 mood paths · 6 exhibition chapters · Space / scroll to drift
+        {artworks.length || '—'} Van Gogh works · 9 mood paths · 6 exhibition rooms · soundtrack optional
       </div>
     </section>
   );
@@ -523,7 +524,7 @@ function Drift({
 
       <div className="drift-zone" aria-live="polite">
         <span>You are drifting through</span>
-        <strong>Cool tones · 2000s · Digital abstraction</strong>
+        <strong>Arles · Saint-Rémy · Auvers / 1888—1890</strong>
       </div>
 
       <div
@@ -724,8 +725,8 @@ function Atlas({
 
   const nodes: Array<{ type: RelationType; artwork?: Artwork; explanation: string }> = [
     { type: 'Color', artwork: nearestColor, explanation: 'Both sit close in the current prototype dominant-color map.' },
-    { type: 'Era', artwork: sameEra, explanation: 'Both were created in the same 2000s digital-making context.' },
-    { type: 'Movement', artwork: sameMovement, explanation: 'Both are grouped here under digital abstraction.' },
+    { type: 'Era', artwork: sameEra, explanation: 'Both sit within the same place-and-year chapter of Van Gogh's late work.' },
+    { type: 'Movement', artwork: sameMovement, explanation: 'Both are grouped here under Post-Impressionism while keeping their individual source records.' },
     { type: 'Theme', artwork: sameTheme, explanation: 'Both carry the same LUMEN editorial theme or its closest available echo.' },
   ];
 
