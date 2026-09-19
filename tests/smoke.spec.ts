@@ -173,7 +173,7 @@ test('VINCENT super project exposes eight sensory rooms and rights-safe music co
 
   await rail.filter({ hasText: 'Letters' }).click();
   await expect(page.locator('#letters')).toBeInViewport();
-  await expect(page.locator('.letter-node')).toHaveCount(3);
+  await expect(page.locator('.letter-node')).toHaveCount(4);
   await page.locator('.letter-node').filter({ hasText: 'HARVEST' }).click();
   await expect(page.locator('.vincent-letter-reading')).toContainText('21 Jun 1888');
   await expect(page.getByRole('link', { name: /Open scholarly letter record/i })).toBeVisible();
@@ -190,6 +190,42 @@ test('VINCENT super project exposes eight sensory rooms and rights-safe music co
   await rail.filter({ hasText: 'Afterlight' }).click();
   await expect(page.getByRole('button', { name: /Return to Drift/i })).toBeVisible();
   await expect(page.getByRole('button', { name: /Explore by Color/i })).toBeVisible();
+  await expect(seriousAxeViolations(page)).resolves.toEqual([]);
+});
+
+
+test('VINCENT cultural threads connect artwork, place and letter and persist saves', async ({ page }) => {
+  await page.goto('/#/exhibition');
+
+  await page.getByRole('button', { name: /Open thread navigator/i }).click();
+  const drawer = page.locator('.vincent-thread-drawer');
+  await expect(drawer).toBeVisible();
+  await expect(drawer.getByRole('heading', { name: /Arles \/ Night \/ Interior/i })).toBeVisible();
+
+  const saintRemy = drawer.getByRole('button', { name: /Saint-Rémy \/ Field \/ Cypress/i });
+  await saintRemy.click();
+  await expect(drawer.getByRole('heading', { name: /Saint-Rémy \/ Field \/ Cypress/i })).toBeVisible();
+  await expect(drawer.locator('.vincent-thread-artworks a')).toHaveCount(3);
+  await expect(drawer).toContainText('Wheatfield and cypresses');
+
+  await drawer.getByRole('button', { name: /Save this thread/i }).click();
+  await expect(drawer.getByRole('status')).toContainText('Saved to this browser');
+  await expect.poll(async () => page.evaluate(() => localStorage.getItem('lumen-vincent-threads'))).toContain('saint-remy-field');
+
+  await drawer.getByRole('button', { name: /Enter place room/i }).click();
+  await expect(page.locator('#places')).toBeInViewport();
+  await expect(page.locator('.vincent-place-reading')).toContainText('Saint-Rémy');
+
+  await page.getByRole('button', { name: /Open thread navigator/i }).click();
+  await page.locator('.vincent-thread-tabs button').filter({ hasText: 'Saint-Rémy' }).click();
+  await page.locator('.vincent-thread-drawer').getByRole('button', { name: /Enter letter room/i }).click();
+  await expect(page.locator('#letters')).toBeInViewport();
+  await expect(page.locator('.vincent-letter-reading')).toContainText('28 Sep 1889');
+  await expect(page.locator('.vincent-letter-reading')).toContainText('CYPRESSES');
+
+  await page.getByRole('button', { name: /Open thread navigator/i }).click();
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.vincent-thread-drawer')).toHaveCount(0);
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
