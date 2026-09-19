@@ -196,7 +196,7 @@ test.describe('visual evidence', () => {
         path: 'visual-evidence/' + viewport.name + '/vincent-thread-navigator.png',
         fullPage: true,
       });
-      await page.getByRole('button', { name: /Close thread navigator/i }).first().click();
+      await page.locator('.vincent-thread-close').click();
       await expect(page.locator('.vincent-thread-drawer')).toHaveCount(0);
     }
   });
