@@ -77,7 +77,7 @@ test.describe('visual evidence', () => {
   test('detail and atlas @ desktop', async ({ page }) => {
     fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
-    await page.goto('/#/artwork/abstract-0008');
+    await page.goto('/#/artwork/starry-night');
     await page.waitForLoadState('networkidle');
     await expect(page.locator('.detail')).toBeVisible();
     await settleVisuals(page);
@@ -98,7 +98,7 @@ test.describe('visual evidence', () => {
   test('detail and atlas @ mobile', async ({ page }) => {
     fs.mkdirSync('visual-evidence/mobile-390', { recursive: true });
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/#/artwork/abstract-0008');
+    await page.goto('/#/artwork/starry-night');
     await page.waitForLoadState('networkidle');
     await expect(page.locator('.detail')).toBeVisible();
     await page.screenshot({
@@ -141,7 +141,7 @@ test.describe('visual evidence', () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto('/#/exhibition');
       await page.waitForLoadState('networkidle');
-      await expect(page.locator('.journey')).toBeVisible();
+      await expect(page.locator('.vincent-exhibition')).toBeVisible();
       await settleVisuals(page);
       await page.screenshot({
         path: 'visual-evidence/' + viewport.name + '/exhibition.png',
@@ -150,14 +150,14 @@ test.describe('visual evidence', () => {
     }
   });
 
-  test('Noise comparison chapter @ desktop', async ({ page }) => {
+  test('After Dark room @ desktop', async ({ page }) => {
     fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto('/#/exhibition');
-    await page.locator('.journey-rail button').filter({ hasText: 'Noise' }).click();
-    await expect(page.locator('#noise')).toBeInViewport();
-    await page.locator('#noise').screenshot({
-      path: 'visual-evidence/desktop-1440/exhibition-noise.png',
+    await page.locator('.vincent-rail button').filter({ hasText: 'After Dark' }).click();
+    await expect(page.locator('#after-dark')).toBeInViewport();
+    await page.locator('#after-dark').screenshot({
+      path: 'visual-evidence/desktop-1440/exhibition-after-dark.png',
     });
   });
 
