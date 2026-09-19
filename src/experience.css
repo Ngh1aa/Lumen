@@ -83,18 +83,18 @@ html[data-contrast="high"] textarea:focus-visible {
   color: var(--gallery-ivory);
   font-weight: 500;
 }
-.drift-section:not(.is-reduced) .drift-card {
-  animation: lumen-drift 11s ease-in-out infinite alternate;
+.drift-section:not(.is-reduced) .drift-image-wrap img {
+  animation: lumen-drift-image 11s ease-in-out infinite alternate;
   will-change: transform;
 }
-.drift-section:not(.is-reduced) .drift-card:nth-child(3n+2) { animation-delay: -3.4s; }
-.drift-section:not(.is-reduced) .drift-card:nth-child(3n+3) { animation-delay: -6.7s; }
-.drift-section[data-speed="slow"] .drift-card { animation-duration: 17s; }
-.drift-section[data-speed="fast"] .drift-card { animation-duration: 7s; }
-.drift-section.is-paused .drift-card { animation-play-state: paused; }
-@keyframes lumen-drift {
-  from { transform: translate3d(0,-5px,0); }
-  to { transform: translate3d(0,12px,0); }
+.drift-section:not(.is-reduced) .drift-card:nth-child(3n+2) .drift-image-wrap img { animation-delay: -3.4s; }
+.drift-section:not(.is-reduced) .drift-card:nth-child(3n+3) .drift-image-wrap img { animation-delay: -6.7s; }
+.drift-section[data-speed="slow"] .drift-image-wrap img { animation-duration: 17s; }
+.drift-section[data-speed="fast"] .drift-image-wrap img { animation-duration: 7s; }
+.drift-section.is-paused .drift-image-wrap img { animation-play-state: paused; }
+@keyframes lumen-drift-image {
+  from { transform: scale(1.018) translate3d(0,-.4%,0); }
+  to { transform: scale(1.035) translate3d(0,.7%,0); }
 }
 .drift-control-bar {
   position: sticky;
@@ -1196,10 +1196,10 @@ html[data-contrast="high"] textarea:focus-visible {
 
 /* Explicit reduced-motion spatial fallback */
 @media (prefers-reduced-motion: reduce) {
-  .drift-section .drift-card { animation: none !important; transform: none !important; }
+  .drift-section .drift-image-wrap img { animation: none !important; transform: none !important; }
   .mood-cloud button { transform: none !important; }
 }
-html[data-motion="reduced"] .drift-section .drift-card {
+html[data-motion="reduced"] .drift-section .drift-image-wrap img {
   animation: none !important;
   transform: none !important;
 }
