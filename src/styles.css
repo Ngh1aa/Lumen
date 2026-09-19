@@ -1019,6 +1019,7 @@ html[data-motion="reduced"] .portal-frame img { transform: none !important; }
   column-gap: 5vw;
   padding: 110px clamp(30px,5vw,80px) 110px 40px;
   border-bottom: 1px solid var(--line);
+  scroll-margin-top: 90px;
 }
 .chapter-label {
   position: sticky;
