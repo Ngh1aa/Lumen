@@ -5,12 +5,12 @@
 - **Project name:** LUMEN
 - **Project type:** Experimental digital museum / visual-culture exploration website
 - **Repository:** https://github.com/Ngh1aa/Lumen
-- **Current stage:** Implementation → browser/accessibility/visual QA
+- **Current stage:** Platformization after SUPER PROJECT 01 → Museum Entry / Exhibition Index implementation
 - **Portfolio role:** Visual flagship showing interaction craft, spatial exploration, editorial storytelling and design-to-code quality.
 
 ## Project goal
 
-- **Primary goal:** Create a portfolio-grade digital museum experience where browsing feels like wandering through relationships between artworks rather than querying a static archive.
+- **Primary goal:** Create a portfolio-grade digital museum platform where visitors can enter exhibitions, browse relationships between artworks, and move between guided stories and open-ended discovery without the product collapsing into a static archive.
 - **Success looks like:** A distinctive responsive prototype with strong visual identity, purposeful motion, meaningful discovery mechanics, accessible fallbacks, and enough product/UX depth to defend in a senior-level case study.
 - **Primary users:** Curious culture/art explorers, students, visitors who want to discover rather than search precisely.
 - **Secondary audience:** Design/product recruiters reviewing the case as evidence of visual craft + interaction design + systems thinking.
@@ -49,7 +49,7 @@ These are **PLANNED signals**, not measured outcomes.
 - **Design direction:** `docs/DESIGN-DIRECTION.md`
 - **IA / flows:** `docs/IA-AND-FLOWS.md`
 - **Third-party provenance:** `THIRD_PARTY_NOTICES.md`
-- **Implementation source:** `src/App.tsx`, `src/DiscoveryViews.tsx`, `src/CulturalExperience.tsx`, `src/ExperienceLayers.tsx`, `src/styles.css`, `src/experience.css`.
+- **Implementation source:** `src/App.tsx`, `src/ExhibitionIndex.tsx`, `src/VincentExperience.tsx`, `src/VincentThreadAtlas.tsx`, `src/DiscoveryViews.tsx`, `src/CulturalExperience.tsx`, `src/ExperienceLayers.tsx`, `src/styles.css`, `src/experience.css`, `src/exhibitions.css`.
 - **Workflow source:** Ngh1aa/uiux-ai-workspace — AGENTS.md, UIUX Factory and relevant skills_UIUX.
 
 ## Technology — locked for this milestone
@@ -90,7 +90,7 @@ Visual signature:
 - Large image fields, asymmetrical editorial pacing, contextual metadata.
 - Motion used to orient, connect, reveal or respond.
 
-## Definition of Done — ten-screen cultural experience
+## Definition of Done — core cultural experience
 
 The milestone is complete only when:
 
@@ -104,3 +104,35 @@ The milestone is complete only when:
 8. Rendered evidence exists at 1440 / 1024 / 768 / 390 and receives manual visual inspection.
 9. Reduced-motion and semantic Atlas fallback work without removing content/functionality.
 10. No merge to `main` until the relevant implementation + browser + accessibility + visual gates are green or explicitly documented as blocked.
+
+
+## Current platform milestone — Museum Entry / Exhibition Index
+
+**VERIFIED context:** SUPER PROJECT 01 — **VINCENT / The Painted Night** is merged and is now the first flagship exhibition.
+
+### Product problem
+
+The current global navigation enters VINCENT directly. That proves exhibition craft, but it makes LUMEN read as one Van Gogh microsite rather than a reusable digital museum platform.
+
+### Milestone hypothesis
+
+**ASSUMED / to validate:** If Exhibition becomes a platform-level foyer before entering VINCENT, visitors can understand the relationship between LUMEN, its open discovery modes, and its authored exhibitions with less architectural ambiguity.
+
+### Scope
+
+- Add a first-class `#/exhibitions` route.
+- Keep `#/exhibition` and `#/journey` as direct-entry compatibility routes for VINCENT.
+- Present VINCENT as **Exhibition 01 / now showing**, not as the whole product.
+- Offer clear exits into Drift, Color and Mood without duplicating those screens.
+- Use public-domain Vincent media already represented by source records in the project.
+- Treat 21st.dev as behavior research only: shared-image continuity, reveal/stack pacing and performant section spotlight. No marketplace source or demo media is copied.
+- Preserve keyboard access, reduced motion and touch-first mobile behavior.
+
+### Definition of Done
+
+1. Museum Entry has a distinct page-role composition rather than reusing Portal or VINCENT room layouts.
+2. Global desktop/mobile navigation lands on Museum Entry; direct VINCENT aliases continue working.
+3. VINCENT is clearly identified as Exhibition 01 and can be entered in one action.
+4. Pointer enhancement is container-level and non-critical; touch/reduced-motion retain the complete experience.
+5. Typecheck/build/Playwright/axe gates pass.
+6. Rendered desktop/tablet/mobile evidence is captured and visually inspected before merge.
