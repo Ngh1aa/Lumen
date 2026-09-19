@@ -294,10 +294,11 @@ test.describe('phase 2 cinematic continuity', () => {
     if (box) {
       await page.mouse.move(box.x + box.width * 0.62, box.y + box.height * 0.42);
     }
-    await expect(page.locator('.museum-feature-cursor')).toBeVisible();
-    await page.screenshot({
+    const cursor = page.locator('.museum-feature-cursor');
+    await expect(cursor).toBeVisible();
+    await expect.poll(() => cursor.evaluate((node) => getComputedStyle(node).opacity)).toBe('1');
+    await media.screenshot({
       path: 'visual-evidence/desktop-1440/exhibitions-pointer-reveal.png',
-      fullPage: true,
     });
 
     await page.getByRole('button', { name: /Enter exhibition/i }).click();
@@ -305,7 +306,6 @@ test.describe('phase 2 cinematic continuity', () => {
     await page.waitForTimeout(180);
     await page.screenshot({
       path: 'visual-evidence/desktop-1440/vincent-handoff.png',
-      fullPage: true,
     });
 
     await expect(page.locator('#threshold')).toBeVisible();
