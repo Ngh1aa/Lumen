@@ -150,7 +150,7 @@ function App() {
 
       <footer className="site-footer">
         <div><strong>LUMEN</strong><span>Digital Museum of Visual Culture</span></div>
-        <p>Prototype collection data and public-domain imagery are loaded from the Art Institute of Chicago API.</p>
+        <p>Prototype imagery uses public-domain works from Wikimedia Commons; relationships are conceptual UX metadata.</p>
       </footer>
     </div>
   );
