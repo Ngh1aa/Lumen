@@ -173,3 +173,68 @@
 @media (max-width:900px){
   .app-shell:has(.vincent-experience) .mobile-dock{display:none}
 }
+
+
+/* SUPER PROJECT 01 — Milestone 6 / Thread Atlas */
+.vincent-atlas-trigger{appearance:none;border:0;border-top:1px solid rgba(255,255,255,.12);background:transparent;color:inherit;text-align:left;min-height:40px;display:grid;grid-template-columns:28px 1fr;align-items:center;padding-top:8px;opacity:.78;cursor:pointer;font:500 11px/1 "DM Sans",sans-serif}
+.vincent-thread-trigger{margin-top:0}
+.vincent-atlas-layer{position:fixed;inset:0;z-index:120;overflow:auto;background:#07090d;color:#f3eee1;padding:28px clamp(20px,3vw,48px) 34px}
+.vincent-atlas-header{display:grid;grid-template-columns:1fr auto;gap:24px;align-items:start;padding-bottom:24px;border-bottom:1px solid rgba(255,255,255,.14)}
+.vincent-atlas-header p{margin:0;font:600 9px/1 "DM Sans",sans-serif;letter-spacing:.18em;color:rgba(255,255,255,.62)}
+.vincent-atlas-header h2{font:500 clamp(72px,9vw,150px)/.72 "Cormorant Garamond",serif;letter-spacing:-.055em;margin:18px 0 12px}
+.vincent-atlas-header span{display:block;max-width:620px;font-size:12px;line-height:1.6;color:rgba(255,255,255,.62)}
+.vincent-atlas-header>button{width:48px;height:48px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit;font-size:28px;cursor:pointer}
+.vincent-atlas-filters{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(255,255,255,.12);margin:24px 0}
+.vincent-atlas-filter{border:0;margin:0;padding:16px;background:#0b0d11}
+.vincent-atlas-filter legend{padding:0;font:600 9px/1 "DM Sans",sans-serif;letter-spacing:.16em;color:rgba(255,255,255,.6);text-transform:uppercase}
+.vincent-atlas-filter>div{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px}
+.vincent-atlas-filter button{appearance:none;border:1px solid rgba(255,255,255,.16);background:transparent;color:rgba(255,255,255,.66);min-height:34px;padding:0 10px;border-radius:999px;cursor:pointer;font-size:9px;letter-spacing:.07em}
+.vincent-atlas-filter button.is-active{background:#f0e8d7;color:#111;border-color:#f0e8d7}
+.vincent-atlas-stage{--atlas-x:50%;--atlas-y:40%;position:relative;min-height:68vh;border:1px solid rgba(255,255,255,.13);overflow:hidden;background:linear-gradient(180deg,#0a0d12,#080a0e)}
+.vincent-atlas-stage:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);background-size:72px 72px;mask-image:linear-gradient(180deg,#000,transparent 92%)}
+.vincent-atlas-spotlight{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle 280px at var(--atlas-x) var(--atlas-y),rgba(49,95,173,.16),transparent 70%)}
+.vincent-atlas-axis{position:absolute;z-index:2;font:600 8px/1 "DM Sans",sans-serif;letter-spacing:.18em;color:rgba(255,255,255,.35)}
+.axis-time{left:16px;top:16px}.axis-place{right:16px;top:16px}.axis-theme{right:16px;bottom:16px}
+.vincent-atlas-network{position:relative;z-index:3;min-height:68vh;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(24px,5vw,84px);align-items:center;padding:7vw}
+.vincent-atlas-thread{position:relative;border:1px solid rgba(255,255,255,.13);background:rgba(8,10,14,.72);padding:16px;box-shadow:0 30px 80px rgba(0,0,0,.24)}
+.vincent-atlas-thread:before{content:"";position:absolute;left:50%;top:-8vw;width:1px;height:8vw;background:linear-gradient(180deg,transparent,var(--thread-accent));opacity:.55}
+.vincent-atlas-thread-core{width:100%;display:block;text-align:left;appearance:none;border:0;background:transparent;color:inherit;cursor:pointer;padding:4px 0 16px;border-bottom:1px solid rgba(255,255,255,.12)}
+.vincent-atlas-thread-core span,.vincent-atlas-thread-core small{display:block;font-size:8px;letter-spacing:.13em;color:rgba(255,255,255,.5);text-transform:uppercase}
+.vincent-atlas-thread-core strong{display:block;font:500 clamp(34px,3.5vw,60px)/.84 "Cormorant Garamond",serif;letter-spacing:-.035em;margin:10px 0}
+.vincent-atlas-thread-art{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;padding:14px 0}
+.vincent-atlas-thread-art a{color:inherit;text-decoration:none;min-width:0}
+.vincent-atlas-thread-art img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;filter:saturate(.88)}
+.vincent-atlas-thread-art span{display:block;font-size:8px;line-height:1.25;margin-top:5px;color:rgba(255,255,255,.7)}
+.vincent-atlas-thread-meta{display:flex;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid rgba(255,255,255,.1);font-size:8px;letter-spacing:.1em;color:rgba(255,255,255,.5);text-transform:uppercase}
+.vincent-atlas-thread-actions{display:flex;gap:8px}
+.vincent-atlas-thread-actions button{flex:1;min-height:40px;border:1px solid rgba(255,255,255,.18);background:transparent;color:inherit;cursor:pointer;font-size:9px;letter-spacing:.08em;text-transform:uppercase}
+.vincent-atlas-thread-actions button:disabled{opacity:.45;cursor:default}
+.vincent-atlas-empty{position:absolute;z-index:4;inset:0;display:grid;place-content:center;text-align:center;padding:30px}
+.vincent-atlas-empty span{font-size:9px;letter-spacing:.16em;color:rgba(255,255,255,.5)}
+.vincent-atlas-empty h3{font:500 clamp(42px,5vw,78px)/.88 "Cormorant Garamond",serif;margin:18px auto;max-width:12ch}
+.vincent-atlas-empty p{margin:0 auto;max-width:44ch;color:rgba(255,255,255,.58);line-height:1.6}
+.vincent-atlas-footer{display:grid;grid-template-columns:180px 1fr;gap:24px;padding-top:18px;color:rgba(255,255,255,.52)}
+.vincent-atlas-footer span{font-size:9px;letter-spacing:.16em}
+.vincent-atlas-footer p{margin:0;font-size:11px;line-height:1.55}
+.vincent-open-atlas{background:transparent!important;color:#f0e8d7!important}
+
+@media (max-width:900px){
+  .vincent-atlas-filters{grid-template-columns:1fr}
+  .vincent-atlas-network{grid-template-columns:1fr;padding:70px 24px}
+  .vincent-atlas-thread:before{display:none}
+  .vincent-atlas-layer{padding-bottom:92px}
+}
+@media (max-width:700px){
+  .vincent-atlas-trigger{min-width:52px;margin:0 0 0 4px;border-top:0;border-left:1px solid rgba(255,255,255,.12);padding:0 0 0 8px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;font-size:9px}
+  .vincent-atlas-header h2{font-size:18vw}
+  .vincent-atlas-header span{font-size:11px}
+  .vincent-atlas-thread-art{grid-template-columns:repeat(2,1fr)}
+  .vincent-atlas-thread-meta{flex-direction:column}
+  .vincent-atlas-footer{grid-template-columns:1fr}
+}
+@media (hover:none),(pointer:coarse){
+  .vincent-atlas-spotlight{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .vincent-atlas-spotlight{display:none}
+}
