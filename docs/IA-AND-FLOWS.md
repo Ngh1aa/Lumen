@@ -9,7 +9,7 @@ LUMEN is intentionally scoped to **10 primary screens** plus overlays and specia
 ## Primary navigation
 
 - Explore
-- Exhibition
+- Exhibitions
 - Collection
 - Atlas
 - About
@@ -38,14 +38,16 @@ LUMEN
 ├── 06 Artwork Detail            #/artwork/:id
 ├── 07 Relationship Atlas        #/atlas/:id
 ├── 08 Saved Collection          #/collection
-├── 09 Exhibition                #/exhibition
-│   └── Signals from a Quiet Machine
+├── 09 Museum Entry / Exhibitions #/exhibitions
+│   └── Exhibition 01: VINCENT   #/exhibition
+│       └── The Painted Night
 └── 10 About / Method            #/about
 ```
 
 Aliases retained for compatibility:
 - `#/chromatic` → Color
-- `#/journey` → Exhibition
+- `#/journey` → Exhibition 01 / VINCENT
+- `#/shows` → Museum Entry / Exhibitions
 - `#/saved` → Saved Collection
 - `#/method` → About / Method
 
@@ -130,32 +132,35 @@ Quiet · Restless · Tender · Uncanny · Monumental · Luminous · Melancholy �
 
 Mood metadata is manually authored prototype curation, not algorithmic emotion detection.
 
-## Exhibition flow
+## Exhibition platform flow
 
 ```text
-PORTAL / DETAIL
-  ↓ Enter exhibition
-SIGNALS FROM A QUIET MACHINE
+PORTAL / GLOBAL NAV
+  ↓ Exhibitions
+MUSEUM ENTRY / EXHIBITION INDEX
+  ↓ current exhibition
+VINCENT — THE PAINTED NIGHT
   00 Threshold
-  01 Hum
-  02 Circuit
-  03 Noise
-  04 Silence
-  05 Signal
+  01 Blue
+  02 Yellow
+  03 Brush
+  04 The Room
+  05 Places
+  06 Letters
+  07 Vincent / Music
+  08 Afterlight
   ↓
-Save this journey
-OR Explore by mood
-OR Continue drifting from final signal
+Thread Navigator / Thread Atlas
+OR Drift
+OR Color
 ```
 
-Every chapter includes:
-- chapter label and progress;
-- 2–4 visual objects where appropriate;
-- original curatorial text;
-- a reflective question;
-- direct object inspection.
-
-No scroll hijacking. Chapter navigation remains user-controlled.
+Rules:
+- `#/exhibitions` owns platform-level orientation.
+- `#/exhibition` and `#/journey` remain direct-entry compatibility routes into VINCENT.
+- Museum Entry may show only exhibitions that actually exist; no fabricated “coming soon” titles or dates.
+- Exhibition CTA, metadata and provenance remain visible without hover.
+- Pointer effects are progressive enhancement only.
 
 ## Saved Collection flow
 
@@ -246,3 +251,32 @@ Characteristics:
 ## Deferred, not forgotten
 
 The broader design inventory may later include Search, Artists, Timeline, Collections Index and Visit. They are **not part of this ten-screen milestone** and should only be added if research or portfolio storytelling shows a concrete need.
+
+
+## Milestone 7 — Museum Entry / Exhibition Index
+
+### Why this route exists
+After VINCENT became substantially richer than the original generic exhibition, direct global navigation into it made the information architecture collapse **museum** and **exhibition** into the same level. Museum Entry restores the missing hierarchy.
+
+### New critical path
+```text
+PORTAL
+  ↓ Exhibitions
+MUSEUM ENTRY
+  ↓ Enter Exhibition 01
+VINCENT
+  ↓ Places / Letters / Thread Atlas
+RETURN via global Exhibitions
+```
+
+### Navigation contract
+- Desktop global nav: **Explore · Exhibitions · Collection · Atlas · About**
+- Mobile dock: **Explore · Shows · Saved · About**
+- Header “Exhibitions” active only on the foyer.
+- VINCENT keeps its own exhibition navigation while the global shell remains available.
+- Direct links to `#/exhibition` do not force a redirect through the foyer.
+
+### Page-role matrix addition
+| Page | User question | First visual anchor | Primary action | Mobile transformation |
+|---|---|---|---|---|
+| Museum Entry | What is showing, and how should I enter? | VINCENT image stack + Exhibition 01 index | Enter VINCENT | ordered image sequence + stacked institutional ledger |
