@@ -77,7 +77,16 @@ Interaction:
 - no game-like scavenger hunt;
 - mobile uses ordered hotspots.
 
-### 05 / Letters — Voice without over-quoting
+### 05 / Places — A life in movement
+Intent:
+- connect the paintings to geographic change without turning the experience into a travel map.
+- use a compressed route: Nuenen → Paris → Arles → Saint-Rémy → Auvers-sur-Oise.
+Interaction:
+- abstract path map on desktop;
+- ordered stop list on mobile;
+- one selected place always has a readable chronology card.
+
+### 06 / Letters — Voice without over-quoting
 Intent:
 - letters are represented through paraphrased themes and dates.
 - avoid long copyrighted modern translations.
@@ -86,7 +95,7 @@ Interaction:
 - a slow typographic corridor;
 - visitor can switch “image first / context first”.
 
-### 06 / Vincent — Music room
+### 07 / Vincent — Music room
 Reference:
 - Don McLean, “Vincent” (1972)
 Curatorial reason:
@@ -102,7 +111,7 @@ Sound design:
 - sound is opt-in;
 - prefers-reduced-motion does not force sound off, but sound control is always visible.
 
-### 07 / Afterlight — What stays with you
+### 08 / Afterlight — What stays with you
 Works:
 - Cypresses
 - Irises
@@ -225,7 +234,7 @@ SUPER PROJECT 01 should eventually expose:
 
 ## Milestone 1 — implemented in this branch
 - Replace old generic exhibition route with Vincent experience.
-- 8-room structure.
+- 8-room structure (expanded to 9 rooms in Milestones 2–4).
 - public-domain artwork sourcing.
 - original browser-generated ambient sound mode.
 - responsive chapter rail.
@@ -233,11 +242,17 @@ SUPER PROJECT 01 should eventually expose:
 - Playwright smoke + visual evidence.
 - keep the rest of the LUMEN museum shell intact.
 
+## Milestones 2–4 — implemented in this branch
+- interactive brush macro viewer with 1×–4× zoom, pointer-set focal origin and keyboard-operable controls;
+- place/time journey across Nuenen, Paris, Arles, Saint-Rémy and Auvers-sur-Oise;
+- letter network linked to the scholarly Vincent van Gogh Letters edition;
+- layered browser-generated ambient sound instead of a single oscillator;
+- new smoke and visual-evidence coverage for these interactions.
+
 ## Later milestones
-1. Brush macro viewer with true image tiling.
-2. Curated timeline / place map.
-3. Letter network.
-4. richer sound composition.
-5. Canva-made campaign assets.
-6. portfolio case study mode.
-7. optional WebGL shader only if performance budgets pass.
+1. true tiled deep zoom using a museum/IIIF source only if source stability is proven.
+2. richer spatial place map with artwork-to-place transitions.
+3. larger letter graph with artwork references and date filtering.
+4. Canva-made campaign assets.
+5. portfolio case study mode.
+6. optional WebGL shader only if performance budgets pass.
