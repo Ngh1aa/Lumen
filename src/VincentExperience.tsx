@@ -143,7 +143,41 @@ const letterNodes = [
     source: 'https://vangoghletters.org/en/let736/letter.html',
     note: 'The correspondence turns insistently to the immediate present: work, money, uncertainty, and what can still be done now.',
   },
+  {
+    id: 'cypresses',
+    label: 'CYPRESSES',
+    date: '28 Sep 1889',
+    place: 'Saint-Rémy',
+    to: 'Theo',
+    source: 'https://vangoghletters.org/vg/letters/let806/letter.html',
+    note: 'Van Gogh lists Wheatfield and cypresses and a study of cypresses among the works being sent to Theo.',
+  },
 ] as const;
+
+const threadPaths = [
+  {
+    id: 'arles-night',
+    title: 'Arles / Night / Interior',
+    eyebrow: 'LIGHT → PLACE → LETTER',
+    artworkIds: ['cafe', 'bedroom'],
+    place: 'Arles',
+    placeIndex: 2,
+    letterId: 'harvest',
+    connection: 'Two Arles interiors meet a letter from harvest season: light, work, heat, and the pressure of looking.',
+  },
+  {
+    id: 'saint-remy-field',
+    title: 'Saint-Rémy / Field / Cypress',
+    eyebrow: 'SKY → FIELD → LETTER',
+    artworkIds: ['starry', 'wheat', 'cypresses'],
+    place: 'Saint-Rémy',
+    placeIndex: 3,
+    letterId: 'cypresses',
+    connection: 'The paintings share Saint-Rémy; letter 806 explicitly names Wheatfield and cypresses and a study of cypresses.',
+  },
+] as const;
+
+type ThreadPath = (typeof threadPaths)[number];
 
 function useAmbientSound(enabled: boolean, frequency: number) {
   const contextRef = useRef<AudioContext | null>(null);
@@ -211,6 +245,17 @@ export function VincentExperience({
 }) {
   const [activeRoom, setActiveRoom] = useState(0);
   const [soundOn, setSoundOn] = useState(false);
+  const [threadOpen, setThreadOpen] = useState(false);
+  const [activeThreadId, setActiveThreadId] = useState<string>(threadPaths[0].id);
+  const [focusPlace, setFocusPlace] = useState<string>();
+  const [focusLetter, setFocusLetter] = useState<string>();
+  const [savedThreads, setSavedThreads] = useState<string[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem('lumen-vincent-threads') || '[]') as string[];
+    } catch {
+      return [];
+    }
+  });
   const current = rooms[activeRoom];
   useAmbientSound(soundOn, current.tone);
 
@@ -246,6 +291,34 @@ export function VincentExperience({
     });
   };
 
+  const openThread = (threadId: string) => {
+    setActiveThreadId(threadId);
+    setThreadOpen(true);
+  };
+
+  const openThreadForWork = (workId: string) => {
+    const thread = threadPaths.find((item) => item.artworkIds.includes(workId as never));
+    if (thread) openThread(thread.id);
+  };
+
+  const saveThread = (threadId: string) => {
+    const next = Array.from(new Set([...savedThreads, threadId]));
+    localStorage.setItem('lumen-vincent-threads', JSON.stringify(next));
+    setSavedThreads(next);
+  };
+
+  const jumpToPlace = (thread: ThreadPath) => {
+    setFocusPlace(thread.place);
+    setThreadOpen(false);
+    goTo(5);
+  };
+
+  const jumpToLetter = (thread: ThreadPath) => {
+    setFocusLetter(thread.letterId);
+    setThreadOpen(false);
+    goTo(6);
+  };
+
   return (
     <article className="vincent-experience" style={rootStyle} aria-labelledby="vincent-title">
       <div className="vincent-ambient" aria-hidden="true" />
@@ -267,6 +340,14 @@ export function VincentExperience({
             </button>
           ))}
         </div>
+        <button
+          className="vincent-thread-trigger"
+          aria-label="Open thread navigator"
+          onClick={() => setThreadOpen(true)}
+        >
+          <span aria-hidden="true">↯</span>
+          Threads {savedThreads.length ? '(' + savedThreads.length + ')' : ''}
+        </button>
         <button
           className="vincent-sound"
           aria-pressed={soundOn}
@@ -292,12 +373,12 @@ export function VincentExperience({
       <section id="blue" className="vincent-room vincent-blue" aria-labelledby="blue-title">
         <RoomHeading index="01" label="Blue" title="Night as a temperature." id="blue-title" />
         <div className="vincent-blue-field">
-          <ArtworkFigure work={works.starry} className="is-wide" />
+          <ArtworkFigure work={works.starry} className="is-wide" onFollow={() => openThreadForWork('starry')} />
           <div className="vincent-color-note">
             <span>COBALT / ULTRAMARINE</span>
             <p>Blue becomes distance, weather, and the space between lights.</p>
           </div>
-          <ArtworkFigure work={works.cafe} className="is-tall" />
+          <ArtworkFigure work={works.cafe} className="is-tall" onFollow={() => openThreadForWork('cafe')} />
         </div>
       </section>
 
@@ -309,7 +390,7 @@ export function VincentExperience({
             <span>YELLOW / OCHRE / WHEAT</span>
             <p>Here yellow is not an interface accent. It is petal, field, heat, and pressure.</p>
           </div>
-          <ArtworkFigure work={works.wheat} className="is-wheat" />
+          <ArtworkFigure work={works.wheat} className="is-wheat" onFollow={() => openThreadForWork('wheat')} />
         </div>
       </section>
 
@@ -335,17 +416,20 @@ export function VincentExperience({
           <span className="room-hotspot hotspot-chair">CHAIRS / WAITING</span>
           <span className="room-hotspot hotspot-wall">WALL / COLOR</span>
         </div>
-        <p className="vincent-room-note">The room is presented as spatial evidence, not as a diagnosis of the artist.</p>
+        <div className="vincent-room-note-wrap">
+          <p className="vincent-room-note">The room is presented as spatial evidence, not as a diagnosis of the artist.</p>
+          <button className="vincent-follow-thread" onClick={() => openThreadForWork('bedroom')}>Follow Arles thread ↯</button>
+        </div>
       </section>
 
       <section id="places" className="vincent-room vincent-places" aria-labelledby="places-title">
         <RoomHeading index="05" label="Places" title="A life in movement." id="places-title" />
-        <PlacesJourney />
+        <PlacesJourney focusPlace={focusPlace} />
       </section>
 
       <section id="letters" className="vincent-room vincent-letters" aria-labelledby="letters-title">
         <RoomHeading index="06" label="Letters" title="A voice becomes a network." id="letters-title" />
-        <LetterNetwork />
+        <LetterNetwork focusLetter={focusLetter} />
       </section>
 
       <section id="vincent" className="vincent-room vincent-music-room" aria-labelledby="music-title">
@@ -370,7 +454,7 @@ export function VincentExperience({
       <section id="afterlight" className="vincent-room vincent-afterlight" aria-labelledby="afterlight-title">
         <RoomHeading index="08" label="Afterlight" title="What stays with you?" id="afterlight-title" />
         <div className="vincent-afterlight-grid">
-          <ArtworkFigure work={works.cypresses} />
+          <ArtworkFigure work={works.cypresses} onFollow={() => openThreadForWork('cypresses')} />
           <div className="vincent-afterlight-copy">
             <p>The exhibition leaves intensity behind slowly.</p>
             <p>Dark verticals, softened violet, then an exit back into the wider LUMEN collection.</p>
@@ -386,6 +470,17 @@ export function VincentExperience({
           <p>Public-domain artwork reproductions are linked to their source records. Editorial readings and sensory labels are authored for this LUMEN prototype.</p>
         </div>
       </section>
+
+      <ThreadDrawer
+        open={threadOpen}
+        activeThreadId={activeThreadId}
+        savedThreads={savedThreads}
+        onClose={() => setThreadOpen(false)}
+        onSelect={setActiveThreadId}
+        onSave={saveThread}
+        onPlace={jumpToPlace}
+        onLetter={jumpToLetter}
+      />
     </article>
   );
 }
@@ -436,8 +531,15 @@ function DeepBrushViewer({ work }: { work: VincentWork }) {
   );
 }
 
-function PlacesJourney() {
+function PlacesJourney({ focusPlace }: { focusPlace?: string }) {
   const [active, setActive] = useState(2);
+
+  useEffect(() => {
+    if (!focusPlace) return;
+    const index = placeStops.findIndex((item) => item.place === focusPlace || item.place.startsWith(focusPlace));
+    if (index >= 0) setActive(index);
+  }, [focusPlace]);
+
   const stop = placeStops[active];
 
   return (
@@ -478,8 +580,15 @@ function PlacesJourney() {
   );
 }
 
-function LetterNetwork() {
+function LetterNetwork({ focusLetter }: { focusLetter?: string }) {
   const [active, setActive] = useState(0);
+
+  useEffect(() => {
+    if (!focusLetter) return;
+    const index = letterNodes.findIndex((item) => item.id === focusLetter);
+    if (index >= 0) setActive(index);
+  }, [focusLetter]);
+
   const letter = letterNodes[active];
 
   return (
@@ -514,6 +623,112 @@ function LetterNetwork() {
   );
 }
 
+function ThreadDrawer({
+  open,
+  activeThreadId,
+  savedThreads,
+  onClose,
+  onSelect,
+  onSave,
+  onPlace,
+  onLetter,
+}: {
+  open: boolean;
+  activeThreadId: string;
+  savedThreads: string[];
+  onClose: () => void;
+  onSelect: (id: string) => void;
+  onSave: (id: string) => void;
+  onPlace: (thread: ThreadPath) => void;
+  onLetter: (thread: ThreadPath) => void;
+}) {
+  const thread = threadPaths.find((item) => item.id === activeThreadId) || threadPaths[0];
+  const letter = letterNodes.find((item) => item.id === thread.letterId) || letterNodes[0];
+  const selectedWorks = thread.artworkIds.map((id) => works[id]).filter(Boolean);
+  const isSaved = savedThreads.includes(thread.id);
+
+  useEffect(() => {
+    if (!open) return;
+    const close = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+    window.addEventListener('keydown', close);
+    return () => window.removeEventListener('keydown', close);
+  }, [open, onClose]);
+
+  if (!open) return null;
+
+  return (
+    <div className="vincent-thread-layer" role="presentation">
+      <button className="vincent-thread-backdrop" aria-label="Close thread navigator" onClick={onClose} />
+      <aside className="vincent-thread-drawer" role="dialog" aria-modal="true" aria-labelledby="thread-title">
+        <header className="vincent-thread-header">
+          <div>
+            <span>THREAD NAVIGATOR</span>
+            <h2 id="thread-title">{thread.title}</h2>
+          </div>
+          <button className="vincent-thread-close" onClick={onClose} aria-label="Close thread navigator">×</button>
+        </header>
+
+        <div className="vincent-thread-tabs" role="group" aria-label="Curated Vincent threads">
+          {threadPaths.map((item) => (
+            <button
+              key={item.id}
+              aria-pressed={item.id === thread.id}
+              className={item.id === thread.id ? 'is-active' : ''}
+              onClick={() => onSelect(item.id)}
+            >
+              <span>{item.eyebrow}</span>
+              <strong>{item.title}</strong>
+            </button>
+          ))}
+        </div>
+
+        <p className="vincent-thread-connection">{thread.connection}</p>
+
+        <div className="vincent-thread-chain" aria-label="Artwork place and letter connection">
+          <section>
+            <span>01 / ARTWORK</span>
+            <div className="vincent-thread-artworks">
+              {selectedWorks.map((work) => (
+                <a key={work.id} href={work.sourceUrl} target="_blank" rel="noreferrer">
+                  <img src={work.image} alt="" />
+                  <strong>{work.title}</strong>
+                  <small>{work.date}</small>
+                </a>
+              ))}
+            </div>
+          </section>
+
+          <section className="vincent-thread-link-card">
+            <span>02 / PLACE</span>
+            <h3>{thread.place}</h3>
+            <button onClick={() => onPlace(thread)}>Enter place room →</button>
+          </section>
+
+          <section className="vincent-thread-link-card">
+            <span>03 / LETTER</span>
+            <h3>{letter.label}</h3>
+            <p>{letter.date} · {letter.place}</p>
+            <button onClick={() => onLetter(thread)}>Enter letter room →</button>
+          </section>
+        </div>
+
+        <footer className="vincent-thread-footer">
+          <button
+            className={isSaved ? 'is-saved' : ''}
+            onClick={() => onSave(thread.id)}
+            disabled={isSaved}
+          >
+            {isSaved ? 'Thread saved ✓' : 'Save this thread +'}
+          </button>
+          <span role="status">{isSaved ? 'Saved to this browser.' : 'Keep a path through the exhibition.'}</span>
+        </footer>
+      </aside>
+    </div>
+  );
+}
+
 function RoomHeading({ index, label, title, id }: { index: string; label: string; title: string; id: string }) {
   return (
     <header className="vincent-room-heading">
@@ -523,7 +738,7 @@ function RoomHeading({ index, label, title, id }: { index: string; label: string
   );
 }
 
-function ArtworkFigure({ work, className = '' }: { work: VincentWork; className?: string }) {
+function ArtworkFigure({ work, className = '', onFollow }: { work: VincentWork; className?: string; onFollow?: () => void }) {
   return (
     <figure className={'vincent-artwork ' + className}>
       <a href={work.sourceUrl} target="_blank" rel="noreferrer" aria-label={'Open source record for ' + work.title}>
@@ -533,6 +748,7 @@ function ArtworkFigure({ work, className = '' }: { work: VincentWork; className?
         <span>{work.title}</span>
         <span>{work.date} · {work.place}</span>
         <small>{work.note}</small>
+        {onFollow && <button className="vincent-follow-thread" onClick={onFollow}>Follow thread ↯</button>}
       </figcaption>
     </figure>
   );
