@@ -253,7 +253,7 @@ export function VincentThreadAtlas({
           )}
         </div>
 
-        <footer className="vincent-atlas-method">
+        <footer className="vincent-atlas-method-footer">
           <div>
             <span>METHOD</span>
             <strong>Evidence before spectacle.</strong>
