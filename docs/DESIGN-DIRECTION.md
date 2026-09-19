@@ -235,3 +235,24 @@ No autonomous orbiting. No parallax. No drag-to-pan requirement.
 - animate every node continuously;
 - depend on hover;
 - show more dimensions than TIME / PLACE / THEME in this milestone.
+
+
+## Phase 2 motion refinement — Museum Index → VINCENT
+
+**Signature interaction:** the featured artwork becomes the next room.
+
+Rules:
+1. Only the featured **The Starry Night** image and VINCENT title receive named shared transitions.
+2. Secondary interface fades behind the continuity object instead of competing with it.
+3. Pointer-responsive motion is local to the featured exhibition media and remains under ~10px translation.
+4. The system cursor is preserved; ENTER / 01 is an auxiliary visual marker, not a replacement cursor.
+5. Arrival copy follows the artwork/title rather than animating simultaneously.
+6. Tablet/mobile preserve the composition but do not require pointer effects.
+7. `prefers-reduced-motion` and LUMEN's forced reduced-motion setting bypass spatial transition behavior.
+
+Do not:
+- animate every artwork with a named transition;
+- add parallax to all rooms;
+- use blur-heavy full-page transitions;
+- add looping decorative animation;
+- hide provenance/navigation during or after the transition.
