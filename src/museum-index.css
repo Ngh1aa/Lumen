@@ -383,3 +383,5 @@
   .museum-feature::before,.museum-feature-light{display:none}
   .museum-feature-strip img{transition:none}
 }
+
+.museum-platform>div>p{color:#315fad}
