@@ -1089,12 +1089,13 @@ html[data-motion="reduced"] .portal-frame img { transform: none !important; }
 .journey-chapter--split .chapter-art { width: 78%; margin-left: auto; }
 .journey-chapter--quote { background: #f1eee6; color: #101010; }
 .journey-chapter--quote .chapter-copy > p,
-.journey-chapter--quote .chapter-label { color: rgba(16,16,16,.58); }
+.journey-chapter--quote .chapter-label { color: rgba(16,16,16,.74); }
 .journey-chapter--quote .chapter-art-frame {
   background: #e7e3da;
 }
-.journey-chapter--quote .chapter-art-caption {
-  color: rgba(16,16,16,.68);
+.journey-chapter--quote .chapter-art-caption,
+.journey-chapter--quote .chapter-quote-block span {
+  color: rgba(16,16,16,.74);
 }
 .chapter-quote-block {
   grid-column: 1 / -1;
