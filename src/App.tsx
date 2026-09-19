@@ -359,7 +359,7 @@ function Detail({
       <section className="detail-specs" aria-label="Artwork details">
         <div><span>Dimensions</span><p>{artwork.dimensions}</p></div>
         <div><span>Mood path</span><p>{artwork.mood}</p></div>
-        <div><span>Source</span><p><a href={artwork.sourceUrl} target="_blank" rel="noreferrer">Art Institute of Chicago ↗</a></p></div>
+        <div><span>Source</span><p><a href={artwork.sourceUrl} target="_blank" rel="noreferrer">Wikimedia Commons ↗</a></p></div>
       </section>
     </article>
   );
