@@ -243,10 +243,13 @@ export function CuratedJourney({
         <ol>
           {chapters.map((chapter, index) => (
             <li key={chapter.id} className={chapter.id === activeChapter ? 'is-active' : ''}>
-              <a href={`#${chapter.id}`}>
+              <button
+                type="button"
+                onClick={() => document.getElementById(chapter.id)?.scrollIntoView({ block: 'start' })}
+              >
                 <span>{chapter.number}</span>
                 <strong>{chapter.kicker}</strong>
-              </a>
+              </button>
             </li>
           ))}
         </ol>
