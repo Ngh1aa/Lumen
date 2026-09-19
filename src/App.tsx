@@ -506,8 +506,6 @@ function Drift({
   onChromatic: () => void;
   onMood: () => void;
 }) {
-  const [paused, setPaused] = useState(false);
-  const [speed, setSpeed] = useState<'slow' | 'normal' | 'fast'>('normal');
   const fieldRef = useRef<HTMLDivElement>(null);
 
   const onGridKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
@@ -521,15 +519,17 @@ function Drift({
   };
 
   return (
-    <section className={'drift-section ' + (paused ? 'is-paused ' : '') + (reducedMotion ? 'is-reduced' : '')} aria-labelledby="drift-title" data-speed={speed}>
+    <section className={'drift-section ' + (reducedMotion ? 'is-reduced' : '')} aria-labelledby="drift-title">
+      <div className="drift-atmosphere" aria-hidden="true"><i /><i /><i /></div>
       <div className="drift-intro">
         <div>
           <p className="eyebrow">Explore / Drift</p>
           <h1 id="drift-title">Follow what catches<br /><em>your eye.</em></h1>
         </div>
-        <p className="drift-copy">
-          A spatial discovery mode for weak intent. Hover reveals context; click opens a quick preview; Grid remains one tap away whenever you want control.
-        </p>
+        <div className="drift-copy">
+          <p>Move by attention, not taxonomy. The room is deliberately small: eight works, enough space to wander, no dashboard between you and the art.</p>
+          <button className="drift-index-link" onClick={onGrid}>Need order? Open the index <span aria-hidden="true">↗</span></button>
+        </div>
       </div>
 
       <div className="drift-zone" aria-live="polite">
@@ -542,7 +542,7 @@ function Drift({
         ref={fieldRef}
         onKeyDown={onGridKeyDown}
       >
-        {(loading && artworks.length === 0 ? Array.from({ length: 6 }) : artworks).map((item, index) => {
+        {(loading && artworks.length === 0 ? Array.from({ length: 6 }) : artworks.slice(0, 8)).map((item, index) => {
           if (typeof item === 'undefined') return null;
           if (loading && artworks.length === 0) {
             return <div key={index} className={'drift-card skeleton-card drift-card--' + (index % 5)} aria-hidden="true"><div /></div>;
@@ -572,19 +572,16 @@ function Drift({
         })}
       </div>
 
-      <div className="mode-strip drift-control-bar" role="group" aria-label="Drift controls">
-        <span>Mode</span>
-        <button className="is-active">Drift</button>
-        <button onClick={onGrid}>Grid</button>
-        <button onClick={onChromatic}>Color</button>
-        <button onClick={onMood}>Mood</button>
-        <button onClick={() => artworks[0] && onOpenAtlas(artworks[0])}>Atlas</button>
-        <span className="drift-divider" aria-hidden="true" />
-        <button onClick={() => setPaused((value) => !value)} aria-pressed={paused}>{paused ? 'Resume' : 'Pause drift'}</button>
-        <button className={speed === 'slow' ? 'is-active' : ''} onClick={() => setSpeed('slow')}>Slow</button>
-        <button className={speed === 'normal' ? 'is-active' : ''} onClick={() => setSpeed('normal')}>Normal</button>
-        <button className={speed === 'fast' ? 'is-active' : ''} onClick={() => setSpeed('fast')}>Fast</button>
-        <span className="mode-note">{loading ? 'Loading open collection…' : artworks.length + ' public-domain works loaded'}</span>
+      <div className="drift-compass" aria-label="Continue exploring">
+        <div>
+          <span>Change the lens</span>
+          <p>Keep the room quiet. Switch only when another way of looking becomes useful.</p>
+        </div>
+        <div className="drift-compass-actions">
+          <button onClick={onChromatic}>Follow color <span aria-hidden="true">↗</span></button>
+          <button onClick={onMood}>Follow feeling <span aria-hidden="true">↗</span></button>
+          <button onClick={() => artworks[0] && onOpenAtlas(artworks[0])}>Follow a thread <span aria-hidden="true">↗</span></button>
+        </div>
       </div>
     </section>
   );
