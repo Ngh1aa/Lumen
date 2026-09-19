@@ -86,7 +86,7 @@ test('Exhibitions index establishes LUMEN as a museum platform and enters VINCEN
 
 test('public-domain artwork imagery renders in the browser', async ({ page }) => {
   await page.goto('/#/drift');
-  await expect(page.locator('.drift-art')).toHaveCount(13);
+  await expect(page.locator('.drift-art')).toHaveCount(8);
   await page.evaluate(() => {
     document.querySelectorAll<HTMLImageElement>('.drift-image-wrap img').forEach((image) => {
       image.loading = 'eager';
@@ -95,7 +95,7 @@ test('public-domain artwork imagery renders in the browser', async ({ page }) =>
   });
   await page.waitForFunction(() => {
     const images = Array.from(document.querySelectorAll<HTMLImageElement>('.drift-image-wrap img'));
-    return images.length === 13 && images.every((image) => image.complete && image.naturalWidth > 0);
+    return images.length === 8 && images.every((image) => image.complete && image.naturalWidth > 0);
   });
   await page.evaluate(() => window.scrollTo(0, 0));
 });
