@@ -46,3 +46,12 @@ This file tracks third-party code, patterns and assets that may be incorporated 
 ## Asset policy
 
 Artwork/media licenses are tracked separately from component-code licenses. Demo images from component repositories are never assumed reusable.
+
+
+### Wikimedia Commons — Timeastor abstract artworks
+- Source collection pages: https://commons.wikimedia.org/
+- Files used: Abstract Artwork 0001, 0002, 0004, 0007, 0008, 0011, 0012 and 0017.
+- License status: each selected file page states that the copyright holder released the work into the public domain (PD-self).
+- Intended use: deterministic prototype artwork imagery for visual QA and the LUMEN exploration experience.
+- Runtime behavior: images are referenced from Wikimedia's upload host; each object links to its source file page.
+- Status: active runtime media source.
