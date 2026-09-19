@@ -46,3 +46,11 @@ This file tracks third-party code, patterns and assets that may be incorporated 
 ## Asset policy
 
 Artwork/media licenses are tracked separately from component-code licenses. Demo images from component repositories are never assumed reusable.
+
+
+### Art Institute of Chicago API / IIIF
+- API documentation: https://api.artic.edu/docs/
+- Data license: API response data is provided under CC0 1.0 subject to Art Institute terms.
+- Image policy: LUMEN requests records filtered to `is_public_domain=true` and renders those works through the Institute's IIIF endpoint.
+- Intended use: prototype collection data and public-domain artwork imagery.
+- Status: active runtime data source.
