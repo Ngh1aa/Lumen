@@ -1,4 +1,4 @@
-import { CSSProperties, PointerEvent } from 'react';
+import { CSSProperties, type PointerEvent } from 'react';
 
 const commons = (name: string) =>
   'https://commons.wikimedia.org/wiki/Special:Redirect/file/' + encodeURIComponent(name);
