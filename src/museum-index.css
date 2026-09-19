@@ -227,6 +227,9 @@
   background:var(--museum-paper);
   color:#11100d;
 }
+.museum-platform>div>p{
+  color:#315fad;
+}
 .museum-platform h2{
   margin:20px 0 0;
   font:500 clamp(64px,7vw,116px)/.78 "Cormorant Garamond",serif;
