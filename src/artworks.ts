@@ -14,103 +14,115 @@ export type Artwork = {
   sourceUrl: string;
 };
 
-const IIIF = 'https://www.artic.edu/iiif/2';
+const commons = (
+  id: string,
+  title: string,
+  date: string,
+  image: string,
+  dimensions: string,
+  accent: string,
+  mood: string,
+  sourceUrl: string,
+): Artwork => ({
+  id,
+  title,
+  artist: 'Timeastor',
+  date,
+  image,
+  alt: title + ', a public-domain digital abstract artwork by Timeastor',
+  medium: 'Digitally generated abstract artwork',
+  dimensions,
+  origin: 'Wikimedia Commons',
+  classification: 'Digital art',
+  accent,
+  mood,
+  sourceUrl,
+});
 
-const accents = ['#c7674d', '#7185a4', '#d3a849', '#7d9274', '#9b6f82', '#a98f74', '#5f7382', '#b7673f'];
-const moods = ['Still', 'Electric', 'Dreamlike', 'Tender', 'Unsettled', 'Radiant', 'Quiet', 'Restless'];
-
-const fallback: Artwork[] = [
-  {
-    id: '27992',
-    title: 'A Sunday on La Grande Jatte — 1884',
-    artist: 'Georges Seurat',
-    date: '1884–86',
-    image: `${IIIF}/2d484387-2509-5e8e-2c43-22f9981972eb/full/843,/0/default.jpg`,
-    alt: 'A Sunday on La Grande Jatte — 1884 by Georges Seurat',
-    medium: 'Oil on canvas',
-    dimensions: 'Large-scale painting',
-    origin: 'France',
-    classification: 'Painting',
-    accent: accents[0],
-    mood: moods[2],
-    sourceUrl: 'https://www.artic.edu/artworks/27992',
-  },
-  {
-    id: 'water-lilies-fallback',
-    title: 'Pond with Water Lilies',
-    artist: 'Claude Monet',
-    date: 'c. 1920s',
-    image: `${IIIF}/588a5ba9-6cb0-7c99-7024-b8919b0e85ed/full/843,/0/default.jpg`,
-    alt: 'Pond with Water Lilies by Claude Monet',
-    medium: 'Painting',
-    dimensions: 'Collection image',
-    origin: 'France',
-    classification: 'Painting',
-    accent: accents[3],
-    mood: moods[0],
-    sourceUrl: 'https://www.artic.edu/',
-  },
+const publicDomainArtworks: Artwork[] = [
+  commons(
+    'abstract-0008',
+    'Aviren Daelu Weva',
+    '20 Mar 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/0/06/Abstract_Artwork_0008.jpg',
+    '1200 × 667 px',
+    '#7b78b9',
+    'Electric',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0008.jpg',
+  ),
+  commons(
+    'abstract-0017',
+    'Orinem Etë',
+    '30 May 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/5/52/Abstract_Artwork_0017.jpg',
+    '1300 × 722 px',
+    '#d0a833',
+    'Radiant',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0017.jpg',
+  ),
+  commons(
+    'abstract-0004',
+    'Eylon Marir Kereth',
+    '9 Mar 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/8/8c/Abstract_Artwork_0004.jpg',
+    '667 × 1200 px',
+    '#5b6fc4',
+    'Restless',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0004.jpg',
+  ),
+  commons(
+    'abstract-0011',
+    'Aviren Daelin Weva',
+    '26 Mar 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/1/13/Abstract_Artwork_0011.jpg',
+    '1300 × 722 px',
+    '#6f77b5',
+    'Dreamlike',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0011.jpg',
+  ),
+  commons(
+    'abstract-0007',
+    'Ontemen Aise Keo',
+    '14 Mar 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/6/6b/Abstract_Artwork_0007.jpg',
+    '667 × 1200 px',
+    '#b9b7d1',
+    'Quiet',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0007.jpg',
+  ),
+  commons(
+    'abstract-0012',
+    'Aviren Daeseth Weva',
+    '28 Mar 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/a/ab/Abstract_Artwork_0012.jpg',
+    '1300 × 722 px',
+    '#6779ba',
+    'Still',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0012.jpg',
+  ),
+  commons(
+    'abstract-0002',
+    'Lasethen Semo',
+    '25 Feb 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/8/8a/Abstract_Artwork_0002.jpg',
+    '1200 × 667 px',
+    '#7b6d9f',
+    'Unsettled',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0002.jpg',
+  ),
+  commons(
+    'abstract-0001',
+    'Athelem Sa Yion',
+    '4 Mar 2009',
+    'https://upload.wikimedia.org/wikipedia/commons/d/d1/Abstract_Artwork_0001.jpg',
+    '889 × 1600 px',
+    '#a68c9a',
+    'Tender',
+    'https://commons.wikimedia.org/wiki/File:Abstract_Artwork_0001.jpg',
+  ),
 ];
 
-type ApiArtwork = {
-  id: number;
-  title?: string;
-  artist_display?: string;
-  date_display?: string;
-  image_id?: string | null;
-  thumbnail?: { alt_text?: string | null } | null;
-  medium_display?: string | null;
-  dimensions?: string | null;
-  place_of_origin?: string | null;
-  classification_title?: string | null;
-};
-
-type ApiResponse = {
-  data?: ApiArtwork[];
-  config?: { iiif_url?: string };
-};
-
-function artistFromDisplay(value?: string) {
-  if (!value) return 'Artist unknown';
-  return value.split('\n')[0].trim() || 'Artist unknown';
-}
-
 export async function fetchPublicDomainArtworks(signal?: AbortSignal): Promise<Artwork[]> {
-  const url = new URL('https://api.artic.edu/api/v1/artworks/search');
-  url.searchParams.set('query[term][is_public_domain]', 'true');
-  url.searchParams.set('limit', '14');
-  url.searchParams.set(
-    'fields',
-    'id,title,artist_display,date_display,image_id,thumbnail,medium_display,dimensions,place_of_origin,classification_title',
-  );
-
-  try {
-    const response = await fetch(url, { signal });
-    if (!response.ok) throw new Error(`AIC API request failed: ${response.status}`);
-    const payload = (await response.json()) as ApiResponse;
-    const base = payload.config?.iiif_url || IIIF;
-    const items = (payload.data || [])
-      .filter((item) => item.image_id)
-      .slice(0, 12)
-      .map((item, index): Artwork => ({
-        id: String(item.id),
-        title: item.title?.trim() || 'Untitled',
-        artist: artistFromDisplay(item.artist_display),
-        date: item.date_display?.trim() || 'Date unknown',
-        image: `${base}/${item.image_id}/full/843,/0/default.jpg`,
-        alt: item.thumbnail?.alt_text?.trim() || `${item.title || 'Artwork'} — collection image`,
-        medium: item.medium_display?.trim() || 'Medium not listed',
-        dimensions: item.dimensions?.trim() || 'Dimensions not listed',
-        origin: item.place_of_origin?.trim() || 'Origin not listed',
-        classification: item.classification_title?.trim() || 'Artwork',
-        accent: accents[index % accents.length],
-        mood: moods[index % moods.length],
-        sourceUrl: `https://www.artic.edu/artworks/${item.id}`,
-      }));
-
-    return items.length >= 4 ? items : fallback;
-  } catch (error) {
-    if ((error as Error).name === 'AbortError') throw error;
-    return fallback;
-  }
+  if (signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+  return publicDomainArtworks;
 }
