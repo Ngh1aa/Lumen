@@ -126,6 +126,7 @@ function App() {
         onNavigate={navigate}
         onMotionToggle={() => setForcedReduced((value) => !value)}
       />
+      <MobileDock route={route} savedCount={saved.length} onNavigate={navigate} />
 
       <main id="main" ref={mainRef} tabIndex={-1}>
         {route.view === 'portal' && (
@@ -233,6 +234,34 @@ function Header({ route, active, savedCount, reducedMotion, onNavigate, onMotion
         </button>
       </div>
     </header>
+  );
+}
+
+function MobileDock({
+  route,
+  savedCount,
+  onNavigate,
+}: {
+  route: Route;
+  savedCount: number;
+  onNavigate: (route: Route) => void;
+}) {
+  const activeExplore = route.view === 'drift' || route.view === 'grid';
+  return (
+    <nav className="mobile-dock" aria-label="Mobile navigation">
+      <button className={activeExplore ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}>
+        <span>Drift</span>
+      </button>
+      <button className={route.view === 'grid' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'grid' })}>
+        <span>Grid</span>
+      </button>
+      <button className={route.view === 'chromatic' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'chromatic' })}>
+        <span>Color</span>
+      </button>
+      <button className={route.view === 'saved' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'saved' })}>
+        <span>Saved</span><small>{String(savedCount).padStart(2, '0')}</small>
+      </button>
+    </nav>
   );
 }
 
