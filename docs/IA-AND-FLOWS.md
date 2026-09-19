@@ -246,3 +246,19 @@ Characteristics:
 ## Deferred, not forgotten
 
 The broader design inventory may later include Search, Artists, Timeline, Collections Index and Visit. They are **not part of this ten-screen milestone** and should only be added if research or portfolio storytelling shows a concrete need.
+
+
+## Platform extension — Museum / Exhibitions Index
+
+LUMEN now adds a platform-level exhibition register between Portal and individual exhibition experiences.
+
+- `#/exhibitions` — museum/exhibition index.
+- `#/museum` — alias to the index.
+- `#/exhibition/vincent` — VINCENT / The Painted Night.
+- `#/exhibition` — backward-compatible alias to VINCENT.
+
+Navigation rule:
+- global **Exhibitions** opens the index;
+- the index owns the decision to enter VINCENT;
+- future exhibitions are not represented as real until their content and provenance exist;
+- Explore / Collection / Atlas / About remain independent platform capabilities rather than children of VINCENT.

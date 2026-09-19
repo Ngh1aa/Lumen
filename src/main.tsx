@@ -5,6 +5,7 @@ import './styles.css';
 import './experience.css';
 import './vincent.css';
 import './vincent-atlas.css';
+import './museum-index.css';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

@@ -49,12 +49,29 @@ test('Drift controls pause, speed and keyboard traversal remain usable', async (
 test('mobile core pages do not introduce horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
 
-  for (const route of ['/#/drift', '/#/grid', '/#/color', '/#/mood', '/#/collection', '/#/about', '/#/exhibition']) {
+  for (const route of ['/#/drift', '/#/grid', '/#/color', '/#/mood', '/#/exhibitions', '/#/collection', '/#/about', '/#/exhibition']) {
     await page.goto(route);
     await expect(page.locator('main')).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
     expect(overflow, route + ' should fit the mobile viewport').toBe(false);
   }
+});
+
+
+
+test('Exhibitions index establishes LUMEN as a museum platform and enters VINCENT', async ({ page }) => {
+  await page.goto('/#/exhibitions');
+  await expect(page.getByRole('heading', { name: /A museum is not a folder/i })).toBeVisible();
+  await expect(page.getByText(/01 published/i)).toBeVisible();
+  await expect(page.getByRole('heading', { name: /VINCENT/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /The next room has not been invented yet/i })).toBeVisible();
+
+  await page.getByRole('button', { name: /Enter exhibition/i }).click();
+  await expect(page).toHaveURL(/#\/exhibition\/vincent$/);
+  await expect(page.getByRole('heading', { name: /VINCENT The Painted Night/i })).toBeVisible();
+
+  await page.goto('/#/exhibitions');
+  await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
 test('public-domain artwork imagery renders in the browser', async ({ page }) => {

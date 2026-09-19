@@ -104,3 +104,14 @@ The milestone is complete only when:
 8. Rendered evidence exists at 1440 / 1024 / 768 / 390 and receives manual visual inspection.
 9. Reduced-motion and semantic Atlas fallback work without removing content/functionality.
 10. No merge to `main` until the relevant implementation + browser + accessibility + visual gates are green or explicitly documented as blocked.
+
+
+## Platform extension — Exhibition Index (2026-09-20)
+
+- **VERIFIED:** VINCENT is the first published flagship exhibition.
+- **Goal:** make LUMEN legible as a repeatable digital-museum platform without fabricating a catalogue of nonexistent exhibitions.
+- **New route:** `#/exhibitions` / `#/museum`.
+- **Published exhibition route:** `#/exhibition/vincent`.
+- **Backward compatibility:** legacy `#/exhibition` continues to resolve to VINCENT.
+- **Interaction reference:** 21st.dev is used for behavior research only; implementation remains local React/CSS.
+- **Evidence rule:** future exhibition slots remain unpublished until a real curatorial thesis, sourceable media and defensible interaction model exist.
