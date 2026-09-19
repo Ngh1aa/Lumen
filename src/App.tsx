@@ -7,12 +7,6 @@ type Route =
   | { view: 'detail'; id: string }
   | { view: 'atlas'; id: string };
 
-declare global {
-  interface Document {
-    startViewTransition?: (update: () => void) => { finished: Promise<void> };
-  }
-}
-
 function parseRoute(): Route {
   const hash = window.location.hash.replace(/^#/, '');
   const parts = hash.split('/').filter(Boolean);
@@ -94,7 +88,7 @@ function App() {
     const update = () => {
       window.history.pushState({}, '', routeHash(next));
       setRoute(next);
-      window.scrollTo({ top: 0, behavior: 'instant' });
+      window.scrollTo({ top: 0, behavior: 'auto' });
     };
     if (!reducedMotion && document.startViewTransition) {
       document.startViewTransition(update);
@@ -382,7 +376,8 @@ function Atlas({
   onBack: () => void;
   onOpen: (artwork: Artwork) => void;
 }) {
-  const nodes = [
+  type AtlasNode = { key: string; label: string; meta: string; artwork?: Artwork };
+  const nodes: AtlasNode[] = [
     { key: 'artist', label: artwork.artist, meta: 'Artist' },
     { key: 'mood', label: artwork.mood, meta: 'Mood path' },
     { key: 'origin', label: artwork.origin, meta: 'Origin' },
