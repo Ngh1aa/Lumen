@@ -239,9 +239,10 @@
 }
 .vincent-atlas-node.is-letter small{
   margin-top:5px;
-  font-size:6px;
+  font-size:7px;
+  font-weight:600;
   letter-spacing:.14em;
-  color:rgba(255,255,255,.44);
+  color:rgba(255,255,255,.72);
 }
 .vincent-atlas-node.is-selected{
   z-index:8;
