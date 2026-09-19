@@ -150,7 +150,7 @@ test.describe('visual evidence', () => {
     }
   });
 
-  test('VINCENT music and brush rooms @ desktop', async ({ page }) => {
+  test('VINCENT deep interaction rooms @ desktop', async ({ page }) => {
     fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto('/#/exhibition');
@@ -159,6 +159,18 @@ test.describe('visual evidence', () => {
     await expect(page.locator('#brush')).toBeInViewport();
     await page.locator('#brush').screenshot({
       path: 'visual-evidence/desktop-1440/vincent-brush.png',
+    });
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Places' }).click();
+    await expect(page.locator('#places')).toBeInViewport();
+    await page.locator('#places').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-places.png',
+    });
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Letters' }).click();
+    await expect(page.locator('#letters')).toBeInViewport();
+    await page.locator('#letters').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-letters.png',
     });
 
     await page.locator('.vincent-room-links button').filter({ hasText: 'Vincent' }).click();
