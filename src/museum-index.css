@@ -1,0 +1,382 @@
+.museum-index{
+  --museum-ink:#090909;
+  --museum-paper:#f1eadc;
+  --museum-gold:#e7b84b;
+  position:relative;
+  overflow:hidden;
+  background:var(--museum-ink);
+  color:var(--museum-paper);
+}
+.museum-index-grid{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  opacity:.28;
+  background-image:linear-gradient(rgba(255,255,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.045) 1px,transparent 1px);
+  background-size:8.333vw 8.333vw;
+}
+.museum-index-hero{
+  position:relative;
+  z-index:1;
+  min-height:86vh;
+  display:grid;
+  grid-template-columns:minmax(0,1.3fr) minmax(280px,.5fr);
+  grid-template-rows:auto 1fr auto;
+  gap:36px 8vw;
+  padding:132px clamp(22px,4vw,64px) 64px;
+  border-bottom:1px solid rgba(255,255,255,.14);
+}
+.museum-index-meta{
+  grid-column:1/-1;
+  display:grid;
+  grid-template-columns:1fr 1fr auto;
+  gap:20px;
+  color:rgba(255,255,255,.52);
+  font-size:8px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+.museum-index-hero h1{
+  align-self:end;
+  margin:0;
+  max-width:11ch;
+  font:500 clamp(78px,10vw,168px)/.74 "Cormorant Garamond",serif;
+  letter-spacing:-.06em;
+}
+.museum-index-hero h1 em{
+  color:var(--museum-gold);
+  font-weight:500;
+}
+.museum-index-intro{
+  align-self:end;
+  display:grid;
+  gap:24px;
+}
+.museum-index-intro p{
+  margin:0;
+  max-width:44ch;
+  color:rgba(255,255,255,.62);
+  font-size:12px;
+  line-height:1.72;
+}
+
+.museum-feature{
+  --museum-x:50%;
+  --museum-y:45%;
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:86px minmax(0,1.2fr) minmax(320px,.62fr);
+  min-height:900px;
+  border-bottom:1px solid rgba(255,255,255,.14);
+  isolation:isolate;
+}
+.museum-feature::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  z-index:-1;
+  pointer-events:none;
+  background:radial-gradient(760px circle at var(--museum-x) var(--museum-y),rgba(49,95,173,.2),transparent 52%);
+}
+.museum-feature-marker{
+  padding:42px 18px;
+  border-right:1px solid rgba(255,255,255,.12);
+}
+.museum-feature-marker span{
+  display:block;
+  color:var(--museum-gold);
+  font:500 42px/.8 "Cormorant Garamond",serif;
+}
+.museum-feature-marker strong{
+  display:block;
+  margin-top:18px;
+  writing-mode:vertical-rl;
+  color:rgba(255,255,255,.45);
+  font-size:8px;
+  letter-spacing:.16em;
+}
+.museum-feature-media{
+  position:relative;
+  min-width:0;
+  padding:0;
+  overflow:hidden;
+  border:0;
+  border-right:1px solid rgba(255,255,255,.12);
+  background:#0b0c11;
+  color:inherit;
+  cursor:pointer;
+}
+.museum-feature-strip{
+  height:100%;
+  min-height:900px;
+  display:grid;
+  grid-template-columns:1fr .72fr .86fr;
+  gap:8px;
+  padding:40px 8px;
+  align-items:center;
+}
+.museum-feature-strip figure{
+  margin:0;
+  transform:translateY(calc((var(--museum-frame) - 1) * 54px));
+}
+.museum-feature-strip img{
+  width:100%;
+  height:min(68vh,660px);
+  object-fit:cover;
+  filter:saturate(.88) contrast(1.02);
+  transition:transform .7s cubic-bezier(.16,1,.3,1),filter .35s ease;
+}
+.museum-feature-media:hover img,
+.museum-feature-media:focus-visible img{
+  transform:scale(1.018);
+  filter:saturate(1);
+}
+.museum-feature-strip figcaption{
+  display:grid;
+  grid-template-columns:34px 1fr;
+  gap:8px;
+  margin-top:10px;
+  color:rgba(255,255,255,.52);
+  font-size:8px;
+}
+.museum-feature-strip figcaption strong{
+  color:var(--museum-paper);
+  font-weight:500;
+}
+.museum-feature-light{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:radial-gradient(460px circle at var(--museum-x) var(--museum-y),rgba(231,184,75,.12),transparent 62%);
+}
+.museum-feature-copy{
+  display:flex;
+  min-width:0;
+  flex-direction:column;
+  justify-content:center;
+  padding:80px clamp(26px,4vw,68px);
+}
+.museum-feature-copy>div>p,
+.museum-platform>div>p,
+.museum-next>div>p{
+  margin:0;
+  color:var(--museum-gold);
+  font-size:8px;
+  letter-spacing:.15em;
+}
+.museum-feature-copy h2{
+  margin:18px 0 0;
+  font:500 clamp(66px,7vw,118px)/.74 "Cormorant Garamond",serif;
+  letter-spacing:-.05em;
+}
+.museum-feature-copy h2 em{
+  color:var(--museum-gold);
+  font-weight:500;
+}
+.museum-feature-description{
+  max-width:44ch;
+  margin:38px 0 0;
+  color:rgba(255,255,255,.66);
+  font-size:12px;
+  line-height:1.72;
+}
+.museum-feature-facts{
+  margin:36px 0 0;
+  border-top:1px solid rgba(255,255,255,.14);
+}
+.museum-feature-facts div{
+  display:grid;
+  grid-template-columns:90px 1fr;
+  gap:16px;
+  padding:13px 0;
+  border-bottom:1px solid rgba(255,255,255,.12);
+}
+.museum-feature-facts dt{
+  color:rgba(255,255,255,.42);
+  font-size:8px;
+  letter-spacing:.1em;
+  text-transform:uppercase;
+}
+.museum-feature-facts dd{
+  margin:0;
+  font-size:10px;
+}
+.museum-enter{
+  width:100%;
+  min-height:58px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:34px;
+  padding:0 18px;
+  border:1px solid var(--museum-gold);
+  background:var(--museum-gold);
+  color:#11100c;
+  cursor:pointer;
+  font-weight:600;
+}
+
+.museum-platform{
+  position:relative;
+  z-index:1;
+  display:grid;
+  grid-template-columns:minmax(320px,.72fr) minmax(0,1.28fr);
+  gap:7vw;
+  padding:110px clamp(22px,4vw,64px);
+  background:var(--museum-paper);
+  color:#11100d;
+}
+.museum-platform h2{
+  margin:20px 0 0;
+  font:500 clamp(64px,7vw,116px)/.78 "Cormorant Garamond",serif;
+  letter-spacing:-.05em;
+}
+.museum-platform h2 em{
+  color:#315fad;
+  font-weight:500;
+}
+.museum-platform-principles{
+  border-top:1px solid rgba(17,16,13,.2);
+}
+.museum-platform-principles article{
+  display:grid;
+  grid-template-columns:110px minmax(160px,.45fr) 1fr;
+  gap:22px;
+  align-items:baseline;
+  padding:26px 0;
+  border-bottom:1px solid rgba(17,16,13,.2);
+}
+.museum-platform-principles span{
+  font-size:8px;
+  letter-spacing:.12em;
+  color:rgba(17,16,13,.55);
+}
+.museum-platform-principles h3{
+  margin:0;
+  font:500 30px/1 "Cormorant Garamond",serif;
+}
+.museum-platform-principles p{
+  margin:0;
+  color:rgba(17,16,13,.68);
+  font-size:11px;
+  line-height:1.6;
+}
+
+.museum-next{
+  position:relative;
+  z-index:1;
+  min-height:58vh;
+  display:grid;
+  grid-template-columns:86px minmax(320px,1fr) minmax(260px,.55fr);
+  gap:40px 5vw;
+  align-items:center;
+  padding:70px clamp(22px,4vw,64px);
+}
+.museum-next-index{
+  color:rgba(255,255,255,.25);
+  font:500 72px/.8 "Cormorant Garamond",serif;
+}
+.museum-next h2{
+  max-width:14ch;
+  margin:18px 0 0;
+  font:500 clamp(48px,5.6vw,88px)/.82 "Cormorant Garamond",serif;
+  letter-spacing:-.045em;
+}
+.museum-next>p{
+  max-width:44ch;
+  margin:0;
+  color:rgba(255,255,255,.58);
+  font-size:11px;
+  line-height:1.7;
+}
+.museum-next>button{
+  grid-column:3;
+  min-height:48px;
+  padding:0;
+  border:0;
+  border-bottom:1px solid rgba(255,255,255,.36);
+  background:transparent;
+  color:inherit;
+  cursor:pointer;
+  text-align:left;
+}
+
+@media (max-width:1000px){
+  .museum-index-hero{
+    grid-template-columns:1fr;
+  }
+  .museum-index-meta{
+    grid-template-columns:1fr auto;
+  }
+  .museum-index-meta span:nth-child(2){display:none}
+  .museum-index-intro{max-width:620px}
+  .museum-feature{
+    grid-template-columns:70px 1fr;
+  }
+  .museum-feature-media{border-right:0}
+  .museum-feature-copy{
+    grid-column:2;
+    border-top:1px solid rgba(255,255,255,.12);
+  }
+  .museum-platform{grid-template-columns:1fr}
+  .museum-next{grid-template-columns:70px 1fr}
+  .museum-next>p,.museum-next>button{grid-column:2}
+}
+@media (max-width:700px){
+  .museum-index-hero{
+    min-height:78vh;
+    padding:112px 16px 42px;
+  }
+  .museum-index-meta{
+    grid-template-columns:1fr;
+    gap:7px;
+  }
+  .museum-index-hero h1{
+    font-size:20vw;
+  }
+  .museum-feature{
+    display:block;
+    min-height:0;
+  }
+  .museum-feature-marker{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:18px 16px;
+    border-right:0;
+    border-bottom:1px solid rgba(255,255,255,.12);
+  }
+  .museum-feature-marker strong{writing-mode:horizontal-tb;margin:0}
+  .museum-feature-strip{
+    min-height:66vh;
+    grid-template-columns:1.12fr .72fr;
+    padding:12px 8px;
+  }
+  .museum-feature-strip figure:nth-child(3){display:none}
+  .museum-feature-strip figure{transform:none}
+  .museum-feature-strip img{height:54vh}
+  .museum-feature-copy{padding:48px 16px 64px}
+  .museum-feature-copy h2{font-size:17vw}
+  .museum-platform{padding:80px 16px}
+  .museum-platform h2{font-size:17vw}
+  .museum-platform-principles article{
+    grid-template-columns:1fr;
+    gap:8px;
+  }
+  .museum-next{
+    display:block;
+    min-height:0;
+    padding:70px 16px 110px;
+  }
+  .museum-next>div{margin-top:30px}
+  .museum-next h2{font-size:15vw}
+  .museum-next>p{margin-top:28px}
+  .museum-next>button{width:100%;margin-top:30px;text-align:left}
+}
+.museum-feature[data-motion="reduced"]::before,
+.museum-feature[data-motion="reduced"] .museum-feature-light{display:none}
+@media (prefers-reduced-motion:reduce){
+  .museum-feature::before,.museum-feature-light{display:none}
+  .museum-feature-strip img{transition:none}
+}
