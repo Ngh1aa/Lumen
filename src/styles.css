@@ -906,7 +906,7 @@ html[data-motion="reduced"] .portal-frame img { transform: none !important; }
   padding-right: 0;
   background: none;
   border: 0;
-  color: rgba(255,255,255,.32);
+  color: rgba(255,255,255,.58);
   text-align: left;
   pointer-events: auto;
   cursor: pointer;
