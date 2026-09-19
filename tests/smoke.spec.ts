@@ -116,7 +116,7 @@ test('curated journey exposes chapters, source-safe storytelling and exit action
   await expect(page.locator('.journey-chapter')).toHaveCount(5);
   await expect(page.locator('#signal')).toBeVisible();
 
-  await page.locator('.journey-rail a[href="#contrast"]').click();
+  await page.locator('.journey-rail button').filter({ hasText: 'Contrast' }).click();
   await expect(page.locator('#contrast')).toBeInViewport();
 
   await page.locator('#afterimage').scrollIntoViewIfNeeded();
