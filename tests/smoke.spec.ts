@@ -66,9 +66,19 @@ test('Exhibitions index establishes LUMEN as a museum platform and enters VINCEN
   await expect(page.getByRole('heading', { name: /VINCENT/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /The next room has not been invented yet/i })).toBeVisible();
 
+  const sourceArt = page.locator('.museum-feature-strip figure').first().locator('img');
+  const sourceTitle = page.locator('.museum-feature-copy h2');
+  await expect.poll(() => sourceArt.evaluate((node) => getComputedStyle(node).viewTransitionName)).toBe('vincent-hero-art');
+  await expect.poll(() => sourceTitle.evaluate((node) => getComputedStyle(node).viewTransitionName)).toBe('vincent-title');
+
   await page.getByRole('button', { name: /Enter exhibition/i }).click();
   await expect(page).toHaveURL(/#\/exhibition\/vincent$/);
   await expect(page.getByRole('heading', { name: /VINCENT The Painted Night/i })).toBeVisible();
+
+  const destinationArt = page.locator('.vincent-threshold .vincent-full-bleed');
+  const destinationTitle = page.locator('#vincent-title');
+  await expect.poll(() => destinationArt.evaluate((node) => getComputedStyle(node).viewTransitionName)).toBe('vincent-hero-art');
+  await expect.poll(() => destinationTitle.evaluate((node) => getComputedStyle(node).viewTransitionName)).toBe('vincent-title');
 
   await page.goto('/#/exhibitions');
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
