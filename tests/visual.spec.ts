@@ -201,6 +201,33 @@ test.describe('visual evidence', () => {
     }
   });
 
+
+
+  test('VINCENT Thread Atlas @ desktop and mobile', async ({ page }) => {
+    for (const viewport of [
+      { name: 'desktop-1440', width: 1440, height: 1100 },
+      { name: 'mobile-390', width: 390, height: 844 },
+    ]) {
+      fs.mkdirSync('visual-evidence/' + viewport.name, { recursive: true });
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto('/#/exhibition');
+      await page.waitForLoadState('networkidle');
+      await page.getByRole('button', { name: /Open Vincent Thread Atlas/i }).click();
+      await expect(page.locator('.vincent-atlas')).toBeVisible();
+      await page.locator('.vincent-atlas-lenses > button').filter({ hasText: 'THEME' }).click();
+      await page.waitForFunction(() =>
+        Array.from(document.querySelectorAll<HTMLImageElement>('.vincent-atlas img'))
+          .every((image) => image.complete && image.naturalWidth > 0),
+      );
+      await page.screenshot({
+        path: 'visual-evidence/' + viewport.name + '/vincent-thread-atlas.png',
+        fullPage: true,
+      });
+      await page.getByRole('button', { name: /Close Vincent Thread Atlas/i }).click();
+      await expect(page.locator('.vincent-atlas')).toHaveCount(0);
+    }
+  });
+
   test('accessibility settings and high-contrast evidence', async ({ page }) => {
     fs.mkdirSync('visual-evidence/accessibility', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
