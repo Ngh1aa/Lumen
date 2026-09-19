@@ -21,8 +21,8 @@ const currentMedia = [
   {
     title: 'Café Terrace at Night',
     date: '1888',
-    image: commons('Vincent van Gogh - Cafe Terrace at Night (1888).jpg'),
-    source: 'https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Cafe_Terrace_at_Night_(1888).jpg',
+    image: commons('Van Gogh - Terrace of a Café at Night (Place du Forum) 1888.jpg'),
+    source: 'https://commons.wikimedia.org/wiki/File:Van_Gogh_-_Terrace_of_a_Caf%C3%A9_at_Night_(Place_du_Forum)_1888.jpg',
   },
   {
     title: 'Wheat Field with Cypresses',
