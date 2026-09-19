@@ -159,3 +159,29 @@ The Thread Atlas may be implemented only if:
 - mobile has a non-graph primary presentation;
 - provenance/source actions remain available;
 - browser + axe + rendered visual evidence are collected.
+
+
+## Milestone 7 reference benchmark — Museum Entry / Exhibition Index
+
+**Research refresh:** 2026-09-20
+
+### Decision problem
+VINCENT is now strong enough to be mistaken for the whole product. The next interface must make LUMEN read as a reusable cultural platform without weakening the exhibition’s visual identity.
+
+### 21st.dev patterns inspected
+| Pattern family | Transferable behavior | LUMEN adaptation | Reject |
+|---|---|---|---|
+| Shared Element Gallery / image-gallery collections | preserve image continuity between browse and deeper view | use the current exhibition artwork as the visual bridge into VINCENT; rely on existing platform View Transition | copied component source, demo imagery, dependency bundle |
+| Image Reveal / image stacks | reveal hierarchy through layering and focus | three public-domain Vincent fragments overlap as one current-exhibition field | equal card grid, novelty reveal hiding labels |
+| Stacking Cards / stacked sequence | sequence can be communicated through depth rather than a row | use depth only for the single active exhibition media cluster | treating exhibitions like SaaS cards |
+| Section-level Spotlight | one radial gradient can make a dark field respond to pointer cheaply | container-level pointer coordinates on the media field; CSS variables only | listener per image/card, spotlight as critical affordance |
+
+### Performance/accessibility guardrails
+21st.dev’s current spotlight/card guidance reinforces two implementation constraints used here:
+- pointer tracking belongs on the containing surface rather than one listener per repeated card;
+- touch needs a separately designed presentation because hover/pointer effects do not exist there.
+
+### Synthesis
+The Museum Entry should feel like an **institutional threshold with one current show**, not a marketplace catalogue. A large visual field, exhibition index number, provenance line and alternate discovery exits communicate platform depth without inventing future content.
+
+No 21st.dev component source or demo media is copied.

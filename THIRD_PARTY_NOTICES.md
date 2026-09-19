@@ -78,3 +78,19 @@ Artwork/media licenses are tracked separately from component-code licenses. Demo
 ## Runtime source behavior
 
 Some additional Wikimedia assets use Commons `Special:Redirect/file` URLs at runtime to request a practical display width. Each artwork object still preserves a direct source-page URL for provenance.
+
+
+## Research-only pattern provenance — 2026-09-20 Museum Entry
+
+### 21st.dev
+- Sources inspected: current image-gallery, animated/card-stack and cursor/spotlight pattern collections; 21st.dev editorial guidance on spotlight/card pointer performance.
+- Design use: shared-image continuity, controlled image-stack hierarchy and one container-level spotlight response for the Museum Entry current-exhibition field.
+- Code/media status: **research only**. No 21st.dev marketplace source code, prompt output, demo media, iconography or palette is copied.
+- Implementation: local React/CSS using existing LUMEN tokens and platform APIs; no new dependency introduced.
+
+
+### Vincent van Gogh — Café Terrace at Night
+- Runtime file: Wikimedia Commons `Van Gogh - Terrace of a Café at Night (Place du Forum) 1888.jpg`.
+- Object: oil-on-canvas painting, mid-September 1888, Kröller-Müller Museum.
+- Commons status: faithful photographic reproduction of a public-domain work; Public Domain Mark.
+- Correction in this milestone: replaces the similarly named preparatory-study file so the rendered media, title, alt text and provenance refer to the same object.

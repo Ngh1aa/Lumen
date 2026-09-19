@@ -3,6 +3,7 @@ import { Artwork, fetchPublicDomainArtworks } from './artworks';
 import { ChromaticView, GridView, SavedView } from './DiscoveryViews';
 import { MoodView } from './CulturalExperience';
 import { VincentExperience } from './VincentExperience';
+import { ExhibitionIndex } from './ExhibitionIndex';
 import {
   AboutView,
   AccessibilityPanel,
@@ -17,6 +18,7 @@ type Route =
   | { view: 'grid' }
   | { view: 'chromatic' }
   | { view: 'mood' }
+  | { view: 'exhibitions' }
   | { view: 'journey' }
   | { view: 'saved' }
   | { view: 'about' }
@@ -32,6 +34,7 @@ function parseRoute(): Route {
   if (parts[0] === 'grid') return { view: 'grid' };
   if (parts[0] === 'color' || parts[0] === 'chromatic') return { view: 'chromatic' };
   if (parts[0] === 'mood') return { view: 'mood' };
+  if (parts[0] === 'exhibitions' || parts[0] === 'shows') return { view: 'exhibitions' };
   if (parts[0] === 'journey' || parts[0] === 'exhibition') return { view: 'journey' };
   if (parts[0] === 'saved' || parts[0] === 'collection') return { view: 'saved' };
   if (parts[0] === 'about' || parts[0] === 'method') return { view: 'about' };
@@ -46,6 +49,7 @@ function routeHash(route: Route) {
   if (route.view === 'grid') return '#/grid';
   if (route.view === 'chromatic') return '#/color';
   if (route.view === 'mood') return '#/mood';
+  if (route.view === 'exhibitions') return '#/exhibitions';
   if (route.view === 'journey') return '#/exhibition';
   if (route.view === 'saved') return '#/collection';
   if (route.view === 'about') return '#/about';
@@ -182,7 +186,7 @@ function App() {
             loading={loading}
             reducedMotion={reducedMotion}
             onEnter={() => navigate({ view: 'drift' })}
-            onExhibition={() => navigate({ view: 'journey' })}
+            onExhibition={() => navigate({ view: 'exhibitions' })}
             onMood={() => navigate({ view: 'mood' })}
           />
         )}
@@ -228,6 +232,16 @@ function App() {
           />
         )}
 
+        {route.view === 'exhibitions' && (
+          <ExhibitionIndex
+            reducedMotion={reducedMotion}
+            onEnterVincent={() => navigate({ view: 'journey' })}
+            onDrift={() => navigate({ view: 'drift' })}
+            onColor={() => navigate({ view: 'chromatic' })}
+            onMood={() => navigate({ view: 'mood' })}
+          />
+        )}
+
         {route.view === 'journey' && (
           <VincentExperience
             reducedMotion={reducedMotion}
@@ -251,7 +265,7 @@ function App() {
             onExplore={() => navigate({ view: 'drift' })}
             onColor={() => navigate({ view: 'chromatic' })}
             onMood={() => navigate({ view: 'mood' })}
-            onExhibition={() => navigate({ view: 'journey' })}
+            onExhibition={() => navigate({ view: 'exhibitions' })}
           />
         )}
 
@@ -331,7 +345,7 @@ function Header({ route, active, savedCount, onNavigate, onSettings }: HeaderPro
       </button>
       <nav aria-label="Primary navigation">
         <button className={route.view === 'drift' || route.view === 'grid' || route.view === 'chromatic' || route.view === 'mood' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}>Explore</button>
-        <button className={route.view === 'journey' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'journey' })}>Exhibition</button>
+        <button className={route.view === 'exhibitions' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'exhibitions' })}>Exhibitions</button>
         <button className={route.view === 'saved' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'saved' })}>Collection</button>
         <button
           className={route.view === 'atlas' ? 'is-active' : ''}
@@ -370,7 +384,7 @@ function MobileDock({
   return (
     <nav className="mobile-dock" aria-label="Mobile navigation">
       <button className={activeExplore ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}><span>Explore</span></button>
-      <button className={route.view === 'journey' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'journey' })}><span>Story</span></button>
+      <button className={route.view === 'exhibitions' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'exhibitions' })}><span>Shows</span></button>
       <button className={route.view === 'saved' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'saved' })}><span>Saved</span><small>{String(savedCount).padStart(2, '0')}</small></button>
       <button className={route.view === 'about' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'about' })}><span>About</span></button>
     </nav>
@@ -461,13 +475,13 @@ function Portal({
         <p>Follow a color, a feeling, or a thread between works. There is no wrong way in.</p>
         <div className="portal-entries">
           <button className="enter-button" onClick={onEnter}><span>Start drifting</span><span aria-hidden="true">↗</span></button>
-          <button onClick={onExhibition}>Enter VINCENT <span aria-hidden="true">↗</span></button>
+          <button onClick={onExhibition}>Browse exhibitions <span aria-hidden="true">↗</span></button>
           <button onClick={onMood}>Pick a mood <span aria-hidden="true">↗</span></button>
         </div>
       </div>
 
       <div className="portal-index portal-index--stats" aria-hidden="true">
-        {artworks.length || '—'} works · 9 mood paths · 6 exhibition chapters · Space / scroll to drift
+        {artworks.length || '—'} works · 9 mood paths · Exhibition 01 now showing · Space / scroll to drift
       </div>
     </section>
   );

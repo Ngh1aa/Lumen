@@ -49,7 +49,7 @@ test('Drift controls pause, speed and keyboard traversal remain usable', async (
 test('mobile core pages do not introduce horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
 
-  for (const route of ['/#/drift', '/#/grid', '/#/color', '/#/mood', '/#/collection', '/#/about', '/#/exhibition']) {
+  for (const route of ['/#/drift', '/#/grid', '/#/color', '/#/mood', '/#/exhibitions', '/#/collection', '/#/about', '/#/exhibition']) {
     await page.goto(route);
     await expect(page.locator('main')).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
@@ -147,6 +147,30 @@ test('Mood discovery exposes nine editorial paths and explicit rationale', async
   await expect(moodButtons.nth(1)).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('.mood-statement')).toContainText('Restless');
   await expect(page.locator('.mood-results article')).toHaveCount(6);
+  await expect(seriousAxeViolations(page)).resolves.toEqual([]);
+});
+
+test('Museum Entry establishes LUMEN as a platform before entering VINCENT', async ({ page }) => {
+  await page.goto('/#/exhibitions');
+
+  await expect(page.getByRole('heading', { name: /A museum is more than one room/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /VINCENT The Painted Night/i })).toBeVisible();
+  await expect(page.locator('.current-exhibition-work')).toHaveCount(3);
+  await expect(page.locator('.exhibition-ledger dl > div')).toHaveCount(4);
+  await expect(page.getByRole('button', { name: /Enter Exhibition 01/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Drift the archive/i })).toBeVisible();
+  await expect(page.getByText(/No invented title, date or artist/i)).toBeVisible();
+
+  await page.getByRole('button', { name: /Enter Exhibition 01/i }).focus();
+  await page.keyboard.press('Enter');
+  await expect(page.locator('.vincent-experience')).toBeVisible();
+  await expect(page).toHaveURL(/#\/exhibition$/);
+
+  await page.getByRole('button', { name: 'Exhibitions', exact: true }).click();
+  await expect(page.locator('.exhibition-index')).toBeVisible();
+
+  await page.goto('/#/shows');
+  await expect(page.locator('.exhibition-index')).toBeVisible();
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 

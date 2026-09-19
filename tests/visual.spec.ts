@@ -7,6 +7,7 @@ const routes = [
   { name: 'grid', hash: '#/grid' },
   { name: 'color', hash: '#/color' },
   { name: 'mood', hash: '#/mood' },
+  { name: 'exhibitions', hash: '#/exhibitions' },
   { name: 'saved-empty', hash: '#/collection' },
   { name: 'about', hash: '#/about' },
 ];

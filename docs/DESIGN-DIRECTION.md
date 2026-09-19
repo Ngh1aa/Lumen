@@ -235,3 +235,63 @@ No autonomous orbiting. No parallax. No drag-to-pan requirement.
 - animate every node continuously;
 - depend on hover;
 - show more dimensions than TIME / PLACE / THEME in this milestone.
+
+
+## Milestone 7 visual direction — Museum Entry / Exhibition Index
+
+### Page role
+**Platform foyer / exhibition directory.**
+
+User question on entry: **“What is showing, and how should I enter?”**  
+Owner message: **LUMEN is a digital museum platform; VINCENT is Exhibition 01, not the entire product.**
+
+### Composition family
+This page introduces a fifth composition family:
+
+`institutional foyer → oversized current exhibition field → archive ledger → alternate discovery exits`
+
+It must not reuse the Portal hero, the VINCENT room rail, or a generic card grid.
+
+### Visual signature
+- Oversized exhibition number and title behave like wall graphics.
+- Three Vincent image fragments form a controlled image stack rather than equal cards.
+- A thin institutional ledger separates **NOW SHOWING**, **FORMAT**, **ACCESS**, and **PROVENANCE**.
+- The active exhibition uses cobalt + wheat accents already established by VINCENT.
+- Future exhibition capacity is communicated structurally, not with fake upcoming projects or fabricated dates.
+
+### 21st.dev behavior extraction
+Research-only pattern families:
+- **Shared Element Gallery / Image Reveal:** preserve visual continuity when entering an image-led experience.
+- **Stacking Cards / stacked sequence:** depth can communicate sequence better than an equal grid.
+- **Section-level Spotlight:** one radial gradient driven by container pointer coordinates can add responsiveness cheaply.
+
+Adaptation rules:
+- no copied source, demo media, palettes or component shell;
+- no dependency added;
+- one pointer listener on the exhibition media field, not per image;
+- no custom cursor;
+- mobile removes pointer dependence and becomes an ordered vertical/scroll-snap image sequence;
+- reduced motion keeps layout/state and removes transform choreography.
+
+### Motion contract
+| Trigger | Job | Full motion | Reduced motion |
+|---|---|---|---|
+| Hover/focus current exhibition | HIERARCHY | image stack separates slightly; title/index remain stable | border/contrast only |
+| Pointer moves in media field | RESPOND | soft radial illumination follows pointer | no spotlight movement |
+| Enter VINCENT | CONNECT | existing View Transition handles route continuity | instant route change |
+| Switch discovery exit | ORIENT | native focus/hover state only | same |
+
+### Anti-patterns
+- no carousel autoplay;
+- no fake “coming soon” exhibition cards;
+- no masonry marketplace wall;
+- no bento/dashboard shell;
+- no shader/WebGL merely to make the foyer feel advanced;
+- no hover-only title, provenance or CTA.
+
+### Mobile transformation
+- institutional intro becomes single-column;
+- image stack becomes horizontally scrollable or vertically ordered media with no overlap;
+- CTA remains at least 44px;
+- metadata ledger becomes stacked rows;
+- global bottom dock label becomes **Shows** and lands on the index.
