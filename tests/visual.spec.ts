@@ -134,8 +134,8 @@ test.describe('visual evidence', () => {
     fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto('/#/journey');
-    await page.locator('#contrast').scrollIntoViewIfNeeded();
-    await expect(page.locator('#contrast')).toBeVisible();
+    await page.locator('.journey-rail button').filter({ hasText: 'Contrast' }).click();
+    await expect(page.locator('#contrast')).toBeInViewport();
     await page.locator('#contrast').screenshot({
       path: 'visual-evidence/desktop-1440/journey-compare.png',
     });
