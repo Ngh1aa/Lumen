@@ -46,3 +46,50 @@ test('public-domain artwork imagery renders in the browser', async ({ page }) =>
   });
   await page.evaluate(() => window.scrollTo(0, 0));
 });
+
+
+test('discovery modes are keyboard-usable and axe-clean', async ({ page }) => {
+  await page.goto('/#/grid');
+  await expect(page.getByRole('heading', { name: /See the whole collection/i })).toBeVisible();
+  await expect(page.locator('.grid-card')).toHaveCount(8);
+
+  await page.getByRole('button', { name: 'Color' }).first().click();
+  await expect(page.getByRole('heading', { name: /Browse the spectrum/i })).toBeVisible();
+
+  const swatches = page.locator('.chromatic-rail button');
+  await expect(swatches).toHaveCount(8);
+  await swatches.nth(2).focus();
+  await page.keyboard.press('Enter');
+  await expect(swatches.nth(2)).toHaveAttribute('aria-pressed', 'true');
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((v) => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
+});
+
+test('saved collection covers empty and populated states', async ({ page }) => {
+  await page.goto('/#/saved');
+  await expect(page.getByRole('heading', { name: /Saved objects/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /Nothing held yet/i })).toBeVisible();
+
+  await page.goto('/#/drift');
+  await page.locator('.drift-art').first().click();
+  await page.getByRole('button', { name: 'Save +' }).click();
+  await page.goto('/#/saved');
+
+  await expect(page.locator('.saved-grid article')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Remove' })).toBeVisible();
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((v) => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
+});
+
+test('new discovery routes do not overflow on mobile', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  for (const route of ['/#/grid', '/#/color', '/#/saved']) {
+    await page.goto(route);
+    await expect(page.locator('main')).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+    expect(overflow).toBe(false);
+  }
+});
