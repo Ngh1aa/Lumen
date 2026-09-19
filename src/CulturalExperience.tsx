@@ -253,7 +253,14 @@ export function CuratedJourney({
             </li>
           ))}
         </ol>
-        <div className="journey-progress" aria-label={`Chapter ${activeIndex + 1} of ${chapters.length}`}>
+        <div
+          className="journey-progress"
+          role="progressbar"
+          aria-label="Exhibition chapter progress"
+          aria-valuemin={1}
+          aria-valuemax={chapters.length}
+          aria-valuenow={activeIndex + 1}
+        >
           <span style={{ transform: `scaleY(${(activeIndex + 1) / chapters.length})` }} />
         </div>
       </aside>
