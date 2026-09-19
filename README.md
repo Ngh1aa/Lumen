@@ -54,9 +54,12 @@ Open-source projects are implementation references, not a replacement for origin
 
 ## Deployment
 
-The project is configured for **Vercel**.
+Primary static hosting: **GitHub Pages**  
+Live URL: https://ngh1aa.github.io/Lumen/
 
 - Framework: Vite
 - Build command: `npm run build`
 - Output directory: `dist`
-- Client navigation uses hash routes, so no SPA rewrite rule is required.
+- Deployment workflow: `.github/workflows/pages.yml`
+- Client navigation uses hash routes, so GitHub Pages does not need an SPA fallback rewrite.
+- The existing Vercel configuration is kept for compatibility with the current Vercel deployment.
