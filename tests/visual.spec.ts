@@ -290,9 +290,15 @@ test.describe('phase 2 cinematic continuity', () => {
     await settleVisuals(page);
 
     const media = page.locator('.museum-feature-media');
+    await media.scrollIntoViewIfNeeded();
     const box = await media.boundingBox();
     if (box) {
-      await page.mouse.move(box.x + box.width * 0.62, box.y + box.height * 0.42);
+      await media.hover({
+        position: {
+          x: Math.max(1, box.width * 0.62),
+          y: Math.max(1, Math.min(box.height * 0.42, 620)),
+        },
+      });
     }
     const cursor = page.locator('.museum-feature-cursor');
     await expect(cursor).toBeVisible();
