@@ -128,29 +128,54 @@ Avoid scroll hijacking. Respect `prefers-reduced-motion`.
 - Atlas / spatial views require a semantic list equivalent.
 - Touch targets >= 44px on mobile.
 
-## Initial screen family
+## Ten-screen milestone family
 
-1. Home / Portal
-2. Explore — Drift
-3. Explore — Grid
-4. Explore — Atlas
-5. Explore — Random
-6. Discover by Color
-7. Discover by Mood
-8. Collections index
-9. Collection detail
-10. Artwork detail
-11. Artwork zoom / inspect
-12. Artists index
-13. Artist profile
-14. Exhibitions index
-15. Curated Journey
-16. Timeline
-17. Search
-18. Search results
-19. Saved Collection
-20. Visit
-21. About
-22. Motion / accessibility settings overlay
+This milestone intentionally implements ten primary screens rather than the broader exploratory inventory.
 
-This list is a design inventory, not a promise to build every page before validating the flagship flow.
+1. **Portal** — full-screen artwork field + oversized editorial entry statement.
+2. **Drift** — spatial/uneven image field with controllable ambient motion and quick preview.
+3. **Grid** — lower-motion controlled collection browser with compact filters.
+4. **Color** — named one/two-swatch discovery with ranked visual proximity.
+5. **Mood** — editorial word cloud + six-work paths with visible rationale.
+6. **Artwork Detail** — calm image/provenance surface, zoom, editorial reading and continuation threads.
+7. **Relationship Atlas** — explainable relationship map with filters/recenter + semantic list equivalent.
+8. **Saved Collection** — utility composition for naming, notes, Grid/Thread, share/export.
+9. **Exhibition: Signals from a Quiet Machine** — six-chapter vertical editorial narrative with persistent progress.
+10. **About / Method** — text-led transparency page for method, sources, provenance and accessibility.
+
+### Overlay / state family
+
+- Quick Preview
+- first-visit onboarding
+- Accessibility Settings: reduced motion + higher contrast
+- Drift pause / Slow / Normal / Fast
+- Grid palette filters
+- Color one/two-selection states
+- Collection empty / populated / thread
+- Artwork zoom / fit
+- Atlas relation filters / trace
+- 404 Lost Thread
+
+### Composition diversity
+
+The ten screens use three primary composition families rather than a universal shell:
+
+- **Immersive discovery:** Portal, Drift, Color, Mood, Atlas.
+- **Controlled utility/object:** Grid, Artwork Detail, Saved Collection.
+- **Editorial narrative/trust:** Exhibition, About / Method.
+
+Navigation, typography, index labels, rule lines, artwork-driven accent and motion language create coherence across those families.
+
+### Mobile transformation contract
+
+- Drift becomes a guided vertical field; reduced motion makes it fully stable.
+- Atlas graph is removed at narrow widths; Connected Works list becomes primary.
+- Color palette becomes a horizontally scrollable labelled rail.
+- Mood cloud becomes a compact two-column selector and single-column result path.
+- Saved Thread view collapses to a readable vertical sequence.
+- Exhibition remains ordered vertical reading; no scroll hijacking.
+- Primary touch controls target 44px or larger where layout permits.
+
+### Future inventory
+
+Search, Artists, Timeline, Collections Index and Visit remain possible future routes, but they are **not part of this milestone**. Add them only if research or portfolio narrative proves a concrete need.
