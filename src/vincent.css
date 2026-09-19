@@ -85,3 +85,6 @@
 @media (prefers-reduced-motion:reduce){
   .vincent-deepzoom-viewport img,.vincent-place-map circle,.letter-node{transition:none}
 }
+
+.vincent-letter-reading .eyebrow{color:#4b463f;opacity:1}
+.vincent-letter-reading .vincent-paraphrase{color:#5a544c;opacity:1}
