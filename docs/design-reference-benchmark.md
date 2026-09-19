@@ -159,3 +159,32 @@ The Thread Atlas may be implemented only if:
 - mobile has a non-graph primary presentation;
 - provenance/source actions remain available;
 - browser + axe + rendered visual evidence are collected.
+
+
+## 2026-09-20 platform extension — Exhibition Index
+
+### Decision problem
+VINCENT is now strong enough to feel like a standalone cultural experience, but the parent product still routes directly into it. The next milestone must make **LUMEN itself** legible as the platform while preserving VINCENT as exhibition #01.
+
+### 21st.dev pattern research
+Observed in the current 21st.dev gallery/effects catalogue:
+- Shared Element Gallery, Image Reveal, Immersive Scroll Gallery, Project Showcase and related image-led collection patterns;
+- spotlight/cursor guidance that recommends direct CSS-variable writes over React state for pointer tracking;
+- touch and reduced-motion need a non-pointer affordance instead of trying to simulate cursor behavior.
+
+Transfer to LUMEN:
+- **ADAPT gallery continuity:** the exhibition entry is a large editorial media field, not a generic card grid;
+- **ADAPT spotlight cheaply:** one pointer handler updates CSS variables for the featured exhibition field;
+- **REJECT dependency inflation:** no Motion/GSAP/WebGL dependency is added for this index;
+- **REJECT demo identity:** no 21st.dev source, palette, copy or media is copied.
+
+### Platform composition decision
+The Exhibition Index is a new **platform/overview** page role, materially different from both Portal and VINCENT:
+- first visual anchor: museum thesis + publication count;
+- decision object: the currently published exhibition;
+- composition: vertical museum register with one dominant exhibition field;
+- trust behavior: unpublished slot #02 explicitly says the next exhibition has not been invented;
+- mobile: image strip reduces to two works, metadata remains textual, and no hover-only information is required.
+
+### Visual signature test
+Without the LUMEN wordmark, the page should still read as LUMEN through **oversized editorial serif + archival index labels + artwork-led image field + explicit evidence/method language + restrained contextual light**.
