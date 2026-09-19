@@ -12,9 +12,9 @@ LUMEN explores a different archive model: users can move through artworks by col
 
 ## Current status
 
-**Core experience implementation / browser QA**
+**Cultural experience complete / Vercel-ready**
 
-The first implemented milestone covers Artwork Portal → Drift → Artwork Detail → Relationship Atlas. It remains on a feature branch until CI/browser/accessibility gates pass.
+The implemented experience now includes Artwork Portal → Drift / Grid / Color / Mood → Artwork Detail → Relationship Atlas, Saved Collection, and the curated exhibition journey **Signals from a Quiet Machine**. CI, browser QA and rendered visual evidence cover the flagship flows.
 
 ## Project docs
 
@@ -50,3 +50,13 @@ Research
 ## Open-source stance
 
 Open-source projects are implementation references, not a replacement for original art direction. Any copied or substantially adapted code must be license-checked and recorded in `THIRD_PARTY_NOTICES.md`.
+
+
+## Deployment
+
+The project is configured for **Vercel**.
+
+- Framework: Vite
+- Build command: `npm run build`
+- Output directory: `dist`
+- Client navigation uses hash routes, so no SPA rewrite rule is required.
