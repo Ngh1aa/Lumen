@@ -258,6 +258,44 @@ SUPER PROJECT 01 should eventually expose:
 - artwork-level “Follow thread” affordances turn viewing into a non-linear discovery path;
 - dedicated desktop/mobile visual evidence and Playwright coverage.
 
+## Milestone 6 — Thread Atlas
+Purpose:
+- turn curated threads into an exploration mode without breaking the nine-room narrative;
+- let visitors filter verified relationships through **Time / Place / Theme**;
+- make empty combinations explicit instead of fabricating weak links.
+
+Composition:
+- Atlas is an overlay/mode, not a tenth exhibition room;
+- filters live above a spatial thread field;
+- thread cards expose artwork thumbnails, place, year, themes and linked letter metadata;
+- each thread can be traced back into the existing Thread Navigator.
+
+Interaction:
+- pointer-reactive spotlight uses CSS custom properties only on fine-pointer devices;
+- native cursor remains intact;
+- no React state updates on every pointer frame;
+- spotlight disappears on touch and reduced-motion paths;
+- Escape closes Atlas;
+- Save persists locally using the existing thread storage.
+
+Evidence rules:
+- Arles thread remains tied to Arles works + harvest-period correspondence;
+- Saint-Rémy thread remains tied to Saint-Rémy works + letter 806;
+- filters only narrow existing verified relationships;
+- a zero-match state says no verified thread exists for that combination.
+
+UIUX Factory rationale:
+- Atlas serves CONNECT + ORIENT, not decoration;
+- it is a materially different composition family from the narrative rooms;
+- mobile collapses the spatial field into a vertical knowledge route;
+- browser, accessibility and rendered visual evidence are required before this milestone is considered done.
+
+21st.dev reference principle:
+- use cursor-reactive spotlight behavior as inspiration;
+- preserve the system pointer;
+- prefer CSS variable writes over React state-per-frame;
+- do not pull Motion/WebGL dependencies unless later evidence shows a real need.
+
 ## Later milestones
 1. true tiled deep zoom using a museum/IIIF source only if source stability is proven.
 2. expand the thread system into artwork-date-place-letter filtering.
