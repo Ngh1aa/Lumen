@@ -455,11 +455,10 @@ function PlacesJourney() {
         <div className="vincent-place-label is-remy">SAINT-RÉMY</div>
         <div className="vincent-place-label is-auvers">AUVERS</div>
       </div>
-      <div className="vincent-place-stops" role="list" aria-label="Van Gogh places and periods">
+      <div className="vincent-place-stops" role="group" aria-label="Van Gogh places and periods">
         {placeStops.map((item, index) => (
           <button
             key={item.place}
-            role="listitem"
             className={active === index ? 'is-active' : ''}
             aria-pressed={active === index}
             onClick={() => setActive(index)}
