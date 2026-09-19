@@ -6,6 +6,19 @@ const routes = [
   { name: 'drift', hash: '#/drift' },
 ];
 
+async function settleVisuals(page: import('@playwright/test').Page) {
+  await page.evaluate(() => {
+    document.querySelectorAll<HTMLImageElement>('img[loading="lazy"]').forEach((image) => {
+      image.loading = 'eager';
+    });
+    window.scrollTo(0, document.body.scrollHeight);
+  });
+  await page.waitForFunction(() =>
+    Array.from(document.images).every((image) => image.complete && image.naturalWidth > 0),
+  );
+  await page.evaluate(() => window.scrollTo(0, 0));
+}
+
 const viewports = [
   { name: 'desktop-1440', width: 1440, height: 1100 },
   { name: 'desktop-1024', width: 1024, height: 900 },
@@ -23,6 +36,7 @@ test.describe('visual evidence', () => {
         await page.goto('/' + route.hash);
         await page.waitForLoadState('networkidle');
         await expect(page.locator('main')).toBeVisible();
+        await settleVisuals(page);
         await page.screenshot({
           path: `visual-evidence/${viewport.name}/${route.name}.png`,
           fullPage: true,
@@ -41,6 +55,7 @@ test.describe('visual evidence', () => {
     await expect(firstArtwork).toBeVisible();
     await firstArtwork.click();
     await expect(page.locator('.detail')).toBeVisible();
+    await settleVisuals(page);
     await page.screenshot({
       path: 'visual-evidence/desktop-1440/detail.png',
       fullPage: true,
@@ -48,6 +63,7 @@ test.describe('visual evidence', () => {
 
     await page.getByRole('button', { name: /Open relationship Atlas/i }).click();
     await expect(page.locator('.atlas')).toBeVisible();
+    await settleVisuals(page);
     await page.screenshot({
       path: 'visual-evidence/desktop-1440/atlas.png',
       fullPage: true,
@@ -82,6 +98,7 @@ test.describe('visual evidence', () => {
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto('/#/');
     await expect(page.locator('.portal')).toBeVisible();
+    await settleVisuals(page);
     await page.screenshot({
       path: 'visual-evidence/reduced-motion/portal.png',
       fullPage: true,
