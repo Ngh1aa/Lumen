@@ -180,6 +180,25 @@ test.describe('visual evidence', () => {
     });
   });
 
+
+  test('VINCENT thread navigator @ desktop and mobile', async ({ page }) => {
+    for (const viewport of [
+      { name: 'desktop-1440', width: 1440, height: 1100 },
+      { name: 'mobile-390', width: 390, height: 844 },
+    ]) {
+      fs.mkdirSync('visual-evidence/' + viewport.name, { recursive: true });
+      await page.setViewportSize({ width: viewport.width, height: viewport.height });
+      await page.goto('/#/exhibition');
+      await page.getByRole('button', { name: /Open thread navigator/i }).click();
+      await page.locator('.vincent-thread-tabs button').filter({ hasText: 'Saint-Rémy' }).click();
+      await expect(page.locator('.vincent-thread-drawer')).toBeVisible();
+      await page.screenshot({
+        path: 'visual-evidence/' + viewport.name + '/vincent-thread-navigator.png',
+        fullPage: true,
+      });
+    }
+  });
+
   test('accessibility settings and high-contrast evidence', async ({ page }) => {
     fs.mkdirSync('visual-evidence/accessibility', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
