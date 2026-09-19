@@ -1,4 +1,4 @@
-import { CSSProperties } from 'react';
+import { CSSProperties, PointerEvent } from 'react';
 
 const commons = (name: string) =>
   'https://commons.wikimedia.org/wiki/Special:Redirect/file/' + encodeURIComponent(name);
@@ -30,7 +30,7 @@ export function ExhibitionIndex({
   onEnterVincent: () => void;
   onExplore: () => void;
 }) {
-  const onPointerMove = (event: React.PointerEvent<HTMLElement>) => {
+  const onPointerMove = (event: PointerEvent<HTMLElement>) => {
     if (reducedMotion || event.pointerType === 'touch') return;
     const rect = event.currentTarget.getBoundingClientRect();
     event.currentTarget.style.setProperty('--museum-x', `${((event.clientX - rect.left) / rect.width) * 100}%`);
