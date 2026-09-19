@@ -34,8 +34,15 @@ test('mobile core pages do not introduce horizontal overflow', async ({ page }) 
 test('public-domain artwork imagery renders in the browser', async ({ page }) => {
   await page.goto('/#/drift');
   await expect(page.locator('.drift-art').first()).toBeVisible();
-  await page.waitForFunction(() => {
-    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.drift-image-wrap img')).slice(0, 6);
-    return images.length >= 4 && images.every((image) => image.complete && image.naturalWidth > 0);
+  await page.evaluate(() => {
+    document.querySelectorAll<HTMLImageElement>('.drift-image-wrap img').forEach((image) => {
+      image.loading = 'eager';
+    });
+    window.scrollTo(0, document.body.scrollHeight);
   });
+  await page.waitForFunction(() => {
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.drift-image-wrap img'));
+    return images.length >= 7 && images.every((image) => image.complete && image.naturalWidth > 0);
+  });
+  await page.evaluate(() => window.scrollTo(0, 0));
 });
