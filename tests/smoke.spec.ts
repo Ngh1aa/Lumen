@@ -200,7 +200,7 @@ test('Atlas relationship filters, recenter and trace are keyboard-accessible', a
 test('About explains method, sources and accessibility without fake validation claims', async ({ page }) => {
   await page.goto('/#/about');
   await expect(page.getByRole('heading', { name: /A museum for weak intent/i })).toBeVisible();
-  await expect(page.getByText(/Wikimedia Commons/i)).toBeVisible();
+  await expect(page.locator('.about-sources')).toContainText('Wikimedia Commons');
   await expect(page.getByText(/WCAG 2.2 AA/i)).toBeVisible();
   await expect(page.locator('.method-grid article')).toHaveCount(4);
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
