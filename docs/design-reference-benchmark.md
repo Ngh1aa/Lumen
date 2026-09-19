@@ -1,80 +1,123 @@
 # Design Reference Benchmark — LUMEN
 
-## Decision problem
+**Updated:** 2026-09-19  
+**Decision:** expand LUMEN into a ten-screen digital cultural experience without sacrificing orientation, credibility, accessibility or the existing cinematic identity.
 
-How can a digital museum feel visually distinctive and exploratory without sacrificing orientation, collection credibility, accessibility or practical information retrieval?
+## Project truth
+
+- **Primary user:** culture/art explorer with weak or ambiguous intent.
+- **Top task:** discover something meaningful without already knowing an artist, movement or exact keyword.
+- **Portfolio task:** demonstrate visual craft, interaction judgment, explainable discovery, editorial storytelling, responsive strategy and accessibility ownership.
+- **Brand constraints:** Cinematic · Intellectual · Experimental.
+- **Content reality:** deterministic prototype media is public-domain Timeastor abstract work from Wikimedia Commons; mood/palette/theme writing is LUMEN-authored prototype metadata.
+- **Hard guardrails:** no generic SaaS card system, no blanket glassmorphism, no scroll hijacking, no pointer-only critical behavior, no unverified source-code copying.
+
+## Research questions
+
+1. How can a museum interface support exploration when the visitor does not know what to search for?
+2. How can color become a useful navigation input rather than decoration?
+3. How can saved works become a personal path/collection rather than a bookmark counter?
+4. How can an exhibition feel editorial and cinematic without hiding orientation?
+5. Which contemporary interaction patterns can improve continuity and state feedback without importing another product's visual identity?
 
 ## Source mix
 
-### Production / category reality
-
-| Reference | Role inspected | Principle extracted | What not to copy | LUMEN adaptation |
-|---|---|---|---|---|
-| M+ | institutional web identity / modular culture publishing | digital presence can be a distinctive extension of institutional identity; modularity supports many content types | exact color-band identity and M+ brand grammar | build a unique spatial/editorial grammar where artwork color becomes contextual UI signal |
-| MoMA Collection | search/filter + collection scale | stable search/filter taxonomy remains important for precise intent and large archives | dense collection grid as the whole product experience | preserve Grid/Search as reliable fallback while Drift/Atlas support weak-intent exploration |
-| Rijksmuseum Collection Online | collection discovery + user-created sets + comparison | exploration can mix images, stories, search, zoom and personal collections | literal Gallery of Honour metaphor | use Saved Collections + compare/inspect detail as user-owned exploration memory |
-| Google Arts & Culture | explore by artist/movement/time/color + experimental cultural tools | alternative entry points such as color/time can coexist with familiar taxonomies | broad platform-level visual identity / feature sprawl | make Color and Mood first-class but secondary discovery modes |
-| Google Art Camera | high-resolution artwork inspection | deep zoom and narrative context strengthen artwork understanding | building the site around one zoom gimmick | artwork detail gets a dedicated inspect/zoom mode |
-
-### Open-source implementation intelligence
-
-| Reference | Job | Keep | Reject / guardrail |
-|---|---|---|---|
-| Codrops ImageExpansionTypography | Hero continuity | image expansion within typographic frame | exact composition, fonts, demo media |
-| Codrops ScrollAnimationsGrid | Drift motion model | coordinated grid transforms + scroll-linked emphasis | scroll hijacking and animation on every tile |
-| Motion Primitives | Transition architecture | shared/layout transition patterns | generic component-library look |
-| Animata | Functional microinteraction | tabs/progress/overlay/state transitions | importing components unchanged |
-| React Bits | Signature effect vocabulary | isolated text/image/cursor techniques | effect stacking, generic "creative dev" aesthetic |
-| 21st.dev | Pattern discovery | composition/category exploration | marketplace media/code reuse without independent license verification |
+| Reference | Type | Page/state inspected | Job for LUMEN | Transferable principle | What not to copy |
+|---|---|---|---|---|---|
+| M+ | Production cultural institution | Institutional publishing / navigation | Distinct institutional identity | A cultural interface can use a recognizable modular visual grammar across varied content | M+ color-band identity or brand system |
+| MoMA Collection | Production museum archive | Search/filter + collection-scale browsing | Precise-intent fallback | Stable taxonomy and direct object access remain necessary at scale | Dense grid as the entire experience |
+| Rijksmuseum Collection Online / Rijksstudio concepts | Production museum platform | Collection exploration, Art Explorer, personal collections/comparison | Personal curation + exploratory browsing | Exploration and collection-building can coexist; saved objects support return visits and comparison | Rijksmuseum branding or literal Gallery of Honour metaphor |
+| Google Arts & Culture — Explore | Production cultural platform | Explore by artist/movement/time/color | Color discovery | A visible visual property can become a first-class exploration input while labels/context remain available | Google platform identity, feature sprawl or taxonomy |
+| Google Art Camera | Production cultural tool | High-resolution artwork inspection | Object inspection | Zoom can deepen looking when it resolves into clear provenance/context | Building the experience around one zoom gimmick |
+| 21st.dev registry | Multi-author component/pattern registry | Morphing Cursor, Gallery Animation, Animated Collection, motion/navigation pattern catalogue | Interaction behavior research | State-responsive motion, continuity and compact disclosure patterns can be adapted locally | Marketplace visuals, demo media, or source without independent license verification |
+| Codrops interaction demos | Open-source craft references | Image expansion / animated image-grid examples | Portal + spatial transitions | Shared-object continuity and image-led transitions can communicate where content came from | Demo composition/assets as final art direction |
+| LUMEN current prototype | Existing product truth | Portal, Drift, Detail, Atlas, Mood, Journey | Preserve strengths | Artwork-as-light-source, asymmetrical editorial pacing, explainable relationship lines | Rebuilding working parts merely to resemble references |
 
 ## Reference synthesis
 
 ### IA / task truth
-- Precise-intent users still need search, filters, artist/movement indices and stable detail pages.
-- Weak-intent users benefit from exploratory entrances such as color, time, stories and curated themes.
-- Saving/collecting gives exploration a meaningful end-state.
+- Precise-intent users still need stable Grid/Detail surfaces and explicit metadata.
+- Weak-intent users benefit from exploratory entrances such as color, mood and curated stories.
+- Saving/collecting gives exploration an understandable product action and memory.
+- Experimental modes require a visible recovery path rather than replacing familiar navigation.
 
 ### Visual craft
 - The project should not use a universal museum-template hero.
 - Artwork itself is the dominant media system.
 - The interface should create continuity between discovery and detail rather than abrupt card → page cuts.
-- Editorial composition can change by page role while nav/type/tokens/motion language preserve coherence.
+- Editorial composition changes by page role while nav/type/tokens/motion language preserve coherence.
 
 ### Motion
-- Motion should explain object continuity or content relationships.
-- Spatial/immersive interactions need semantic fallbacks.
-- One strong interaction family is more ownable than many unrelated effects.
+- Motion should explain object continuity, hierarchy, state or relationships.
+- Spatial/immersive interactions require semantic fallbacks.
+- Ambient Drift motion is optional, pauseable and removed under reduced-motion.
+- 21st.dev is used as a pattern-discovery source only; no marketplace component source or demo media is copied in this implementation.
 
-## Page-role reference matrix
+## Ten-screen page-role matrix
 
-| Page role | User question | Primary reference job | LUMEN composition decision |
-|---|---|---|---|
-| Home / Portal | "What kind of place is this and where do I start?" | M+ distinctiveness + Codrops continuity | oversized editorial statement framing one artwork portal; minimal nav; no card grid |
-| Explore / Drift | "Show me something worth following." | Google exploratory entry points + ScrollAnimationsGrid | spatial image field with persistent index/title/mode controls |
-| Explore / Grid | "Let me browse predictably." | MoMA/Rijksmuseum practical collection browsing | stable semantic grid/list with filters; visually calmer than Drift |
-| Atlas | "Why are these works related?" | Google cultural experiments | relationship graph with explainable link labels + list equivalent |
-| Artwork detail | "What is this, and what should I notice?" | MoMA/Rijksmuseum/Art Camera | calm editorial detail + inspect/zoom + related-through paths |
-| Curated Journey | "Tell me a story through the collection." | Google Arts & Culture themes | chapter-based editorial narrative with progress and selective reveals |
-| Saved | "What did I keep, and how do I return?" | Rijksmuseum user collections | personal collection board/list; low-motion utility composition |
+| Screen | User question on entry | Reference intelligence | LUMEN composition decision | Mobile transformation |
+|---|---|---|---|---|
+| 01 Portal | “How do I enter this?” | M+ distinctiveness + image continuity patterns | One artwork acts as the room's light source; three explicit doors: Drift, Exhibition, Mood | Static/slow hero, stacked entry controls, no motion dependency |
+| 02 Drift | “Show me something interesting.” | 21st image/gallery behavior + Codrops spatial continuity | Uneven image field, quick preview, pause/speed, orientation label | Guided vertical field; reduced-motion becomes stable list |
+| 03 Grid | “Give me control.” | MoMA/Rijksmuseum collection browsing | Stable scan order, preserved image ratios, compact filters | Filters become horizontal scroller; single-column reading |
+| 04 Color | “What lives near this color?” | Google Arts & Culture color exploration | Named swatches, one/two-color intersection, ranked visual proximity | Horizontal swatches + compact result strip |
+| 05 Mood | “Show me something that feels like this.” | Editorial curation | Nine manually authored mood paths with visible rationale | Two-column word cloud → single-column result sequence |
+| 06 Artwork Detail | “What is this, and where can I go next?” | Museum object-detail / Art Camera patterns | Calm image/info hierarchy + editorial reading + technical provenance + three continuation threads | Image-first; tags wrap; thread rows stack |
+| 07 Relationship Atlas | “Why is this related?” | Graph/network patterns + accessibility rules | Four explainable relation types with filters, recentering and trace-to-save | Graph removed; semantic connected-works list becomes primary |
+| 08 Saved Collection | “What did I keep, and why?” | Rijksmuseum personal collection concepts | Name collection, private notes, Grid/Thread view, share/export | Single-column saved path with editable notes |
+| 09 Exhibition | “Take me through a coherent story.” | Editorial storytelling + progress patterns | Six chapters with persistent rail, reflection question, object and recoverable exits | Rail collapses; vertical chapters retain clear order |
+| 10 About / Method | “Can I trust how this works?” | Institutional transparency patterns | Explain manual/semi-automatic metadata, sources, licensing and accessibility commitment | Long-form reading page; no immersive motion |
 
-## Three design DNA commitments
+## Final design DNA
 
-1. **Artwork as light source:** contextual accent derives from the focused work rather than one fixed brand neon.
-2. **Relationship navigation:** links are visible as labeled connections, not hidden behind "Recommended for you."
-3. **Editorial → spatial continuity:** typography, image field and transitions preserve the identity of the selected object.
+### Layout grammar
+- Editorial desktop logic with materially different composition families: immersive field, controlled collection utility, calm object/reading page and vertical exhibition narrative.
+- Large image fields and asymmetrical pacing are preferred over repeated cards.
+- Metadata, rules and index labels provide orientation.
+- Stable Grid/Detail/About surfaces counterbalance immersive Portal/Drift/Atlas/Exhibition.
+
+### Typography
+- Display/editorial serif for curatorial voice.
+- Neutral grotesk for controls, metadata and technical text.
+- Large display type may crop only when meaning remains intact.
+
+### Color
+- Warm near-black base and archival ivory foreground.
+- Current artwork supplies contextual accent.
+- Accent is wayfinding/state, not decorative fill.
+- Color controls always have text labels.
+
+### Motion jobs
+- **ORIENT:** chapter progress, selected mode, Atlas recenter.
+- **CONNECT:** artwork continuity from preview → detail → Atlas.
+- **REVEAL:** quick preview and accessibility settings.
+- **RESPOND:** selected swatch/mood/filter/save states.
+- **DELIGHT:** subtle ambient Drift only after usability; pause/reduced-motion removes it.
+
+### Signature test
+If the LUMEN wordmark disappears, the experience should still be recognizable through **artwork-as-light-source + editorial index typography + explainable relationship lines + slow spatial continuity**.
 
 ## Rejected patterns
 
-- generic dark museum site with gold serif accents;
-- full-site WebGL just because the subject is art;
-- every screen as a floating rounded card;
-- cursor-follow effects on long reading surfaces;
-- universal copy-left/image-right hero;
-- animation that requires pointer precision;
-- award-style scroll spectacle without a stable browse/search mode.
+- One universal hero shell across all screens.
+- Copying 21st.dev component visuals/media.
+- Full-site custom cursor.
+- Endless rounded cards or bento grids.
+- Decorative parallax with no orientation value.
+- Algorithmic “AI mood detection” claims unsupported by the prototype.
+- Color-only selection states.
+- Graph-only Atlas with no semantic equivalent.
+- Scroll hijacking in the exhibition.
 
-## Evidence notes
+## Implementation handoff
 
-- Production references are used for product/IA patterns, not as proof that their design is objectively "best."
-- Open-source references are implementation candidates only; license/provenance remains mandatory before source reuse.
-- No usability outcome is claimed from these references.
+The implementation uses the existing React + TypeScript + Vite architecture and adds no animation-library dependency. Platform/CSS behavior is preferred unless a future interaction demonstrably requires a library.
+
+QA gate:
+- type/build;
+- Playwright critical-flow tests;
+- axe serious/critical scan as **partial evidence only**;
+- keyboard checks;
+- mobile overflow checks;
+- rendered screenshots at 1440 / 1024 / 768 / 390;
+- manual rendered inspection before calling the UI visually verified.

@@ -5,7 +5,7 @@
 - **Project name:** LUMEN
 - **Project type:** Experimental digital museum / visual-culture exploration website
 - **Repository:** https://github.com/Ngh1aa/Lumen
-- **Current stage:** Research → UX/Product framing → Art direction
+- **Current stage:** Implementation → browser/accessibility/visual QA
 - **Portfolio role:** Visual flagship showing interaction craft, spatial exploration, editorial storytelling and design-to-code quality.
 
 ## Project goal
@@ -49,16 +49,16 @@ These are **PLANNED signals**, not measured outcomes.
 - **Design direction:** `docs/DESIGN-DIRECTION.md`
 - **IA / flows:** `docs/IA-AND-FLOWS.md`
 - **Third-party provenance:** `THIRD_PARTY_NOTICES.md`
-- **Implementation source:** to be created after direction gate passes.
+- **Implementation source:** `src/App.tsx`, `src/DiscoveryViews.tsx`, `src/CulturalExperience.tsx`, `src/ExperienceLayers.tsx`, `src/styles.css`, `src/experience.css`.
 - **Workflow source:** Ngh1aa/uiux-ai-workspace — AGENTS.md, UIUX Factory and relevant skills_UIUX.
 
-## Technology — proposed, not yet locked
+## Technology — locked for this milestone
 
 - **Frontend:** React + TypeScript + Vite
-- **Styling:** CSS variables / Tailwind only if it improves adaptation from open-source references without dictating the art direction
-- **Motion:** Motion / GSAP selectively; no blanket animation dependency
-- **Optional spatial layer:** React Three Fiber only for an explicit immersive mode, not for core navigation
-- **Deployment:** GitHub Pages or Vercel, decision after routing/build strategy is locked
+- **Styling:** CSS variables + layered project CSS (`styles.css` base, `experience.css` milestone extension)
+- **Motion:** platform View Transitions + CSS transforms/opacity; no new animation dependency for this milestone
+- **Spatial layer:** 2D CSS/SVG for the current milestone; no WebGL dependency
+- **Deployment:** GitHub Pages primary; Vercel config retained for compatibility
 
 ## Constraints
 
@@ -90,11 +90,17 @@ Visual signature:
 - Large image fields, asymmetrical editorial pacing, contextual metadata.
 - Motion used to orient, connect, reveal or respond.
 
-## Definition of Done — current milestone
+## Definition of Done — ten-screen cultural experience
 
-Research / foundation milestone is complete when:
-1. Open-source candidate references and licenses are logged.
-2. Product thesis, IA and critical flows are documented.
-3. Art direction + anti-template rules are explicit.
-4. Signature interactions are mapped to UX purpose.
-5. Implementation does not begin until these artifacts agree.
+The milestone is complete only when:
+
+1. The 10 primary routes are implemented: Portal, Drift, Grid, Color, Mood, Artwork Detail, Relationship Atlas, Saved Collection, Exhibition, About / Method.
+2. Quick Preview, onboarding, accessibility settings, empty/populated collection states and 404 are implemented.
+3. 21st.dev and other external sources remain pattern/research inputs unless exact source licensing is independently verified.
+4. Public-domain artwork provenance is recorded and each object links back to its source.
+5. Build/type checks pass.
+6. Playwright covers flagship, alternate, recovery, keyboard and mobile-overflow paths.
+7. Automated axe checks are treated as partial evidence, not WCAG conformance proof.
+8. Rendered evidence exists at 1440 / 1024 / 768 / 390 and receives manual visual inspection.
+9. Reduced-motion and semantic Atlas fallback work without removing content/functionality.
+10. No merge to `main` until the relevant implementation + browser + accessibility + visual gates are green or explicitly documented as blocked.
