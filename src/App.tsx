@@ -392,7 +392,7 @@ function Atlas({
         <p>Prototype relationship model. Connections reveal navigational logic; they do not imply scholarly attribution.</p>
       </div>
 
-      <div className="atlas-canvas" aria-hidden="true">
+      <div className="atlas-canvas" aria-label="Interactive relationship map">
         <svg className="atlas-lines" viewBox="0 0 1000 620" preserveAspectRatio="none">
           <path d="M500 310 C430 250 315 190 205 130" />
           <path d="M500 310 C570 250 690 180 810 135" />
