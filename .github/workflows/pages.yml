@@ -65,28 +65,29 @@ jobs:
         run: |
           set -euo pipefail
           page="${PAGE_URL%/}/?build=${GITHUB_SHA}"
-          html=""
+          origin="$(printf '%s' "$PAGE_URL" | sed -E 's#(https?://[^/]+).*#\1#')"
 
-          for attempt in 1 2 3 4 5 6; do
-            if html="$(curl -fsSL --retry 2 --retry-delay 2 "$page")"; then
-              break
+          for attempt in 1 2 3 4 5 6 7 8 9 10 11 12; do
+            html="$(curl -fsSL --retry 2 --retry-delay 2 "$page" || true)"
+            script_path="$(printf '%s' "$html" | grep -oE 'src="[^"]+\.js"' | head -1 | cut -d'"' -f2 || true)"
+            style_path="$(printf '%s' "$html" | grep -oE 'href="[^"]+\.css"' | head -1 | cut -d'"' -f2 || true)"
+
+            echo "Attempt $attempt/12"
+            echo "JS: ${script_path:-missing}"
+            echo "CSS: ${style_path:-missing}"
+
+            if printf '%s' "$html" | grep -q 'LUMEN — Digital Museum of Visual Culture' \
+              && [[ "$script_path" == /Lumen/assets/*.js ]] \
+              && [[ "$style_path" == /Lumen/assets/*.css ]] \
+              && curl -fsS "$origin$script_path" -o /dev/null \
+              && curl -fsS "$origin$style_path" -o /dev/null; then
+              echo "Verified $PAGE_URL"
+              exit 0
             fi
-            echo "Waiting for Pages propagation (attempt $attempt/6)…"
+
+            echo "Pages is still serving an older or incomplete artifact; waiting 10 seconds…"
             sleep 10
           done
 
-          test -n "$html"
-          printf '%s' "$html" | grep -q 'LUMEN — Digital Museum of Visual Culture'
-
-          script_path="$(printf '%s' "$html" | grep -oE 'src="[^"]+\.js"' | head -1 | cut -d'"' -f2)"
-          style_path="$(printf '%s' "$html" | grep -oE 'href="[^"]+\.css"' | head -1 | cut -d'"' -f2)"
-          origin="$(printf '%s' "$PAGE_URL" | sed -E 's#(https?://[^/]+).*#\1#')"
-
-          test -n "$script_path"
-          test -n "$style_path"
-          curl -fsS "$origin$script_path" -o /dev/null
-          curl -fsS "$origin$style_path" -o /dev/null
-
-          echo "Verified $PAGE_URL"
-          echo "JS: $script_path"
-          echo "CSS: $style_path"
+          echo "Public Pages did not converge to the expected LUMEN artifact in time."
+          exit 1
