@@ -48,9 +48,10 @@ This file tracks third-party code, patterns and assets that may be incorporated 
 Artwork/media licenses are tracked separately from component-code licenses. Demo images from component repositories are never assumed reusable.
 
 
-### Art Institute of Chicago API / IIIF
-- API documentation: https://api.artic.edu/docs/
-- Data license: API response data is provided under CC0 1.0 subject to Art Institute terms.
-- Image policy: LUMEN requests records filtered to `is_public_domain=true` and renders those works through the Institute's IIIF endpoint.
-- Intended use: prototype collection data and public-domain artwork imagery.
-- Status: active runtime data source.
+### Wikimedia Commons — Timeastor abstract artworks
+- Source collection pages: https://commons.wikimedia.org/
+- Files used: Abstract Artwork 0001, 0002, 0004, 0007, 0008, 0011, 0012 and 0017.
+- License status: each selected file page states that the copyright holder released the work into the public domain (PD-self).
+- Intended use: deterministic prototype artwork imagery for visual QA and the LUMEN exploration experience.
+- Runtime behavior: images are referenced from Wikimedia's upload host; each object links to its source file page.
+- Status: active runtime media source.
