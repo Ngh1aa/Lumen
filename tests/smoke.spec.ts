@@ -9,11 +9,11 @@ async function seriousAxeViolations(page: import('@playwright/test').Page) {
 test('flagship journey moves from Portal to Drift, preview, Detail and Atlas', async ({ page }) => {
   await page.goto('/');
   await expect(page).toHaveTitle(/LUMEN/);
-  await expect(page.getByRole('heading', { name: /DON'T SEARCH/i })).toBeVisible();
+  await expect(page.getByRole('heading', { name: /ENTER THROUGH COLOR/i })).toBeVisible();
 
   await page.getByRole('button', { name: /Start drifting/i }).click();
   await expect(page.getByRole('heading', { name: /Follow what catches/i })).toBeVisible();
-  await expect(page.getByText(/Cool tones · 2000s/i)).toBeVisible();
+  await expect(page.getByText(/Arles · Saint-Rémy · Auvers/i)).toBeVisible();
 
   await page.locator('.drift-art').first().click();
   await expect(page.locator('.quick-preview')).toBeVisible();
@@ -150,26 +150,32 @@ test('Mood discovery exposes nine editorial paths and explicit rationale', async
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
-test('curated exhibition exposes all six chapters, reflection prompts and exit actions', async ({ page }) => {
+test('Vincent exhibition exposes six sensory rooms, soundtrack and exit actions', async ({ page }) => {
   await page.goto('/#/exhibition');
-  await expect(page.getByRole('heading', { name: /Signals from a quiet machine/i })).toBeVisible();
-  await expect(page.locator('.journey-chapter')).toHaveCount(6);
-  await expect(page.locator('#threshold')).toBeVisible();
+  await expect(page.getByRole('heading', { name: /VINCENT A Life in Color/i })).toBeVisible();
+  await expect(page.locator('.vincent-room')).toHaveCount(6);
+  await expect(page.locator('#blue-hour')).toBeVisible();
 
-  await page.locator('.journey-rail button').filter({ hasText: 'Noise' }).click();
-  await expect(page.locator('#noise')).toBeInViewport();
-  await expect(page.locator('#noise .chapter-question')).toBeVisible();
+  await page.locator('.vincent-rail button').filter({ hasText: 'After Dark' }).click();
+  await expect(page.locator('#after-dark')).toBeInViewport();
+  await expect(page.locator('#after-dark blockquote')).toBeVisible();
 
-  await page.locator('#signal').scrollIntoViewIfNeeded();
-  await expect(page.getByRole('button', { name: /Save this journey/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Explore by mood/i })).toBeVisible();
-  await expect(page.getByRole('button', { name: /Continue drifting from here/i })).toBeVisible();
-  await expect(page.locator('.journey-credits')).toContainText('prototype content');
+  await page.locator('#field').scrollIntoViewIfNeeded();
+  await expect(page.getByRole('button', { name: /Save this exhibition/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Follow a feeling/i })).toBeVisible();
+  await expect(page.getByRole('button', { name: /Follow a relationship/i })).toBeVisible();
+  await expect(page.locator('.vincent-credits')).toContainText('VINCENT');
+
+  await page.getByRole('button', { name: /Soundtrack/i }).click();
+  await expect(page.locator('.vincent-sound-drawer')).toBeVisible();
+  await expect(page.locator('.vincent-sound-player iframe')).toHaveAttribute('src', /youtube-nocookie\.com\/embed\/ciLNMesqPh0/);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.vincent-sound-drawer')).toHaveCount(0);
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
 test('Artwork Detail exposes technical provenance, zoom and three continuation threads', async ({ page }) => {
-  await page.goto('/#/artwork/abstract-0008');
+  await page.goto('/#/artwork/starry-night');
   await expect(page.locator('.detail')).toBeVisible();
   await expect(page.locator('.detail-tags span')).toHaveCount(4);
   await expect(page.locator('.thread-list button')).toHaveCount(3);
@@ -180,7 +186,7 @@ test('Artwork Detail exposes technical provenance, zoom and three continuation t
 });
 
 test('Atlas relationship filters, recenter and trace are keyboard-accessible', async ({ page }) => {
-  await page.goto('/#/atlas/abstract-0008');
+  await page.goto('/#/atlas/starry-night');
   await expect(page.locator('.atlas-list li')).toHaveCount(4);
 
   const theme = page.getByRole('button', { name: 'Theme', exact: true });
@@ -229,11 +235,11 @@ test('unknown routes resolve to a useful 404 recovery state', async ({ page }) =
   await expect(page.getByRole('heading', { name: /Follow what catches/i })).toBeVisible();
 });
 
-test('curated journey media renders', async ({ page }) => {
+test('Vincent exhibition media renders', async ({ page }) => {
   await page.goto('/#/exhibition');
   await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
   await page.waitForFunction(() => {
-    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.journey img'));
-    return images.length >= 7 && images.every((image) => image.complete && image.naturalWidth > 0);
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.vincent-exhibition img'));
+    return images.length >= 10 && images.every((image) => image.complete && image.naturalWidth > 0);
   });
 });
