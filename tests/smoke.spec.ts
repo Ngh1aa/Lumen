@@ -231,38 +231,36 @@ test('VINCENT cultural threads connect artwork, place and letter and persist sav
 
 
 
-test('VINCENT Thread Atlas exposes time, place and editorial theme lenses with semantic parity', async ({ page }) => {
+test('VINCENT Thread Atlas filters verified cultural threads without inventing links', async ({ page }) => {
   await page.goto('/#/exhibition');
 
-  await page.getByRole('button', { name: /Open Vincent Thread Atlas/i }).click();
-  const atlas = page.locator('.vincent-atlas');
+  await page.getByRole('button', { name: /Open Vincent thread atlas/i }).click();
+  const atlas = page.locator('.vincent-atlas-layer');
   await expect(atlas).toBeVisible();
-  await expect(atlas.getByRole('heading', { name: /Thread Atlas/i })).toBeVisible();
+  await expect(atlas.getByRole('heading', { name: 'Thread Atlas' })).toBeVisible();
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(2);
 
-  const lenses = atlas.locator('.vincent-atlas-lenses > button');
-  await expect(lenses).toHaveCount(3);
-  await expect(atlas.locator('.vincent-atlas-node')).toHaveCount(11);
-  await expect(atlas.locator('.vincent-atlas-semantic li')).toHaveCount(4);
-  await expect(atlas.locator('.vincent-atlas-reading')).toContainText('The Starry Night');
+  const time1889 = atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Time' }).getByRole('button', { name: '1889' });
+  await time1889.click();
+  await expect(time1889).toHaveAttribute('aria-pressed', 'true');
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(1);
+  await expect(atlas).toContainText('Saint-Rémy / Field / Cypress');
 
-  const theme = atlas.getByRole('button', { name: /THEME/i });
-  await theme.focus();
-  await page.keyboard.press('Enter');
-  await expect(theme).toHaveAttribute('aria-pressed', 'true');
-  await expect(atlas.locator('.vincent-atlas-method')).toContainText('LUMEN-authored editorial index');
-  await expect(atlas.locator('.vincent-atlas-semantic li')).toHaveCount(4);
+  const arles = atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Place' }).getByRole('button', { name: 'Arles' });
+  await arles.click();
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(0);
+  await expect(atlas.getByRole('status')).toContainText('No connection matches');
 
-  await atlas.getByRole('button', { name: /Focus artwork Wheat Field with Cypresses/i }).click();
-  await expect(atlas.locator('.vincent-atlas-reading')).toContainText('Wheat Field with Cypresses');
+  await atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Time' }).getByRole('button', { name: 'All' }).click();
+  await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(1);
+  await expect(atlas).toContainText('Arles / Night / Interior');
 
-  const place = atlas.getByRole('button', { name: /PLACE/i });
-  await place.click();
-  await expect(place).toHaveAttribute('aria-pressed', 'true');
-  await expect(atlas.locator('.vincent-atlas-semantic')).toContainText('Saint-Rémy');
+  await atlas.getByRole('button', { name: /Save \+/i }).click();
+  await expect.poll(async () => page.evaluate(() => localStorage.getItem('lumen-vincent-threads'))).toContain('arles-night');
 
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
   await page.keyboard.press('Escape');
-  await expect(page.locator('.vincent-atlas')).toHaveCount(0);
+  await expect(page.locator('.vincent-atlas-layer')).toHaveCount(0);
 });
 
 test('Artwork Detail exposes technical provenance, zoom and three continuation threads', async ({ page }) => {
