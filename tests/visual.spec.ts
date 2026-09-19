@@ -141,7 +141,7 @@ test.describe('visual evidence', () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto('/#/exhibition');
       await page.waitForLoadState('networkidle');
-      await expect(page.locator('.journey')).toBeVisible();
+      await expect(page.locator('.vincent-experience')).toBeVisible();
       await settleVisuals(page);
       await page.screenshot({
         path: 'visual-evidence/' + viewport.name + '/exhibition.png',
@@ -150,14 +150,21 @@ test.describe('visual evidence', () => {
     }
   });
 
-  test('Noise comparison chapter @ desktop', async ({ page }) => {
+  test('VINCENT music and brush rooms @ desktop', async ({ page }) => {
     fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto('/#/exhibition');
-    await page.locator('.journey-rail button').filter({ hasText: 'Noise' }).click();
-    await expect(page.locator('#noise')).toBeInViewport();
-    await page.locator('#noise').screenshot({
-      path: 'visual-evidence/desktop-1440/exhibition-noise.png',
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Brush' }).click();
+    await expect(page.locator('#brush')).toBeInViewport();
+    await page.locator('#brush').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-brush.png',
+    });
+
+    await page.locator('.vincent-room-links button').filter({ hasText: 'Vincent' }).click();
+    await expect(page.locator('#vincent')).toBeInViewport();
+    await page.locator('#vincent').screenshot({
+      path: 'visual-evidence/desktop-1440/vincent-music.png',
     });
   });
 
