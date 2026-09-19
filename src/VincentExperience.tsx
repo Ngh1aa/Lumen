@@ -297,7 +297,7 @@ export function VincentExperience({
   };
 
   const openThreadForWork = (workId: string) => {
-    const thread = threadPaths.find((item) => item.artworkIds.includes(workId as never));
+    const thread = threadPaths.find((item) => item.artworkIds.some((id) => id === workId));
     if (thread) openThread(thread.id);
   };
 
@@ -610,6 +610,7 @@ function LetterNetwork({ focusLetter }: { focusLetter?: string }) {
           <line x1="50" y1="50" x2="18" y2="22" />
           <line x1="50" y1="50" x2="82" y2="27" />
           <line x1="50" y1="50" x2="52" y2="84" />
+          <line x1="50" y1="50" x2="20" y2="78" />
         </svg>
       </div>
       <article className="vincent-letter-reading" aria-live="polite">
