@@ -150,7 +150,7 @@ test('Mood discovery exposes nine editorial paths and explicit rationale', async
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
-test('VINCENT super project exposes eight sensory rooms and rights-safe music controls', async ({ page }) => {
+test('VINCENT super project exposes nine sensory rooms and rights-safe music controls', async ({ page }) => {
   await page.goto('/#/exhibition');
   await expect(page.getByRole('heading', { name: /VINCENT The Painted Night/i })).toBeVisible();
   await expect(page.locator('.vincent-room')).toHaveCount(9);
@@ -227,6 +227,42 @@ test('VINCENT cultural threads connect artwork, place and letter and persist sav
   await page.keyboard.press('Escape');
   await expect(page.locator('.vincent-thread-drawer')).toHaveCount(0);
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
+});
+
+
+
+test('VINCENT Thread Atlas exposes time, place and editorial theme lenses with semantic parity', async ({ page }) => {
+  await page.goto('/#/exhibition');
+
+  await page.getByRole('button', { name: /Open Vincent Thread Atlas/i }).click();
+  const atlas = page.locator('.vincent-atlas');
+  await expect(atlas).toBeVisible();
+  await expect(atlas.getByRole('heading', { name: /Thread Atlas/i })).toBeVisible();
+
+  const lenses = atlas.locator('.vincent-atlas-lenses > button');
+  await expect(lenses).toHaveCount(3);
+  await expect(atlas.locator('.vincent-atlas-node')).toHaveCount(11);
+  await expect(atlas.locator('.vincent-atlas-semantic li')).toHaveCount(4);
+  await expect(atlas.locator('.vincent-atlas-reading')).toContainText('The Starry Night');
+
+  const theme = atlas.getByRole('button', { name: /THEME/i });
+  await theme.focus();
+  await page.keyboard.press('Enter');
+  await expect(theme).toHaveAttribute('aria-pressed', 'true');
+  await expect(atlas.locator('.vincent-atlas-method')).toContainText('LUMEN-authored editorial index');
+  await expect(atlas.locator('.vincent-atlas-semantic li')).toHaveCount(4);
+
+  await atlas.getByRole('button', { name: /Focus artwork Wheat Field with Cypresses/i }).click();
+  await expect(atlas.locator('.vincent-atlas-reading')).toContainText('Wheat Field with Cypresses');
+
+  const place = atlas.getByRole('button', { name: /PLACE/i });
+  await place.click();
+  await expect(place).toHaveAttribute('aria-pressed', 'true');
+  await expect(atlas.locator('.vincent-atlas-semantic')).toContainText('Saint-Rémy');
+
+  await expect(seriousAxeViolations(page)).resolves.toEqual([]);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.vincent-atlas')).toHaveCount(0);
 });
 
 test('Artwork Detail exposes technical provenance, zoom and three continuation threads', async ({ page }) => {
