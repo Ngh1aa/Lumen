@@ -152,3 +152,18 @@
 @media (prefers-reduced-motion:reduce){
   .vincent-thread-backdrop{backdrop-filter:none}
 }
+
+
+/* Exhibition owns navigation while VINCENT is active. */
+.app-shell:has(.vincent-experience) .site-header{
+  background:rgba(7,9,13,.96);
+  border-bottom-color:rgba(255,255,255,.16);
+}
+.app-shell:has(.vincent-experience) .site-header nav button,
+.app-shell:has(.vincent-experience) .motion-toggle,
+.app-shell:has(.vincent-experience) .saved-count{
+  color:rgba(255,255,255,.84);
+}
+@media (max-width:900px){
+  .app-shell:has(.vincent-experience) .mobile-dock{display:none}
+}
