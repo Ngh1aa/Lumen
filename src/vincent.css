@@ -91,7 +91,9 @@
 
 
 /* SUPER PROJECT 01 — Milestone 5 / Cultural threads */
-.vincent-thread-trigger{appearance:none;border:0;border-top:1px solid rgba(255,255,255,.12);background:transparent;color:inherit;text-align:left;min-height:42px;display:grid;grid-template-columns:28px 1fr;align-items:center;padding-top:8px;margin-top:auto;opacity:.82;cursor:pointer;font:500 11px/1 "DM Sans",sans-serif}
+.vincent-thread-trigger,.vincent-atlas-trigger{appearance:none;border:0;border-top:1px solid rgba(255,255,255,.12);background:transparent;color:inherit;text-align:left;min-height:42px;display:grid;grid-template-columns:28px 1fr;align-items:center;padding-top:8px;opacity:.82;cursor:pointer;font:500 11px/1 "DM Sans",sans-serif}
+.vincent-atlas-trigger{margin-top:auto;color:#e7b84b}
+.vincent-thread-trigger{margin-top:0}
 .vincent-sound{margin-top:0}
 .vincent-follow-thread{appearance:none;border:0;background:transparent;color:inherit;padding:8px 0 0;text-align:left;cursor:pointer;font:600 10px/1.2 "DM Sans",sans-serif;letter-spacing:.08em;text-transform:uppercase;border-bottom:1px solid currentColor;width:max-content}
 .vincent-artwork figcaption .vincent-follow-thread{grid-column:1/-1;margin-top:4px}
@@ -125,9 +127,11 @@
 .vincent-thread-link-card h3{font:500 clamp(34px,3vw,54px)/.85 "Cormorant Garamond",serif;margin:4px 0}
 .vincent-thread-link-card p{grid-column:1;margin:0;font-size:11px;color:rgba(255,255,255,.58)}
 .vincent-thread-link-card button{grid-column:2;grid-row:2/4;align-self:stretch;min-width:132px;border:1px solid rgba(255,255,255,.16);background:transparent;color:inherit;cursor:pointer}
-.vincent-thread-footer{display:flex;gap:14px;align-items:center;margin-top:24px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12)}
+.vincent-thread-footer{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-top:24px;padding-top:22px;border-top:1px solid rgba(255,255,255,.12)}
+.vincent-thread-footer>div{display:flex;gap:8px;flex-wrap:wrap}
 .vincent-thread-footer button{min-height:46px;border:1px solid rgba(255,255,255,.3);background:#f0e8d7;color:#111;padding:0 16px;cursor:pointer}
 .vincent-thread-footer button.is-saved,.vincent-thread-footer button:disabled{background:transparent;color:#f0e8d7;opacity:.72;cursor:default}
+.vincent-thread-footer .vincent-thread-atlas-link{background:transparent;color:#e7b84b;border-color:rgba(231,184,75,.4)}
 .vincent-thread-footer span{font-size:10px;color:rgba(255,255,255,.56)}
 
 .letter-node-3{left:20%;top:78%}
@@ -136,8 +140,8 @@
   .vincent-thread-layer{grid-template-columns:1fr minmax(390px,56vw)}
 }
 @media (max-width:700px){
-  .vincent-thread-trigger{min-width:62px;margin:0 0 0 4px;border-top:0;border-left:1px solid rgba(255,255,255,.12);padding:0 0 0 8px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;font-size:9px}
-  .vincent-sound{min-width:62px}
+  .vincent-thread-trigger,.vincent-atlas-trigger{min-width:54px;margin:0 0 0 4px;border-top:0;border-left:1px solid rgba(255,255,255,.12);padding:0 0 0 7px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;font-size:8px}
+  .vincent-sound{min-width:54px;font-size:9px}
   .vincent-thread-layer{display:block}
   .vincent-thread-drawer{position:absolute;left:0;right:0;bottom:0;height:min(82dvh,720px);border-left:0;border-top:1px solid rgba(255,255,255,.14);padding:20px}
   .vincent-thread-header h2{font-size:12vw}
@@ -148,6 +152,8 @@
   .vincent-thread-link-card{grid-template-columns:1fr}
   .vincent-thread-link-card button{grid-column:1;grid-row:auto;min-height:44px}
   .vincent-thread-footer{align-items:flex-start;flex-direction:column}
+  .vincent-thread-footer>div{width:100%;display:grid;grid-template-columns:1fr 1fr}
+  .vincent-thread-footer button{padding:0 10px;font-size:9px}
 }
 @media (prefers-reduced-motion:reduce){
   .vincent-thread-backdrop{backdrop-filter:none}
