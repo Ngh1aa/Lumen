@@ -264,3 +264,24 @@ SUPER PROJECT 01 should eventually expose:
 3. campaign assets and exhibition poster studies authored in Canva.
 4. portfolio case study mode with decision evidence and visual QA.
 5. optional WebGL shader only if performance budgets pass.
+
+
+## Milestone 6 — VINCENT Thread Atlas
+
+Goal: turn curated threads into an explorable cultural system while keeping VINCENT visual-first.
+
+Scope:
+- full-screen Thread Atlas overlay opened from the exhibition rail / Thread Navigator;
+- three relationship lenses: TIME / PLACE / THEME;
+- artwork nodes + letter nodes with explicit relationship reasons;
+- focused object reading panel with provenance;
+- semantic relationship list equivalent;
+- mobile vertical constellation path instead of a compressed graph;
+- keyboard selection and Escape close;
+- reduced-motion state parity;
+- dedicated Playwright + axe + desktop/mobile visual evidence.
+
+Data rule:
+- TIME and PLACE derive from the existing artwork/letter metadata.
+- THEME is explicitly labeled as a LUMEN editorial index, not museum-authored classification.
+- no inferred biographical/psychological claims.
