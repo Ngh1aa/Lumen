@@ -1,7 +1,8 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { Artwork, fetchPublicDomainArtworks } from './artworks';
 import { ChromaticView, GridView, SavedView } from './DiscoveryViews';
-import { CuratedJourney, MoodView } from './CulturalExperience';
+import { MoodView } from './CulturalExperience';
+import { VincentExperience } from './VincentExperience';
 import {
   AboutView,
   AccessibilityPanel,
@@ -157,8 +158,6 @@ function App() {
     updateSaved(saved.includes(id) ? saved.filter((value) => value !== id) : [...saved, id]);
   };
 
-  const saveJourney = (ids: string[]) => updateSaved([...saved, ...ids]);
-
   const dismissOnboarding = () => {
     localStorage.setItem('lumen-onboarded', 'yes');
     setShowOnboarding(false);
@@ -230,12 +229,10 @@ function App() {
         )}
 
         {route.view === 'journey' && (
-          <CuratedJourney
-            artworks={artworks}
-            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
-            onMood={() => navigate({ view: 'mood' })}
-            onAtlas={(artwork) => navigate({ view: 'atlas', id: artwork.id })}
-            onSaveJourney={saveJourney}
+          <VincentExperience
+            reducedMotion={reducedMotion}
+            onDrift={() => navigate({ view: 'drift' })}
+            onColor={() => navigate({ view: 'chromatic' })}
           />
         )}
 
@@ -464,7 +461,7 @@ function Portal({
         <p>Follow a color, a feeling, or a thread between works. There is no wrong way in.</p>
         <div className="portal-entries">
           <button className="enter-button" onClick={onEnter}><span>Start drifting</span><span aria-hidden="true">↗</span></button>
-          <button onClick={onExhibition}>Enter the exhibition <span aria-hidden="true">↗</span></button>
+          <button onClick={onExhibition}>Enter VINCENT <span aria-hidden="true">↗</span></button>
           <button onClick={onMood}>Pick a mood <span aria-hidden="true">↗</span></button>
         </div>
       </div>
