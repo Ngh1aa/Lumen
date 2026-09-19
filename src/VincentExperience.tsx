@@ -101,48 +101,101 @@ const rooms = [
   { id: 'yellow', index: '02', title: 'Yellow', cue: 'Heat, field, sun', tone: 220 },
   { id: 'brush', index: '03', title: 'Brush', cue: 'The image as surface', tone: 196 },
   { id: 'room', index: '04', title: 'The Room', cue: 'Interior as portrait', tone: 164.8 },
-  { id: 'letters', index: '05', title: 'Letters', cue: 'Voice behind the paint', tone: 185 },
-  { id: 'vincent', index: '06', title: 'Vincent', cue: 'A room for listening', tone: 130.8 },
-  { id: 'afterlight', index: '07', title: 'Afterlight', cue: 'What stays with you', tone: 155.6 },
+  { id: 'places', index: '05', title: 'Places', cue: 'A life in movement', tone: 155.6 },
+  { id: 'letters', index: '06', title: 'Letters', cue: 'Voice behind the paint', tone: 185 },
+  { id: 'vincent', index: '07', title: 'Vincent', cue: 'A room for listening', tone: 130.8 },
+  { id: 'afterlight', index: '08', title: 'Afterlight', cue: 'What stays with you', tone: 138.6 },
+] as const;
+
+const placeStops = [
+  { year: '1883–85', place: 'Nuenen', note: 'A darker earth-bound palette and sustained study of rural life.' },
+  { year: '1886–88', place: 'Paris', note: 'Contact with Impressionist and Neo-Impressionist painting changes the color field.' },
+  { year: '1888–89', place: 'Arles', note: 'Sunflowers, the Yellow House, night scenes, and an increasingly intense use of color.' },
+  { year: '1889–90', place: 'Saint-Rémy', note: 'Cypresses, olive trees, fields, and the moving sky of The Starry Night.' },
+  { year: '1890', place: 'Auvers-sur-Oise', note: 'A final, compressed period of sustained work in the landscape around Auvers.' },
+] as const;
+
+const letterNodes = [
+  {
+    id: 'color',
+    label: 'COLOR',
+    date: '31 Jul 1882',
+    place: 'The Hague',
+    to: 'Theo',
+    source: 'https://vangoghletters.org/vg/letters/let252/letter.html',
+    note: 'Van Gogh describes color as relational: primary and composite colors generating countless tonal variations.',
+  },
+  {
+    id: 'harvest',
+    label: 'HARVEST',
+    date: '21 Jun 1888',
+    place: 'Arles',
+    to: 'Theo',
+    source: 'https://vangoghletters.org/en/let629',
+    note: 'A letter written during harvest time links the urgency of working to the abundance of what he sees around him.',
+  },
+  {
+    id: 'present',
+    label: 'PRESENT',
+    date: '17 Jan 1889',
+    place: 'Arles',
+    to: 'Theo',
+    source: 'https://vangoghletters.org/en/let736/letter.html',
+    note: 'The correspondence turns insistently to the immediate present: work, money, uncertainty, and what can still be done now.',
+  },
 ] as const;
 
 function useAmbientSound(enabled: boolean, frequency: number) {
   const contextRef = useRef<AudioContext | null>(null);
   const gainRef = useRef<GainNode | null>(null);
-  const oscillatorRef = useRef<OscillatorNode | null>(null);
+  const oscillatorsRef = useRef<OscillatorNode[]>([]);
 
   useEffect(() => {
     if (!enabled) {
-      gainRef.current?.gain.setTargetAtTime(0, contextRef.current?.currentTime || 0, 0.3);
+      gainRef.current?.gain.setTargetAtTime(0, contextRef.current?.currentTime || 0, 0.35);
       return;
     }
 
     if (!contextRef.current) {
       const context = new AudioContext();
       const gain = context.createGain();
-      const oscillator = context.createOscillator();
       const filter = context.createBiquadFilter();
-      oscillator.type = 'sine';
       filter.type = 'lowpass';
-      filter.frequency.value = 900;
+      filter.frequency.value = 720;
+      filter.Q.value = 0.7;
       gain.gain.value = 0;
-      oscillator.connect(filter);
+
+      const ratios = [1, 1.5, 2];
+      const oscillators = ratios.map((ratio, index) => {
+        const oscillator = context.createOscillator();
+        const voiceGain = context.createGain();
+        oscillator.type = index === 0 ? 'sine' : 'triangle';
+        voiceGain.gain.value = index === 0 ? 0.72 : index === 1 ? 0.18 : 0.1;
+        oscillator.frequency.value = frequency * ratio;
+        oscillator.connect(voiceGain);
+        voiceGain.connect(filter);
+        oscillator.start();
+        return oscillator;
+      });
+
       filter.connect(gain);
       gain.connect(context.destination);
-      oscillator.start();
       contextRef.current = context;
       gainRef.current = gain;
-      oscillatorRef.current = oscillator;
+      oscillatorsRef.current = oscillators;
     }
 
     const context = contextRef.current;
     if (context.state === 'suspended') void context.resume();
-    oscillatorRef.current!.frequency.setTargetAtTime(frequency, context.currentTime, 0.5);
-    gainRef.current!.gain.setTargetAtTime(0.025, context.currentTime, 0.8);
+    oscillatorsRef.current.forEach((oscillator, index) => {
+      const ratio = [1, 1.5, 2][index];
+      oscillator.frequency.setTargetAtTime(frequency * ratio, context.currentTime, 0.65);
+    });
+    gainRef.current!.gain.setTargetAtTime(0.018, context.currentTime, 1.1);
   }, [enabled, frequency]);
 
   useEffect(() => () => {
-    oscillatorRef.current?.stop();
+    oscillatorsRef.current.forEach((oscillator) => oscillator.stop());
     void contextRef.current?.close();
   }, []);
 }
@@ -163,7 +216,7 @@ export function VincentExperience({
 
   const rootStyle = useMemo(() => ({
     '--vincent-room': String(activeRoom),
-    '--vincent-accent': activeRoom === 2 ? '#e7b84b' : activeRoom === 7 ? '#6767a8' : '#315fad',
+    '--vincent-accent': activeRoom === 2 ? '#e7b84b' : activeRoom === 8 ? '#6767a8' : '#315fad',
   }) as CSSProperties, [activeRoom]);
 
   useEffect(() => {
@@ -263,10 +316,7 @@ export function VincentExperience({
       <section id="brush" className="vincent-room vincent-brush" aria-labelledby="brush-title">
         <RoomHeading index="03" label="Brush" title="The image becomes surface." id="brush-title" />
         <div className="vincent-brush-stage">
-          <div className="vincent-brush-image">
-            <img src={works.wheat.image} alt={works.wheat.alt} />
-            <div className="vincent-lens" aria-hidden="true" />
-          </div>
+          <DeepBrushViewer work={works.wheat} />
           <div className="vincent-rhythm">
             <p>Look at direction before subject.</p>
             <div><span>Sky</span><i style={{ '--rhythm': '86%' } as CSSProperties} /></div>
@@ -288,18 +338,18 @@ export function VincentExperience({
         <p className="vincent-room-note">The room is presented as spatial evidence, not as a diagnosis of the artist.</p>
       </section>
 
+      <section id="places" className="vincent-room vincent-places" aria-labelledby="places-title">
+        <RoomHeading index="05" label="Places" title="A life in movement." id="places-title" />
+        <PlacesJourney />
+      </section>
+
       <section id="letters" className="vincent-room vincent-letters" aria-labelledby="letters-title">
-        <RoomHeading index="05" label="Letters" title="A voice behind the paint." id="letters-title" />
-        <div className="vincent-letter-corridor">
-          <article><span>WORK</span><p>Painting as daily practice: returning, revising, trying again.</p></article>
-          <article><span>COLOR</span><p>Color as relation — one tone changes what the next tone can become.</p></article>
-          <article><span>WEATHER</span><p>Wind, heat, night, and fields are not backgrounds. They shape the act of looking.</p></article>
-          <article><span>LOOKING</span><p>The exhibition paraphrases themes rather than reproducing long modern translations.</p></article>
-        </div>
+        <RoomHeading index="06" label="Letters" title="A voice becomes a network." id="letters-title" />
+        <LetterNetwork />
       </section>
 
       <section id="vincent" className="vincent-room vincent-music-room" aria-labelledby="music-title">
-        <RoomHeading index="06" label="Vincent" title="A room for listening." id="music-title" />
+        <RoomHeading index="07" label="Vincent" title="A room for listening." id="music-title" />
         <div className="vincent-record">
           <div className="vincent-record-disc" aria-hidden="true"><span /></div>
           <div className="vincent-record-copy">
@@ -318,7 +368,7 @@ export function VincentExperience({
       </section>
 
       <section id="afterlight" className="vincent-room vincent-afterlight" aria-labelledby="afterlight-title">
-        <RoomHeading index="07" label="Afterlight" title="What stays with you?" id="afterlight-title" />
+        <RoomHeading index="08" label="Afterlight" title="What stays with you?" id="afterlight-title" />
         <div className="vincent-afterlight-grid">
           <ArtworkFigure work={works.cypresses} />
           <div className="vincent-afterlight-copy">
@@ -337,6 +387,131 @@ export function VincentExperience({
         </div>
       </section>
     </article>
+  );
+}
+
+
+function DeepBrushViewer({ work }: { work: VincentWork }) {
+  const [zoom, setZoom] = useState(1.7);
+  const [origin, setOrigin] = useState({ x: 56, y: 44 });
+
+  const move = (event: React.PointerEvent<HTMLDivElement>) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    setOrigin({
+      x: Math.max(0, Math.min(100, ((event.clientX - rect.left) / rect.width) * 100)),
+      y: Math.max(0, Math.min(100, ((event.clientY - rect.top) / rect.height) * 100)),
+    });
+  };
+
+  return (
+    <div className="vincent-deepzoom">
+      <div
+        className="vincent-deepzoom-viewport"
+        onPointerMove={move}
+        aria-label="Interactive close view of Wheat Field with Cypresses"
+      >
+        <img
+          src={work.image}
+          alt={work.alt}
+          style={{ transform: `scale(${zoom})`, transformOrigin: `${origin.x}% ${origin.y}%` }}
+        />
+        <div className="vincent-deepzoom-crosshair" aria-hidden="true" style={{ left: origin.x + '%', top: origin.y + '%' }} />
+      </div>
+      <div className="vincent-deepzoom-controls">
+        <span>MACRO VIEW</span>
+        <button onClick={() => setZoom((value) => Math.max(1, Number((value - 0.5).toFixed(1))))} aria-label="Zoom out brush detail">−</button>
+        <input
+          aria-label="Brush detail zoom"
+          type="range"
+          min="1"
+          max="4"
+          step="0.1"
+          value={zoom}
+          onChange={(event) => setZoom(Number(event.target.value))}
+        />
+        <button onClick={() => setZoom((value) => Math.min(4, Number((value + 0.5).toFixed(1))))} aria-label="Zoom in brush detail">+</button>
+        <output>{zoom.toFixed(1)}×</output>
+      </div>
+    </div>
+  );
+}
+
+function PlacesJourney() {
+  const [active, setActive] = useState(2);
+  const stop = placeStops[active];
+
+  return (
+    <div className="vincent-place-journey">
+      <div className="vincent-place-map" aria-hidden="true">
+        <svg viewBox="0 0 1000 420" role="presentation">
+          <path d="M70 295 C210 330, 250 105, 400 155 S570 340, 690 240 S820 90, 930 150" />
+          {[[70,295],[260,160],[470,235],[700,230],[930,150]].map(([x,y], index) => (
+            <circle key={index} cx={x} cy={y} r={active === index ? 12 : 6} className={active === index ? 'is-active' : ''} />
+          ))}
+        </svg>
+        <div className="vincent-place-label is-nuenen">NUENEN</div>
+        <div className="vincent-place-label is-paris">PARIS</div>
+        <div className="vincent-place-label is-arles">ARLES</div>
+        <div className="vincent-place-label is-remy">SAINT-RÉMY</div>
+        <div className="vincent-place-label is-auvers">AUVERS</div>
+      </div>
+      <div className="vincent-place-stops" role="list" aria-label="Van Gogh places and periods">
+        {placeStops.map((item, index) => (
+          <button
+            key={item.place}
+            role="listitem"
+            className={active === index ? 'is-active' : ''}
+            aria-pressed={active === index}
+            onClick={() => setActive(index)}
+          >
+            <span>{item.year}</span>
+            <strong>{item.place}</strong>
+          </button>
+        ))}
+      </div>
+      <div className="vincent-place-reading" aria-live="polite">
+        <span>{stop.year}</span>
+        <h3>{stop.place}</h3>
+        <p>{stop.note}</p>
+        <small>Chronology condensed from Van Gogh Museum permanent-collection material.</small>
+      </div>
+    </div>
+  );
+}
+
+function LetterNetwork() {
+  const [active, setActive] = useState(0);
+  const letter = letterNodes[active];
+
+  return (
+    <div className="vincent-letter-network">
+      <div className="vincent-letter-graph" aria-label="Selected letters connected to Theo van Gogh">
+        <div className="letter-center"><span>TO</span><strong>THEO</strong></div>
+        {letterNodes.map((node, index) => (
+          <button
+            key={node.id}
+            className={'letter-node letter-node-' + index + (active === index ? ' is-active' : '')}
+            aria-pressed={active === index}
+            onClick={() => setActive(index)}
+          >
+            <span>{node.date}</span>
+            <strong>{node.label}</strong>
+          </button>
+        ))}
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <line x1="50" y1="50" x2="18" y2="22" />
+          <line x1="50" y1="50" x2="82" y2="27" />
+          <line x1="50" y1="50" x2="52" y2="84" />
+        </svg>
+      </div>
+      <article className="vincent-letter-reading" aria-live="polite">
+        <p className="eyebrow">{letter.date} / {letter.place} / to {letter.to}</p>
+        <h3>{letter.label}</h3>
+        <p>{letter.note}</p>
+        <p className="vincent-paraphrase">LUMEN paraphrase — source wording is not reproduced here.</p>
+        <a href={letter.source} target="_blank" rel="noreferrer">Open scholarly letter record ↗</a>
+      </article>
+    </div>
   );
 }
 
