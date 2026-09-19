@@ -558,6 +558,9 @@
 }
 
 .vincent-atlas-filter-deck{
+  position:sticky;
+  top:116px;
+  z-index:18;
   display:grid;
   grid-template-columns:1fr 1fr 1.35fr minmax(150px,.55fr);
   border-bottom:1px solid rgba(255,255,255,.12);
@@ -980,5 +983,24 @@
 @media (prefers-reduced-motion:reduce){
   .vincent-atlas-thread::before{
     display:none;
+  }
+}
+
+
+/* Keep zero-match recovery from occluding the persistent filter controls. */
+.vincent-atlas-empty{
+  position:relative;
+  z-index:1;
+}
+.vincent-atlas-filter-deck{
+  isolation:isolate;
+  box-shadow:0 14px 34px rgba(0,0,0,.22);
+}
+@media (max-width:700px){
+  .vincent-atlas-filter-deck{
+    position:relative;
+    top:auto;
+    z-index:1;
+    box-shadow:none;
   }
 }
