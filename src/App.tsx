@@ -727,7 +727,7 @@ function Atlas({
     { type: 'Era', artwork: sameEra, explanation: 'Both were created in the same 2000s digital-making context.' },
     { type: 'Movement', artwork: sameMovement, explanation: 'Both are grouped here under digital abstraction.' },
     { type: 'Theme', artwork: sameTheme, explanation: 'Both carry the same LUMEN editorial theme or its closest available echo.' },
-  ].filter((node) => node.artwork);
+  ];
 
   const visible = nodes.filter((node) => filters[node.type]);
   const trace = () => {
