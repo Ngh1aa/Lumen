@@ -12,9 +12,9 @@ LUMEN explores a different archive model: users can move through artworks by col
 
 ## Current status
 
-**Research / UX framing / art direction**
+**Core experience implementation / browser QA**
 
-No production UI has been locked yet. The project intentionally completes the design foundation before implementation.
+The first implemented milestone covers Artwork Portal → Drift → Artwork Detail → Relationship Atlas. It remains on a feature branch until CI/browser/accessibility gates pass.
 
 ## Project docs
 
