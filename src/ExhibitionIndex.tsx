@@ -37,6 +37,17 @@ export function ExhibitionIndex({
     event.currentTarget.style.setProperty('--museum-y', `${((event.clientY - rect.top) / rect.height) * 100}%`);
   };
 
+  const onMediaPointerMove = (event: PointerEvent<HTMLButtonElement>) => {
+    if (reducedMotion || event.pointerType === 'touch') return;
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = (event.clientX - rect.left) / rect.width;
+    const y = (event.clientY - rect.top) / rect.height;
+    event.currentTarget.style.setProperty('--media-x', `${x * 100}%`);
+    event.currentTarget.style.setProperty('--media-y', `${y * 100}%`);
+    event.currentTarget.style.setProperty('--media-nx', String(x - 0.5));
+    event.currentTarget.style.setProperty('--media-ny', String(y - 0.5));
+  };
+
   return (
     <section className="museum-index" aria-labelledby="museum-index-title">
       <div className="museum-index-grid" aria-hidden="true" />
@@ -76,15 +87,21 @@ export function ExhibitionIndex({
           className="museum-feature-media"
           type="button"
           onClick={onEnterVincent}
+          onPointerMove={onMediaPointerMove}
           aria-label="Enter VINCENT — The Painted Night"
         >
           <div className="museum-feature-strip">
             {vincentFrames.map((frame, index) => (
               <figure
                 key={frame.title}
+                data-frame={String(index + 1).padStart(2, '0')}
                 style={{ '--museum-frame': index } as CSSProperties}
               >
-                <img src={frame.image} alt="" />
+                <img
+                  src={frame.image}
+                  alt=""
+                  style={index === 0 ? ({ viewTransitionName: 'vincent-hero-art' } as CSSProperties) : undefined}
+                />
                 <figcaption>
                   <span>{frame.year}</span>
                   <strong>{frame.title}</strong>
@@ -93,12 +110,16 @@ export function ExhibitionIndex({
             ))}
           </div>
           <div className="museum-feature-light" aria-hidden="true" />
+          <span className="museum-feature-cursor" aria-hidden="true">
+            <b>ENTER</b>
+            <small>01</small>
+          </span>
         </button>
 
         <div className="museum-feature-copy">
           <div>
             <p>SUPER PROJECT 01 / VINCENT VAN GOGH</p>
-            <h2>VINCENT<br /><em>The Painted Night</em></h2>
+            <h2 style={{ viewTransitionName: 'vincent-title' } as CSSProperties}>VINCENT<br /><em>The Painted Night</em></h2>
           </div>
           <p className="museum-feature-description">
             Nine sensory rooms move from blue night to yellow heat, brush surface, place,
