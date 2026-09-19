@@ -542,7 +542,15 @@ export function VincentExperience({
           note: letter.note,
           themes: atlasLetterThemes[letter.id] || [],
         }))}
+        threads={threadPaths.map((thread) => ({
+          ...thread,
+          artworkIds: [...thread.artworkIds],
+          themes: [...thread.themes],
+        }))}
+        savedThreadIds={savedThreads}
         onClose={() => setAtlasOpen(false)}
+        onSaveThread={saveThread}
+        onTraceThread={openThread}
       />
     </article>
   );
