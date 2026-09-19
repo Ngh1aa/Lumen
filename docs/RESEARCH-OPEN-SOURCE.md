@@ -100,3 +100,49 @@ LUMEN behavior:
 3. React Bits source may be used in an application but components themselves must not be sold/sublicensed/redistributed as a component library.
 4. 21st.dev marketplace media/previews are not reusable design assets. Treat the marketplace as research unless an underlying component's upstream license is independently verified.
 5. Do not copy demo artwork/images unless their asset license is separately compatible.
+
+
+## 2026-09-19 research expansion — ten-screen milestone
+
+This implementation round broadened reference research beyond open-source code candidates.
+
+### 21st.dev — interaction pattern research
+
+Inspected:
+- registry/category model;
+- Morphing Cursor listings;
+- Gallery Animation patterns;
+- Animated Collection patterns;
+- motion/navigation editorial material.
+
+Decision:
+- extract **behavior vocabulary** only: state-responsive motion, compact disclosure, image continuity and collection interaction;
+- do not copy marketplace styling, demo media or component source by default;
+- no 21st.dev source code is committed in this milestone;
+- future source reuse still requires exact upstream license verification.
+
+### Google Arts & Culture
+
+Inspected:
+- cultural exploration patterns that include browsing by time and color.
+
+Decision:
+- validate Color as a legitimate alternative discovery input rather than a decorative palette;
+- preserve text labels and stable object metadata;
+- LUMEN adds a two-color intersection as its own prototype behavior.
+
+### Rijksmuseum Collection Online / Rijksstudio concepts
+
+Inspected:
+- exploratory collection browsing;
+- Art Explorer;
+- user-created/personal collections;
+- comparison-oriented collection behaviors.
+
+Decision:
+- Saved Collection becomes a personal exploration memory: collection naming, private notes, Grid/Thread views, share/export;
+- no Rijksmuseum visual identity or source code is copied.
+
+### Implementation conclusion
+
+The milestone remains intentionally dependency-light. Existing React + TypeScript + CSS/SVG can express the selected behaviors, so no new animation/component package is added merely because a reference uses one.
