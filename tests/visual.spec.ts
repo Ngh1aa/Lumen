@@ -14,6 +14,7 @@ const viewports = [
 ];
 
 test.describe('visual evidence', () => {
+  test.use({ reducedMotion: 'reduce' });
   for (const viewport of viewports) {
     for (const route of routes) {
       test(`${route.name} @ ${viewport.name}`, async ({ page }) => {
@@ -78,7 +79,6 @@ test.describe('visual evidence', () => {
 
   test('reduced-motion portal', async ({ page }) => {
     fs.mkdirSync('visual-evidence/reduced-motion', { recursive: true });
-    await page.emulateMedia({ reducedMotion: 'reduce' });
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.goto('/#/');
     await expect(page.locator('.portal')).toBeVisible();
