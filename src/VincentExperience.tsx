@@ -1,4 +1,5 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
+import { VincentThreadAtlas } from './VincentThreadAtlas';
 
 type VincentWork = {
   id: string;
@@ -179,6 +180,23 @@ const threadPaths = [
 
 type ThreadPath = (typeof threadPaths)[number];
 
+const atlasArtworkThemes: Record<string, string[]> = {
+  starry: ['Night', 'Sky', 'Cypress'],
+  cafe: ['Night', 'Light', 'Interior'],
+  sunflowers: ['Yellow', 'Flowers', 'Color'],
+  wheat: ['Field', 'Cypress', 'Sky', 'Yellow'],
+  bedroom: ['Interior', 'Color'],
+  cypresses: ['Cypress', 'Field', 'Sky'],
+  irises: ['Flowers', 'Color'],
+};
+
+const atlasLetterThemes: Record<string, string[]> = {
+  color: ['Color'],
+  harvest: ['Field', 'Work', 'Yellow'],
+  present: ['Work', 'Interior'],
+  cypresses: ['Cypress', 'Field'],
+};
+
 function useAmbientSound(enabled: boolean, frequency: number) {
   const contextRef = useRef<AudioContext | null>(null);
   const gainRef = useRef<GainNode | null>(null);
@@ -246,6 +264,7 @@ export function VincentExperience({
   const [activeRoom, setActiveRoom] = useState(0);
   const [soundOn, setSoundOn] = useState(false);
   const [threadOpen, setThreadOpen] = useState(false);
+  const [atlasOpen, setAtlasOpen] = useState(false);
   const [activeThreadId, setActiveThreadId] = useState<string>(threadPaths[0].id);
   const [focusPlace, setFocusPlace] = useState<string>();
   const [focusLetter, setFocusLetter] = useState<string>();
@@ -293,7 +312,13 @@ export function VincentExperience({
 
   const openThread = (threadId: string) => {
     setActiveThreadId(threadId);
+    setAtlasOpen(false);
     setThreadOpen(true);
+  };
+
+  const openAtlas = () => {
+    setThreadOpen(false);
+    setAtlasOpen(true);
   };
 
   const openThreadForWork = (workId: string) => {
@@ -340,6 +365,14 @@ export function VincentExperience({
             </button>
           ))}
         </div>
+        <button
+          className="vincent-atlas-trigger"
+          aria-label="Open Vincent Thread Atlas"
+          onClick={openAtlas}
+        >
+          <span aria-hidden="true">✦</span>
+          Atlas
+        </button>
         <button
           className="vincent-thread-trigger"
           aria-label="Open thread navigator"
@@ -480,6 +513,32 @@ export function VincentExperience({
         onSave={saveThread}
         onPlace={jumpToPlace}
         onLetter={jumpToLetter}
+        onAtlas={openAtlas}
+      />
+
+      <VincentThreadAtlas
+        open={atlasOpen}
+        reducedMotion={reducedMotion}
+        artworks={Object.values(works).map((work) => ({
+          id: work.id,
+          title: work.title,
+          date: work.date,
+          place: work.place,
+          image: work.image,
+          sourceUrl: work.sourceUrl,
+          note: work.note,
+          themes: atlasArtworkThemes[work.id] || [],
+        }))}
+        letters={letterNodes.map((letter) => ({
+          id: letter.id,
+          label: letter.label,
+          date: letter.date,
+          place: letter.place,
+          source: letter.source,
+          note: letter.note,
+          themes: atlasLetterThemes[letter.id] || [],
+        }))}
+        onClose={() => setAtlasOpen(false)}
       />
     </article>
   );
@@ -633,6 +692,7 @@ function ThreadDrawer({
   onSave,
   onPlace,
   onLetter,
+  onAtlas,
 }: {
   open: boolean;
   activeThreadId: string;
@@ -642,6 +702,7 @@ function ThreadDrawer({
   onSave: (id: string) => void;
   onPlace: (thread: ThreadPath) => void;
   onLetter: (thread: ThreadPath) => void;
+  onAtlas: () => void;
 }) {
   const thread = threadPaths.find((item) => item.id === activeThreadId) || threadPaths[0];
   const letter = letterNodes.find((item) => item.id === thread.letterId) || letterNodes[0];
@@ -716,13 +777,16 @@ function ThreadDrawer({
         </div>
 
         <footer className="vincent-thread-footer">
-          <button
-            className={isSaved ? 'is-saved' : ''}
-            onClick={() => onSave(thread.id)}
-            disabled={isSaved}
-          >
-            {isSaved ? 'Thread saved ✓' : 'Save this thread +'}
-          </button>
+          <div>
+            <button
+              className={isSaved ? 'is-saved' : ''}
+              onClick={() => onSave(thread.id)}
+              disabled={isSaved}
+            >
+              {isSaved ? 'Thread saved ✓' : 'Save this thread +'}
+            </button>
+            <button className="vincent-thread-atlas-link" onClick={onAtlas}>Open full Atlas ✦</button>
+          </div>
           <span role="status">{isSaved ? 'Saved to this browser.' : 'Keep a path through the exhibition.'}</span>
         </footer>
       </aside>
