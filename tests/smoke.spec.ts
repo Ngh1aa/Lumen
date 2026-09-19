@@ -93,3 +93,56 @@ test('new discovery routes do not overflow on mobile', async ({ page }) => {
     expect(overflow).toBe(false);
   }
 });
+
+
+test('mood discovery supports keyboard selection and clear non-color labels', async ({ page }) => {
+  await page.goto('/#/mood');
+  await expect(page.getByRole('heading', { name: /Choose a feeling/i })).toBeVisible();
+
+  const moodButtons = page.locator('.mood-selector button');
+  await expect(moodButtons).toHaveCount(5);
+  await moodButtons.nth(3).focus();
+  await page.keyboard.press('Enter');
+  await expect(moodButtons.nth(3)).toHaveAttribute('aria-pressed', 'true');
+  await expect(page.locator('.mood-statement')).toContainText('Restless');
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((v) => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
+});
+
+test('curated journey exposes chapters, source-safe storytelling and exit actions', async ({ page }) => {
+  await page.goto('/#/journey');
+  await expect(page.getByRole('heading', { name: /Signals from a quiet machine/i })).toBeVisible();
+  await expect(page.locator('.journey-chapter')).toHaveCount(5);
+  await expect(page.locator('#signal')).toBeVisible();
+
+  await page.locator('.journey-rail a[href="#contrast"]').click();
+  await expect(page.locator('#contrast')).toBeInViewport();
+
+  await page.locator('#afterimage').scrollIntoViewIfNeeded();
+  await expect(page.getByRole('button', { name: /Explore by mood/i })).toBeVisible();
+  await expect(page.locator('.journey-credits')).toContainText('prototype content');
+
+  const results = await new AxeBuilder({ page }).analyze();
+  expect(results.violations.filter((v) => ['serious', 'critical'].includes(v.impact || ''))).toEqual([]);
+});
+
+test('mood and journey remain within mobile viewport', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+
+  for (const route of ['/#/mood', '/#/journey']) {
+    await page.goto(route);
+    await expect(page.locator('main')).toBeVisible();
+    const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
+    expect(overflow).toBe(false);
+  }
+});
+
+test('curated journey media renders', async ({ page }) => {
+  await page.goto('/#/journey');
+  await page.evaluate(() => window.scrollTo(0, document.body.scrollHeight));
+  await page.waitForFunction(() => {
+    const images = Array.from(document.querySelectorAll<HTMLImageElement>('.journey img'));
+    return images.length >= 6 && images.every((image) => image.complete && image.naturalWidth > 0);
+  });
+});
