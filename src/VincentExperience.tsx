@@ -87,7 +87,7 @@ const works: Record<string, VincentWork> = {
     title: 'Irises',
     date: '1890',
     place: 'Saint-Rémy-de-Provence',
-    image: 'https://collectionapi.metmuseum.org/api/collection/v1/iiif/436528/16728/main-image',
+    image: commons('Vincent van Gogh - Irises (1890).jpg'),
     sourceUrl: 'https://www.metmuseum.org/art/collection/search/436528',
     alt: 'Irises by Vincent van Gogh, a bouquet of violet-blue irises in a vase.',
     accent: '#6767a8',
