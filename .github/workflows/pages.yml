@@ -30,6 +30,8 @@ jobs:
         run: npm install
 
       - name: Build
+        env:
+          GITHUB_PAGES: 'true'
         run: npm run build
 
       - name: Configure GitHub Pages
@@ -46,7 +48,45 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     needs: build
+    outputs:
+      page_url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+  verify:
+    runs-on: ubuntu-latest
+    needs: deploy
+    steps:
+      - name: Verify public Pages HTML and hashed assets
+        env:
+          PAGE_URL: ${{ needs.deploy.outputs.page_url }}
+        run: |
+          set -euo pipefail
+          page="${PAGE_URL%/}/?build=${GITHUB_SHA}"
+          html=""
+
+          for attempt in 1 2 3 4 5 6; do
+            if html="$(curl -fsSL --retry 2 --retry-delay 2 "$page")"; then
+              break
+            fi
+            echo "Waiting for Pages propagation (attempt $attempt/6)…"
+            sleep 10
+          done
+
+          test -n "$html"
+          printf '%s' "$html" | grep -q 'LUMEN — Digital Museum of Visual Culture'
+
+          script_path="$(printf '%s' "$html" | grep -oE 'src="[^"]+\.js"' | head -1 | cut -d'"' -f2)"
+          style_path="$(printf '%s' "$html" | grep -oE 'href="[^"]+\.css"' | head -1 | cut -d'"' -f2)"
+          origin="$(printf '%s' "$PAGE_URL" | sed -E 's#(https?://[^/]+).*#\1#')"
+
+          test -n "$script_path"
+          test -n "$style_path"
+          curl -fsS "$origin$script_path" -o /dev/null
+          curl -fsS "$origin$style_path" -o /dev/null
+
+          echo "Verified $PAGE_URL"
+          echo "JS: $script_path"
+          echo "CSS: $style_path"
