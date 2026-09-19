@@ -31,7 +31,7 @@ const vanGogh = (
   medium: 'Oil on canvas',
   classification: 'Painting',
   movement: 'Post-Impressionism',
-  license: 'Public-domain artwork; digital-file provenance linked at source',
+  license: 'Public domain artwork; digital-file provenance linked at source',
 });
 
 const publicDomainArtworks: Artwork[] = [
@@ -43,7 +43,7 @@ const publicDomainArtworks: Artwork[] = [
     alt: 'The Starry Night by Vincent van Gogh, a swirling blue night sky over Saint-Rémy',
     dimensions: '73.7 × 92.1 cm',
     origin: 'Saint-Rémy-de-Provence',
-    accent: '#244b8f',
+    accent: '#6f8fd1',
     mood: 'Luminous',
     era: 'Saint-Rémy · 1889',
     paletteName: 'Cobalt Night',
