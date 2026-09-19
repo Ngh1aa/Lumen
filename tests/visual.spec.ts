@@ -212,19 +212,17 @@ test.describe('visual evidence', () => {
       await page.setViewportSize({ width: viewport.width, height: viewport.height });
       await page.goto('/#/exhibition');
       await page.waitForLoadState('networkidle');
-      await page.getByRole('button', { name: /Open Vincent Thread Atlas/i }).click();
-      await expect(page.locator('.vincent-atlas')).toBeVisible();
-      await page.locator('.vincent-atlas-lenses > button').filter({ hasText: 'THEME' }).click();
-      await page.waitForFunction(() =>
-        Array.from(document.querySelectorAll<HTMLImageElement>('.vincent-atlas img'))
-          .every((image) => image.complete && image.naturalWidth > 0),
-      );
+      await page.getByRole('button', { name: /Open Vincent thread atlas/i }).click();
+      const atlas = page.locator('.vincent-atlas-layer');
+      await expect(atlas).toBeVisible();
+      await atlas.locator('.vincent-atlas-filter').filter({ hasText: 'Theme' }).getByRole('button', { name: 'Cypress' }).click();
+      await expect(atlas.locator('.vincent-atlas-thread')).toHaveCount(1);
       await page.screenshot({
         path: 'visual-evidence/' + viewport.name + '/vincent-thread-atlas.png',
         fullPage: true,
       });
-      await page.getByRole('button', { name: /Close Vincent Thread Atlas/i }).click();
-      await expect(page.locator('.vincent-atlas')).toHaveCount(0);
+      await atlas.getByRole('button', { name: /Close Vincent thread atlas/i }).click();
+      await expect(page.locator('.vincent-atlas-layer')).toHaveCount(0);
     }
   });
 
