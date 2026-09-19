@@ -4,6 +4,9 @@ import fs from 'node:fs';
 const routes = [
   { name: 'portal', hash: '#/' },
   { name: 'drift', hash: '#/drift' },
+  { name: 'grid', hash: '#/grid' },
+  { name: 'color', hash: '#/color' },
+  { name: 'saved-empty', hash: '#/saved' },
 ];
 
 async function settleVisuals(page: import('@playwright/test').Page) {
@@ -89,6 +92,21 @@ test.describe('visual evidence', () => {
     await expect(page.locator('.atlas')).toBeVisible();
     await page.screenshot({
       path: 'visual-evidence/mobile-390/atlas.png',
+      fullPage: true,
+    });
+  });
+
+  test('saved populated @ desktop', async ({ page }) => {
+    fs.mkdirSync('visual-evidence/desktop-1440', { recursive: true });
+    await page.setViewportSize({ width: 1440, height: 1100 });
+    await page.goto('/#/drift');
+    await page.locator('.drift-art').first().click();
+    await page.getByRole('button', { name: 'Save +' }).click();
+    await page.goto('/#/saved');
+    await expect(page.locator('.saved-grid article')).toHaveCount(1);
+    await settleVisuals(page);
+    await page.screenshot({
+      path: 'visual-evidence/desktop-1440/saved-populated.png',
       fullPage: true,
     });
   });
