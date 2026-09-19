@@ -725,7 +725,7 @@ function Atlas({
 
   const nodes: Array<{ type: RelationType; artwork?: Artwork; explanation: string }> = [
     { type: 'Color', artwork: nearestColor, explanation: 'Both sit close in the current prototype dominant-color map.' },
-    { type: 'Era', artwork: sameEra, explanation: 'Both sit within the same place-and-year chapter of Van Gogh's late work.' },
+    { type: 'Era', artwork: sameEra, explanation: 'Both sit within the same place-and-year chapter of Van Gogh’s late work.' },
     { type: 'Movement', artwork: sameMovement, explanation: 'Both are grouped here under Post-Impressionism while keeping their individual source records.' },
     { type: 'Theme', artwork: sameTheme, explanation: 'Both carry the same LUMEN editorial theme or its closest available echo.' },
   ];
