@@ -1,4 +1,5 @@
 name: Deploy LUMEN to GitHub Pages
+# Deployment source probe: GitHub Actions only
 
 on:
   push:
