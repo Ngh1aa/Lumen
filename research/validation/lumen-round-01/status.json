@@ -1,0 +1,32 @@
+{
+  "study_id": "lumen-round-01",
+  "product": "LUMEN",
+  "study_type": "moderated discovery/orientation usability test",
+  "status": "READY_TO_RECRUIT",
+  "evidence_state": "PLANNED_VALIDATION",
+  "target_participants": 5,
+  "verified_sessions": 0,
+  "participant_profile": "people who browse art/design/cultural content and sometimes explore without a specific target",
+  "accessibility_goal": "include keyboard/reduced-motion-focused evidence when recruitment allows",
+  "prototype_url": "https://ngh1aa.github.io/Lumen/",
+  "research_assets": {
+    "study_plan": "research/validation/lumen-round-01/STUDY-PLAN.md",
+    "screener_and_consent": "research/validation/lumen-round-01/SCREENER-AND-CONSENT.md",
+    "session_template": "research/validation/lumen-round-01/SESSION-TEMPLATE.md",
+    "atomic_ledger": "research/validation/lumen-round-01/evidence-ledger.jsonl",
+    "findings": "research/validation/lumen-round-01/FINDINGS.md",
+    "decision_log": "research/validation/lumen-round-01/DECISION-LOG.md"
+  },
+  "next_valid_transition": "Recruit an eligible participant, obtain consent, run the discovery/orientation tasks, store an anonymized session artifact, append atomic evidence and synthesize without converting aesthetic preference into usability outcome.",
+  "allowed_claims": [
+    "LUMEN is a working React/TypeScript cultural prototype",
+    "A discovery/orientation validation round is ready to recruit",
+    "Direct-user outcomes are not measured yet"
+  ],
+  "forbidden_claims_until_verified": [
+    "LUMEN reduces cognitive friction",
+    "Users prefer relationship-driven discovery",
+    "LUMEN increases engagement or return behavior",
+    "The motion system improves comprehension"
+  ]
+}
