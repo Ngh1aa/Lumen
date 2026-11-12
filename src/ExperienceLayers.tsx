@@ -230,7 +230,7 @@ export function OnboardingHint({
   return (
     <aside className="onboarding-hint" aria-label="First visit tip">
       <span>First visit</span>
-      <p>Drift is for wandering. Use Grid whenever you want order, or open Accessibility to quiet the motion.</p>
+      <p>Drift is for wandering. Open the Collection whenever you want order, or open Access to quiet the motion.</p>
       <button onClick={onDismiss}>Got it</button>
     </aside>
   );

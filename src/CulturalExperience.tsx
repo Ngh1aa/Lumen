@@ -146,7 +146,7 @@ export function MoodView({
         <div className="mood-results" aria-label={config.key + ' artwork path'}>
           {picks.map((artwork, index) => (
             <article className="mood-result" key={artwork.id}>
-              <button onClick={() => onOpen(artwork)} aria-label={'Open ' + artwork.title}>
+              <button onClick={() => onOpen(artwork)}>
                 <span className="mood-result-image">
                   <img src={artwork.image} alt={artwork.alt} style={objectTransition(artwork.id)} />
                 </span>

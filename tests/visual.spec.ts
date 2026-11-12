@@ -8,8 +8,16 @@ const routes = [
   { name: 'color', hash: '#/color' },
   { name: 'mood', hash: '#/mood' },
   { name: 'exhibitions', hash: '#/exhibitions' },
-  { name: 'saved-empty', hash: '#/collection' },
+  { name: 'saved-empty', hash: '#/my-collection' },
   { name: 'about', hash: '#/about' },
+  { name: 'collection', hash: '#/collection' },
+  { name: 'collection-list', hash: '#/collection?artist=Vincent+van+Gogh&view=list' },
+  { name: 'collection-empty', hash: '#/collection?q=zzzz' },
+  { name: 'artwork-detail', hash: '#/artwork/van-gogh-starry-night' },
+  { name: 'artwork-not-found', hash: '#/artwork/missing-object' },
+  { name: 'exhibition-overview', hash: '#/exhibition/blue-and-yellow' },
+  { name: 'exhibition-walk', hash: '#/exhibition/blue-and-yellow/3' },
+  { name: 'exhibition-walk-end', hash: '#/exhibition/after-everyone-left/5' },
 ];
 
 async function settleVisuals(page: import('@playwright/test').Page) {
@@ -38,6 +46,8 @@ const viewports = [
 
 test.describe('visual evidence', () => {
   test.use({ reducedMotion: 'reduce' });
+  // Every screenshot waits for all remote Wikimedia media; slow links need more than the 30s default.
+  test.describe.configure({ timeout: 90_000 });
 
   for (const viewport of viewports) {
     for (const route of routes) {
@@ -124,7 +134,7 @@ test.describe('visual evidence', () => {
     await page.locator('.drift-art').first().click();
     await page.getByRole('button', { name: 'Save +' }).click();
     await page.getByRole('button', { name: /Close quick preview/i }).click();
-    await page.goto('/#/collection');
+    await page.goto('/#/my-collection');
     await expect(page.locator('.saved-grid article')).toHaveCount(1);
     await settleVisuals(page);
     await page.screenshot({

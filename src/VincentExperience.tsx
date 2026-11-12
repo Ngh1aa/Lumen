@@ -1,5 +1,6 @@
 import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
 import { VincentThreadAtlas } from './VincentThreadAtlas';
+import { readSession, writeSession } from './store';
 
 type VincentWork = {
   id: string;
@@ -14,7 +15,7 @@ type VincentWork = {
 };
 
 const commons = (name: string) =>
-  'https://commons.wikimedia.org/wiki/Special:Redirect/file/' + encodeURIComponent(name);
+  'https://commons.wikimedia.org/wiki/Special:Redirect/file/' + encodeURIComponent(name) + '?width=1600';
 
 const works: Record<string, VincentWork> = {
   starry: {
@@ -33,8 +34,8 @@ const works: Record<string, VincentWork> = {
     title: 'Café Terrace at Night',
     date: '1888',
     place: 'Arles',
-    image: commons('Vincent van Gogh - Cafe Terrace at Night (1888).jpg'),
-    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_-_Cafe_Terrace_at_Night_(1888).jpg',
+    image: commons('Vincent Willem van Gogh - Cafe Terrace at Night (Yorck).jpg'),
+    sourceUrl: 'https://commons.wikimedia.org/wiki/File:Vincent_Willem_van_Gogh_-_Cafe_Terrace_at_Night_(Yorck).jpg',
     alt: 'Café Terrace at Night by Vincent van Gogh, with a yellow café glowing beneath a deep blue sky.',
     accent: '#e7b84b',
     note: 'A warm room of light opens inside a blue street.',
@@ -116,7 +117,7 @@ const placeStops = [
   { year: '1890', place: 'Auvers-sur-Oise', note: 'A final, compressed period of sustained work in the landscape around Auvers.' },
 ] as const;
 
-const letterNodes = [
+export const letterNodes = [
   {
     id: 'color',
     label: 'COLOR',
@@ -155,7 +156,7 @@ const letterNodes = [
   },
 ] as const;
 
-const threadPaths = [
+export const threadPaths = [
   {
     id: 'arles-night',
     title: 'Arles / Night / Interior',
@@ -260,10 +261,12 @@ export function VincentExperience({
   reducedMotion,
   onDrift,
   onColor,
+  walkHref,
 }: {
   reducedMotion: boolean;
   onDrift: () => void;
   onColor: () => void;
+  walkHref?: string;
 }) {
   const [activeRoom, setActiveRoom] = useState(0);
   const [soundOn, setSoundOn] = useState(false);
@@ -274,7 +277,7 @@ export function VincentExperience({
   const [focusLetter, setFocusLetter] = useState<string>();
   const [savedThreads, setSavedThreads] = useState<string[]>(() => {
     try {
-      return JSON.parse(localStorage.getItem('lumen-vincent-threads') || '[]') as string[];
+      return JSON.parse(readSession('lumen-vincent-threads') || '[]') as string[];
     } catch {
       return [];
     }
@@ -332,7 +335,7 @@ export function VincentExperience({
 
   const saveThread = (threadId: string) => {
     const next = Array.from(new Set([...savedThreads, threadId]));
-    localStorage.setItem('lumen-vincent-threads', JSON.stringify(next));
+    writeSession('lumen-vincent-threads', JSON.stringify(next));
     setSavedThreads(next);
   };
 
@@ -379,7 +382,7 @@ export function VincentExperience({
         </button>
         <button
           className="vincent-thread-trigger"
-          aria-label="Open thread navigator"
+          aria-label={'Threads' + (savedThreads.length ? ' (' + savedThreads.length + ')' : '') + ': open thread navigator'}
           onClick={() => setThreadOpen(true)}
         >
           <span aria-hidden="true">↯</span>
@@ -504,6 +507,7 @@ export function VincentExperience({
             <div>
               <button onClick={onDrift}>Return to Drift ↗</button>
               <button onClick={onColor}>Explore by Color ↗</button>
+              {walkHref && <a className="vincent-walk-link" href={walkHref}>Walk the works ↗</a>}
             </div>
           </div>
           <ArtworkFigure work={works.irises} />
@@ -969,7 +973,7 @@ function ThreadDrawer({
             </button>
             <button className="vincent-thread-atlas-link" onClick={onAtlas}>Open full Atlas ✦</button>
           </div>
-          <span role="status">{isSaved ? 'Saved to this browser.' : 'Keep a path through the exhibition.'}</span>
+          <span role="status">{isSaved ? 'Saved for this session.' : 'Keep a path through the exhibition.'}</span>
         </footer>
       </aside>
     </div>

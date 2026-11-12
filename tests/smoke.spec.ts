@@ -49,7 +49,7 @@ test('Drift stays compact, art-first and keyboard traversable', async ({ page })
 test('mobile core pages do not introduce horizontal overflow', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
 
-  for (const route of ['/#/drift', '/#/grid', '/#/color', '/#/mood', '/#/exhibitions', '/#/collection', '/#/about', '/#/exhibition']) {
+  for (const route of ['/#/drift', '/#/grid', '/#/collection', '/#/collection?view=list', '/#/color', '/#/mood', '/#/exhibitions', '/#/exhibition/signals', '/#/exhibition/blue-and-yellow/3', '/#/artwork/van-gogh-starry-night', '/#/my-collection', '/#/about', '/#/exhibition']) {
     await page.goto(route);
     await expect(page.locator('main')).toBeVisible();
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth + 1);
@@ -62,7 +62,7 @@ test('mobile core pages do not introduce horizontal overflow', async ({ page }) 
 test('Exhibitions index establishes LUMEN as a museum platform and enters VINCENT', async ({ page }) => {
   await page.goto('/#/exhibitions');
   await expect(page.getByRole('heading', { name: /A museum is not a folder/i })).toBeVisible();
-  await expect(page.getByText(/01 published/i)).toBeVisible();
+  await expect(page.getByText(/04 published/i)).toBeVisible();
   await expect(page.getByRole('heading', { name: /VINCENT/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /The next room has not been invented yet/i })).toBeVisible();
 
@@ -101,17 +101,18 @@ test('public-domain artwork imagery renders in the browser', async ({ page }) =>
 });
 
 test('Grid provides a predictable collection recovery path', async ({ page }) => {
+  // Legacy #/grid now resolves to the Collection, which absorbed the old Grid mode.
   await page.goto('/#/grid');
   await expect(page.getByRole('heading', { name: /Prefer order/i })).toBeVisible();
-  await expect(page.locator('.grid-card')).toHaveCount(13);
+  await expect(page.locator('.grid-card')).toHaveCount(20);
 
   await page.getByRole('button', { name: /Warm/ }).click();
   const warmCount = await page.locator('.grid-card').count();
   expect(warmCount).toBeGreaterThan(0);
-  expect(warmCount).toBeLessThan(13);
+  expect(warmCount).toBeLessThan(20);
 
   await page.getByRole('button', { name: /^All/ }).click();
-  await expect(page.locator('.grid-card')).toHaveCount(13);
+  await expect(page.locator('.grid-card')).toHaveCount(20);
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
@@ -120,7 +121,7 @@ test('Color discovery supports one or two labelled colors', async ({ page }) => 
   await expect(page.getByRole('heading', { name: /Start with a color/i })).toBeVisible();
 
   const swatches = page.locator('.chromatic-rail button');
-  await expect(swatches).toHaveCount(13);
+  await expect(swatches).toHaveCount(20);
 
   await swatches.nth(0).click();
   await swatches.nth(1).click();
@@ -134,8 +135,9 @@ test('Color discovery supports one or two labelled colors', async ({ page }) => 
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
 });
 
-test('saved collection covers empty, populated, naming, notes and thread view', async ({ page }) => {
-  await page.goto('/#/collection');
+test('saved collection covers empty, populated, notes and thread view', async ({ page }) => {
+  // Saved works moved from #/collection (now the browsable Collection) to #/my-collection.
+  await page.goto('/#/my-collection');
   await expect(page.getByRole('heading', { name: /Saved by drifting/i })).toBeVisible();
   await expect(page.getByRole('heading', { name: /Nothing here yet/i })).toBeVisible();
 
@@ -144,12 +146,8 @@ test('saved collection covers empty, populated, naming, notes and thread view', 
   await page.getByRole('button', { name: 'Save +' }).click();
   await page.getByRole('button', { name: /Close quick preview/i }).click();
 
-  await page.goto('/#/collection');
+  await page.goto('/#/my-collection');
   await expect(page.locator('.saved-grid article')).toHaveCount(1);
-
-  const nameInput = page.getByLabel('Collection name');
-  await nameInput.fill('Quiet signals');
-  await expect(nameInput).toHaveValue('Quiet signals');
 
   await page.getByRole('button', { name: 'Thread' }).click();
   await expect(page.locator('.saved-grid')).toHaveClass(/saved-grid--thread/);
@@ -236,8 +234,8 @@ test('VINCENT cultural threads connect artwork, place and letter and persist sav
   await expect(drawer).toContainText('Wheatfield and cypresses');
 
   await drawer.getByRole('button', { name: /Save this thread/i }).click();
-  await expect(drawer.getByRole('status')).toContainText('Saved to this browser');
-  await expect.poll(async () => page.evaluate(() => localStorage.getItem('lumen-vincent-threads'))).toContain('saint-remy-field');
+  await expect(drawer.getByRole('status')).toContainText('Saved for this session');
+  await expect.poll(async () => page.evaluate(() => sessionStorage.getItem('lumen-vincent-threads'))).toContain('saint-remy-field');
 
   await drawer.getByRole('button', { name: /Enter place room/i }).click();
   await expect(page.locator('#places')).toBeInViewport();
@@ -283,7 +281,7 @@ test('VINCENT Thread Atlas filters verified cultural threads without inventing l
   await expect(atlas).toContainText('Arles / Night / Interior');
 
   await atlas.getByRole('button', { name: /Save \+/i }).click();
-  await expect.poll(async () => page.evaluate(() => localStorage.getItem('lumen-vincent-threads'))).toContain('arles-night');
+  await expect.poll(async () => page.evaluate(() => sessionStorage.getItem('lumen-vincent-threads'))).toContain('arles-night');
 
   await expect(seriousAxeViolations(page)).resolves.toEqual([]);
   await page.keyboard.press('Escape');

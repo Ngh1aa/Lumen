@@ -12,9 +12,30 @@ LUMEN explores a different archive model: users can move through artworks by col
 
 ## Current status
 
-**Cultural experience complete / Vercel-ready**
+**Multi-view museum prototype.** Everything works except a backend.
 
-The implemented experience now includes Artwork Portal → Drift / Grid / Color / Mood → Artwork Detail → Relationship Atlas, Saved Collection, and the curated exhibition journey **Signals from a Quiet Machine**. CI, browser QA and rendered visual evidence cover the flagship flows.
+LUMEN now behaves like a museum website with deep-linkable views. The original experience (Portal, Drift, Color, Mood, Atlas and the VINCENT exhibition) is the featured front of house.
+
+| View | Route | What it does |
+|---|---|---|
+| Home | `#/` | The Portal. Drift, exhibitions, mood and collection entry points. |
+| Collection | `#/collection` (legacy `#/grid`) | All 20 works. Search, filters (artist, period, medium, theme, palette), sort, grid or list, result count, empty state, reset. Filter state lives in the URL, e.g. `#/collection?artist=Vincent+van+Gogh&view=list`. |
+| Artwork | `#/artwork/:id` | Zoomable image (drag, arrow keys, + and −), metadata, editorial reading, licence and source, exhibitions it appears in, documented VINCENT threads and letters, related works, more by the artist, previous and next, Save and Add to set. Unknown ids show a not-found state. |
+| Explore | `#/drift`, `#/color`, `#/mood`, `#/atlas/:id` | The original discovery modes. |
+| Exhibitions | `#/exhibitions` | Four curated exhibitions. |
+| Exhibition | `#/exhibition/:slug`, walk-through `#/exhibition/:slug/:stop` | Overview with stop list, then a stop-by-stop walk (links, arrow keys, progress bar), Save as set at the end. `#/exhibition/vincent` stays the immersive nine-room experience. |
+| My collection | `#/my-collection`, `#/my-collection/:setId` (legacy `#/saved`) | Saved works with notes, thread view, share and export. Create, rename and delete named sets, add and remove works. |
+| About | `#/about` | Method, sources and accessibility. |
+
+Navigation uses real links, so browser back and forward work. On every page change, focus moves to the page heading and scroll goes to the top, or back to where you were on Back. Changing filters or stops replaces the history entry instead of adding one.
+
+### Data rule: no backend, sessionStorage only
+
+Saved works, sets, private notes and saved VINCENT threads are kept in **sessionStorage** (`lumen-saved`, `lumen-sets`, `lumen-notes`, `lumen-vincent-threads`). They survive route changes and reloads in the same tab and are cleared when the tab closes. **Reset demo data** (footer, and the My collection sidebar) clears them after a confirmation. Display preferences (reduced motion, contrast, onboarding) stay in localStorage because they belong to the device, not the visit.
+
+### Running tests locally
+
+`npm run test:e2e` builds nothing itself; run `npm run build` first. If port 4173 is taken, set `PW_PORT` (e.g. `PW_PORT=4391 npm run test:e2e`).
 
 ## Project docs
 

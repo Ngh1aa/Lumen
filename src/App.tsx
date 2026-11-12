@@ -1,6 +1,7 @@
-import { CSSProperties, useEffect, useMemo, useRef, useState } from 'react';
-import { Artwork, fetchPublicDomainArtworks } from './artworks';
-import { ChromaticView, GridView, SavedView } from './DiscoveryViews';
+import { CSSProperties, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { flushSync } from 'react-dom';
+import { Artwork, collection, relationsFor } from './artworks';
+import { ChromaticView } from './DiscoveryViews';
 import { MoodView } from './CulturalExperience';
 import { VincentExperience } from './VincentExperience';
 import { ExhibitionIndex } from './ExhibitionIndex';
@@ -11,359 +12,424 @@ import {
   OnboardingHint,
   QuickPreview,
 } from './ExperienceLayers';
-
-type Route =
-  | { view: 'portal' }
-  | { view: 'drift' }
-  | { view: 'grid' }
-  | { view: 'chromatic' }
-  | { view: 'mood' }
-  | { view: 'exhibitions' }
-  | { view: 'journey' }
-  | { view: 'saved' }
-  | { view: 'about' }
-  | { view: 'detail'; id: string }
-  | { view: 'atlas'; id: string }
-  | { view: 'notfound' };
-
-function parseRoute(): Route {
-  const hash = window.location.hash.replace(/^#/, '');
-  const parts = hash.split('/').filter(Boolean);
-  if (parts.length === 0) return { view: 'portal' };
-  if (parts[0] === 'drift') return { view: 'drift' };
-  if (parts[0] === 'grid') return { view: 'grid' };
-  if (parts[0] === 'color' || parts[0] === 'chromatic') return { view: 'chromatic' };
-  if (parts[0] === 'mood') return { view: 'mood' };
-  if (parts[0] === 'exhibitions' || parts[0] === 'museum') return { view: 'exhibitions' };
-  if (parts[0] === 'journey') return { view: 'journey' };
-  if (parts[0] === 'exhibition' && parts[1] === 'vincent') return { view: 'journey' };
-  if (parts[0] === 'exhibition') return { view: 'journey' };
-  if (parts[0] === 'saved' || parts[0] === 'collection') return { view: 'saved' };
-  if (parts[0] === 'about' || parts[0] === 'method') return { view: 'about' };
-  if (parts[0] === 'artwork' && parts[1]) return { view: 'detail', id: parts[1] };
-  if (parts[0] === 'atlas' && parts[1]) return { view: 'atlas', id: parts[1] };
-  return { view: 'notfound' };
-}
-
-function routeHash(route: Route) {
-  if (route.view === 'portal') return '#/';
-  if (route.view === 'drift') return '#/drift';
-  if (route.view === 'grid') return '#/grid';
-  if (route.view === 'chromatic') return '#/color';
-  if (route.view === 'mood') return '#/mood';
-  if (route.view === 'exhibitions') return '#/exhibitions';
-  if (route.view === 'journey') return '#/exhibition/vincent';
-  if (route.view === 'saved') return '#/collection';
-  if (route.view === 'about') return '#/about';
-  if (route.view === 'detail') return '#/artwork/' + route.id;
-  if (route.view === 'atlas') return '#/atlas/' + route.id;
-  return '#/404';
-}
+import { Portal, Drift } from './PortalDrift';
+import { CollectionView } from './CollectionView';
+import { ArtworkDetail, ArtworkNotFound } from './ArtworkDetail';
+import { ExhibitionNotFound, ExhibitionOverview, ExhibitionWalk } from './ExhibitionWalk';
+import { MyCollection } from './MyCollection';
+import { ConfirmDialog } from './MuseumControls';
+import { exhibitions, findExhibition } from './exhibitions';
+import { Link, NavigateOptions, pageKey, parseHash, Route, RouterContext, toHash } from './router';
+import { readSession, SESSION_KEYS, useMuseumData } from './store';
 
 function artworkTransition(id: string): CSSProperties {
   return { viewTransitionName: 'artwork-' + id } as CSSProperties;
 }
 
 function useSystemReducedMotion() {
-  const [reduced, setReduced] = useState(false);
+  const [reduced, setReduced] = useState(() => window.matchMedia('(prefers-reduced-motion: reduce)').matches);
   useEffect(() => {
     const media = window.matchMedia('(prefers-reduced-motion: reduce)');
     const update = () => setReduced(media.matches);
-    update();
     media.addEventListener('change', update);
     return () => media.removeEventListener('change', update);
   }, []);
   return reduced;
 }
 
-function initialSaved() {
-  let local: string[] = [];
-  try {
-    local = JSON.parse(localStorage.getItem('lumen-saved') || '[]') as string[];
-  } catch {
-    local = [];
-  }
-  const shared = new URL(window.location.href).searchParams.get('saved')?.split(',').filter(Boolean) || [];
-  return Array.from(new Set([...local, ...shared]));
+function readLocal(key: string) {
+  try { return window.localStorage.getItem(key); } catch { return null; }
+}
+function writeLocal(key: string, value: string) {
+  try { window.localStorage.setItem(key, value); } catch { /* ignore */ }
 }
 
+const artworkIds = collection.map((artwork) => artwork.id);
+
+function titleFor(route: Route): string {
+  const suffix = ' — LUMEN';
+  switch (route.view) {
+    case 'portal': return 'LUMEN — Digital Museum of Visual Culture';
+    case 'drift': return 'Drift' + suffix;
+    case 'chromatic': return 'Explore by color' + suffix;
+    case 'mood': return 'Explore by mood' + suffix;
+    case 'collection': return 'Collection' + suffix;
+    case 'exhibitions': return 'Exhibitions' + suffix;
+    case 'journey': return 'VINCENT: The Painted Night' + suffix;
+    case 'exhibition': return (findExhibition(route.slug)?.title || 'Exhibition not found') + suffix;
+    case 'walk': {
+      const exhibition = findExhibition(route.slug);
+      const stop = exhibition?.stops[route.stop - 1];
+      const work = stop && collection.find((item) => item.id === stop.artworkId);
+      return exhibition && work ? 'Stop ' + route.stop + ': ' + work.title + ' — ' + exhibition.title + suffix : 'Exhibition stop not found' + suffix;
+    }
+    case 'saved': return 'My collection' + suffix;
+    case 'about': return 'About' + suffix;
+    case 'detail': {
+      const work = collection.find((item) => item.id === route.id);
+      return (work ? work.title + ', ' + work.artist : 'Object not found') + suffix;
+    }
+    case 'atlas': return 'Relationship Atlas' + suffix;
+    default: return 'Page not found' + suffix;
+  }
+}
+
+let keySeed = 0;
+const newHistoryKey = () => Date.now().toString(36) + '-' + (keySeed++).toString(36);
+
 function App() {
-  const [route, setRoute] = useState<Route>(() => parseRoute());
-  const [artworks, setArtworks] = useState<Artwork[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [forcedReduced, setForcedReduced] = useState(() => localStorage.getItem('lumen-motion') === 'reduced');
-  const [highContrast, setHighContrast] = useState(() => localStorage.getItem('lumen-contrast') === 'high');
-  const [saved, setSaved] = useState<string[]>(initialSaved);
+  const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash));
+  const artworks = collection;
+  const data = useMuseumData(artworkIds);
+  const [forcedReduced, setForcedReduced] = useState(() => readLocal('lumen-motion') === 'reduced');
+  const [highContrast, setHighContrast] = useState(() => readLocal('lumen-contrast') === 'high');
   const [previewId, setPreviewId] = useState<string>();
   const [settingsOpen, setSettingsOpen] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(() => localStorage.getItem('lumen-onboarded') !== 'yes');
+  const [resetOpen, setResetOpen] = useState(false);
+  const [toast, setToast] = useState('');
+  const [showOnboarding, setShowOnboarding] = useState(() => readLocal('lumen-onboarded') !== 'yes');
   const systemReduced = useSystemReducedMotion();
   const reducedMotion = systemReduced || forcedReduced;
   const mainRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    const controller = new AbortController();
-    fetchPublicDomainArtworks(controller.signal)
-      .then(setArtworks)
-      .finally(() => setLoading(false));
-    return () => controller.abort();
-  }, []);
+  /* ---------- history: keys, scroll restoration, focus ---------- */
+  const historyKey = useRef<string>('');
+  const scrollPositions = useRef(new Map<string, number>());
+  const pendingScroll = useRef<number | null>(null);
+  const lastHash = useRef(window.location.hash);
+  const previousPage = useRef<string | null>(null);
 
   useEffect(() => {
-    const onHistory = () => setRoute(parseRoute());
-    window.addEventListener('popstate', onHistory);
-    window.addEventListener('hashchange', onHistory);
+    if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual';
+    const state = window.history.state as { lumenKey?: string } | null;
+    historyKey.current = state?.lumenKey || newHistoryKey();
+    if (!state?.lumenKey) window.history.replaceState({ ...(state || {}), lumenKey: historyKey.current }, '', window.location.href);
+
+    const onPop = (event: PopStateEvent) => {
+      if (window.location.hash === lastHash.current && event.type === 'hashchange') return;
+      lastHash.current = window.location.hash;
+      scrollPositions.current.set(historyKey.current, window.scrollY);
+      const key = (event as PopStateEvent).state?.lumenKey as string | undefined;
+      if (key) {
+        historyKey.current = key;
+        pendingScroll.current = scrollPositions.current.get(key) ?? 0;
+      } else {
+        historyKey.current = newHistoryKey();
+        window.history.replaceState({ ...(window.history.state || {}), lumenKey: historyKey.current }, '', window.location.href);
+        pendingScroll.current = 0;
+      }
+      setRoute(parseHash(window.location.hash));
+    };
+    window.addEventListener('popstate', onPop);
+    window.addEventListener('hashchange', onPop as unknown as EventListener);
     return () => {
-      window.removeEventListener('popstate', onHistory);
-      window.removeEventListener('hashchange', onHistory);
+      window.removeEventListener('popstate', onPop);
+      window.removeEventListener('hashchange', onPop as unknown as EventListener);
     };
   }, []);
 
+  const navigate = useCallback((to: Route | string, options: NavigateOptions = {}) => {
+    const hash = toHash(to);
+    const next = parseHash(hash);
+    const samePage = pageKey(next) === pageKey(parseHash(window.location.hash));
+    const apply = () => {
+      if (options.replace) {
+        window.history.replaceState({ ...(window.history.state || {}), lumenKey: historyKey.current }, '', hash);
+      } else {
+        scrollPositions.current.set(historyKey.current, window.scrollY);
+        historyKey.current = newHistoryKey();
+        window.history.pushState({ lumenKey: historyKey.current }, '', hash);
+      }
+      lastHash.current = window.location.hash;
+      if (!samePage) pendingScroll.current = 0;
+      setRoute(next);
+    };
+    if (!samePage && !reducedMotion && document.startViewTransition) {
+      document.startViewTransition(() => flushSync(apply));
+    } else {
+      apply();
+    }
+  }, [reducedMotion]);
+
+  useLayoutEffect(() => {
+    const key = pageKey(route);
+    const isInitial = previousPage.current === null;
+    // Any route event (including a same-hash popstate) dismisses the quick preview.
+    setPreviewId(undefined);
+    if (key !== previousPage.current) {
+      previousPage.current = key;
+      if (!isInitial) {
+        const heading = mainRef.current?.querySelector<HTMLElement>('h1');
+        const target = heading || mainRef.current;
+        if (target) {
+          if (heading && !heading.hasAttribute('tabindex')) heading.setAttribute('tabindex', '-1');
+          target.focus({ preventScroll: true });
+        }
+      }
+      const top = pendingScroll.current;
+      if (top !== null) {
+        window.scrollTo({ top, behavior: 'auto' });
+        if (top > 0) {
+          // Restored pages may still be laying out images: retry until the position sticks.
+          let tries = 0;
+          const retry = () => {
+            if (Math.abs(window.scrollY - top) < 2 || tries++ > 20) return;
+            window.scrollTo({ top, behavior: 'auto' });
+            window.setTimeout(retry, 50);
+          };
+          window.setTimeout(retry, 50);
+        }
+      }
+    }
+    pendingScroll.current = null;
+    document.title = titleFor(route);
+  }, [route]);
+
+  /* ---------- preferences ---------- */
   useEffect(() => {
     document.documentElement.dataset.motion = reducedMotion ? 'reduced' : 'full';
     document.documentElement.dataset.contrast = highContrast ? 'high' : 'default';
-    localStorage.setItem('lumen-motion', forcedReduced ? 'reduced' : 'auto');
-    localStorage.setItem('lumen-contrast', highContrast ? 'high' : 'default');
+    writeLocal('lumen-motion', forcedReduced ? 'reduced' : 'auto');
+    writeLocal('lumen-contrast', highContrast ? 'high' : 'default');
   }, [reducedMotion, forcedReduced, highContrast]);
 
   useEffect(() => {
-    mainRef.current?.focus({ preventScroll: true });
-    setPreviewId(undefined);
-  }, [route]);
+    if (!toast) return;
+    const timer = window.setTimeout(() => setToast(''), 5000);
+    return () => window.clearTimeout(timer);
+  }, [toast]);
 
-  const active = useMemo(() => {
-    if ('id' in route) return artworks.find((item) => item.id === route.id) || artworks[0];
-    return artworks[0];
-  }, [artworks, route]);
-
-  const previewArtwork = useMemo(
-    () => artworks.find((item) => item.id === previewId),
-    [artworks, previewId],
-  );
-
-  const navigate = (next: Route) => {
-    const update = () => {
-      window.history.pushState({}, '', routeHash(next));
-      setRoute(next);
-      window.scrollTo({ top: 0, behavior: 'auto' });
-    };
-    if (!reducedMotion && document.startViewTransition) {
-      document.startViewTransition(update);
-    } else {
-      update();
-    }
-  };
-
-  const updateSaved = (next: string[]) => {
-    const unique = Array.from(new Set(next));
-    localStorage.setItem('lumen-saved', JSON.stringify(unique));
-    setSaved(unique);
-  };
-
-  const toggleSaved = (id: string) => {
-    updateSaved(saved.includes(id) ? saved.filter((value) => value !== id) : [...saved, id]);
-  };
+  const active = useMemo(() => ('id' in route ? artworks.find((item) => item.id === route.id) : undefined), [artworks, route]);
+  const accentArtwork = active || artworks[0];
+  const previewArtwork = useMemo(() => artworks.find((item) => item.id === previewId), [artworks, previewId]);
 
   const dismissOnboarding = () => {
-    localStorage.setItem('lumen-onboarded', 'yes');
+    writeLocal('lumen-onboarded', 'yes');
     setShowOnboarding(false);
   };
 
-  return (
-    <div className="app-shell" style={{ '--accent': active?.accent || '#c7674d' } as CSSProperties}>
-      <a className="skip-link" href="#main">Skip to content</a>
-      <Header
-        route={route}
-        active={active}
-        savedCount={saved.length}
-        onNavigate={navigate}
-        onSettings={() => setSettingsOpen(true)}
-      />
-      <MobileDock route={route} savedCount={saved.length} onNavigate={navigate} />
+  const vincentThreadCount = (() => {
+    try { return (JSON.parse(readSession(SESSION_KEYS.vincentThreads) || '[]') as string[]).length; } catch { return 0; }
+  })();
+  const noteCount = Object.values(data.notes).filter((note) => note.trim()).length;
 
-      <main id="main" ref={mainRef} tabIndex={-1}>
-        {route.view === 'portal' && (
+  const confirmReset = () => {
+    data.resetDemoData();
+    setResetOpen(false);
+    setToast('Demo data reset. Saved works, sets and notes were cleared from this tab.');
+  };
+
+  const routerValue = useMemo(() => ({ route, navigate }), [route, navigate]);
+
+  const renderView = () => {
+    switch (route.view) {
+      case 'portal':
+        return (
           <Portal
             artworks={artworks}
-            loading={loading}
+            loading={false}
             reducedMotion={reducedMotion}
+            exhibitionCount={exhibitions.length}
             onEnter={() => navigate({ view: 'drift' })}
             onExhibition={() => navigate({ view: 'exhibitions' })}
             onMood={() => navigate({ view: 'mood' })}
+            onCollection={() => navigate({ view: 'collection', query: '' })}
           />
-        )}
-
-        {route.view === 'drift' && (
+        );
+      case 'drift':
+        return (
           <Drift
             artworks={artworks}
-            loading={loading}
+            loading={false}
             reducedMotion={reducedMotion}
             onPreview={(artwork) => setPreviewId(artwork.id)}
             onOpenAtlas={(artwork) => navigate({ view: 'atlas', id: artwork.id })}
-            onGrid={() => navigate({ view: 'grid' })}
+            onGrid={() => navigate({ view: 'collection', query: '' })}
             onChromatic={() => navigate({ view: 'chromatic' })}
             onMood={() => navigate({ view: 'mood' })}
           />
-        )}
-
-        {route.view === 'grid' && (
-          <GridView
-            artworks={artworks}
-            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
-            onDrift={() => navigate({ view: 'drift' })}
-            onGrid={() => navigate({ view: 'grid' })}
-            onChromatic={() => navigate({ view: 'chromatic' })}
-          />
-        )}
-
-        {route.view === 'chromatic' && (
+        );
+      case 'collection':
+        return <CollectionView artworks={artworks} query={route.query} data={data} />;
+      case 'chromatic':
+        return (
           <ChromaticView
             artworks={artworks}
             onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
             onDrift={() => navigate({ view: 'drift' })}
-            onGrid={() => navigate({ view: 'grid' })}
+            onGrid={() => navigate({ view: 'collection', query: '' })}
             onChromatic={() => navigate({ view: 'chromatic' })}
           />
-        )}
-
-        {route.view === 'mood' && (
+        );
+      case 'mood':
+        return (
           <MoodView
             artworks={artworks}
             onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
             onStory={() => navigate({ view: 'exhibitions' })}
           />
-        )}
-
-        {route.view === 'exhibitions' && (
+        );
+      case 'exhibitions':
+        return (
           <ExhibitionIndex
             reducedMotion={reducedMotion}
+            artworks={artworks}
             onEnterVincent={() => navigate({ view: 'journey' })}
-            onExplore={() => navigate({ view: 'drift' })}
+            onExplore={() => navigate({ view: 'collection', query: '' })}
           />
-        )}
-
-        {route.view === 'journey' && (
+        );
+      case 'journey':
+        return (
           <VincentExperience
             reducedMotion={reducedMotion}
             onDrift={() => navigate({ view: 'drift' })}
             onColor={() => navigate({ view: 'chromatic' })}
+            walkHref="#/exhibition/vincent/1"
           />
-        )}
-
-        {route.view === 'saved' && (
-          <SavedView
-            artworks={artworks}
-            savedIds={saved}
-            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
-            onRemove={toggleSaved}
-            onExplore={() => navigate({ view: 'drift' })}
-          />
-        )}
-
-        {route.view === 'about' && (
+        );
+      case 'exhibition': {
+        const exhibition = findExhibition(route.slug);
+        if (!exhibition) return <ExhibitionNotFound slug={route.slug} />;
+        return <ExhibitionOverview exhibition={exhibition} artworks={artworks} data={data} />;
+      }
+      case 'walk': {
+        const exhibition = findExhibition(route.slug);
+        if (!exhibition) return <ExhibitionNotFound slug={route.slug} />;
+        return <ExhibitionWalk exhibition={exhibition} stopNumber={route.stop} artworks={artworks} data={data} />;
+      }
+      case 'saved':
+        return <MyCollection artworks={artworks} data={data} setId={route.setId} onResetRequest={() => setResetOpen(true)} />;
+      case 'about':
+        return (
           <AboutView
             onExplore={() => navigate({ view: 'drift' })}
             onColor={() => navigate({ view: 'chromatic' })}
             onMood={() => navigate({ view: 'mood' })}
             onExhibition={() => navigate({ view: 'exhibitions' })}
           />
-        )}
-
-        {route.view === 'detail' && active && (
-          <Detail
-            artwork={active}
-            artworks={artworks}
-            isSaved={saved.includes(active.id)}
-            onBack={() => navigate({ view: 'drift' })}
-            onAtlas={() => navigate({ view: 'atlas', id: active.id })}
-            onSave={() => toggleSaved(active.id)}
-            onOpen={(artwork) => navigate({ view: 'detail', id: artwork.id })}
-          />
-        )}
-
-        {route.view === 'atlas' && active && (
+        );
+      case 'detail':
+        return active ? <ArtworkDetail artwork={active} artworks={artworks} data={data} /> : <ArtworkNotFound id={route.id} />;
+      case 'atlas':
+        return active ? (
           <Atlas
             artwork={active}
             artworks={artworks}
             onBack={() => navigate({ view: 'detail', id: active.id })}
             onRecenter={(artwork) => navigate({ view: 'atlas', id: artwork.id })}
-            onTrace={(ids) => updateSaved([...saved, ...ids])}
+            onTrace={(ids) => data.save(ids)}
           />
-        )}
-
-        {route.view === 'notfound' && (
+        ) : <ArtworkNotFound id={route.id} />;
+      default:
+        return (
           <NotFoundView
             onHome={() => navigate({ view: 'portal' })}
             onExplore={() => navigate({ view: 'drift' })}
           />
-        )}
-      </main>
+        );
+    }
+  };
 
-      <footer className="site-footer">
-        <div><strong>LUMEN</strong><span>Digital Museum of Visual Culture</span></div>
-        <p>Public-domain prototype media · explainable discovery paths · reduced-motion alternatives.</p>
-      </footer>
+  return (
+    <RouterContext.Provider value={routerValue}>
+      <div className="app-shell" style={{ '--accent': accentArtwork?.accent || '#c7674d' } as CSSProperties}>
+        <a className="skip-link" href="#main" onClick={(event) => { event.preventDefault(); mainRef.current?.focus(); }}>Skip to content</a>
+        <Header route={route} savedCount={data.saved.length} onSettings={() => setSettingsOpen(true)} />
+        <MobileDock route={route} savedCount={data.saved.length} />
 
-      <QuickPreview
-        artwork={previewArtwork}
-        isSaved={Boolean(previewArtwork && saved.includes(previewArtwork.id))}
-        onClose={() => setPreviewId(undefined)}
-        onOpen={() => previewArtwork && navigate({ view: 'detail', id: previewArtwork.id })}
-        onSave={() => previewArtwork && toggleSaved(previewArtwork.id)}
-      />
+        <main id="main" ref={mainRef} tabIndex={-1}>
+          <div className="view-root" key={data.version}>{renderView()}</div>
+        </main>
 
-      <AccessibilityPanel
-        open={settingsOpen}
-        reducedMotion={reducedMotion}
-        highContrast={highContrast}
-        onClose={() => setSettingsOpen(false)}
-        onMotionToggle={() => setForcedReduced((value) => !value)}
-        onContrastToggle={() => setHighContrast((value) => !value)}
-      />
+        <footer className="site-footer site-footer--museum">
+          <div className="footer-brand"><strong>LUMEN</strong><span>Digital Museum of Visual Culture</span></div>
+          <nav className="footer-nav" aria-label="Footer">
+            <Link to={{ view: 'collection', query: '' }}>Collection</Link>
+            <Link to={{ view: 'exhibitions' }}>Exhibitions</Link>
+            <Link to={{ view: 'saved' }}>My collection</Link>
+            <Link to={{ view: 'about' }}>About</Link>
+          </nav>
+          <div className="footer-session">
+            <p>Saved works and sets stay in this browser tab and clear when it closes.</p>
+            <button type="button" onClick={() => setResetOpen(true)}>Reset demo data</button>
+          </div>
+        </footer>
 
-      <OnboardingHint
-        open={route.view === 'drift' && showOnboarding}
-        onDismiss={dismissOnboarding}
-      />
-    </div>
+        <div className="app-toast" aria-live="polite">{toast && <p>{toast}</p>}</div>
+
+        <QuickPreview
+          artwork={previewArtwork}
+          isSaved={Boolean(previewArtwork && data.isSaved(previewArtwork.id))}
+          onClose={() => setPreviewId(undefined)}
+          onOpen={() => previewArtwork && navigate({ view: 'detail', id: previewArtwork.id })}
+          onSave={() => previewArtwork && data.toggleSaved(previewArtwork.id)}
+        />
+
+        <AccessibilityPanel
+          open={settingsOpen}
+          reducedMotion={reducedMotion}
+          highContrast={highContrast}
+          onClose={() => setSettingsOpen(false)}
+          onMotionToggle={() => setForcedReduced((value) => !value)}
+          onContrastToggle={() => setHighContrast((value) => !value)}
+        />
+
+        <ConfirmDialog
+          open={resetOpen}
+          title="Reset demo data?"
+          confirmLabel="Reset demo data"
+          onCancel={() => setResetOpen(false)}
+          onConfirm={confirmReset}
+        >
+          <p>
+            This clears {data.saved.length} saved {data.saved.length === 1 ? 'work' : 'works'}, {data.sets.length} {data.sets.length === 1 ? 'set' : 'sets'},
+            {' '}{noteCount} {noteCount === 1 ? 'note' : 'notes'} and {vincentThreadCount} saved VINCENT {vincentThreadCount === 1 ? 'thread' : 'threads'} from this tab.
+            Display settings are kept.
+          </p>
+        </ConfirmDialog>
+
+        <OnboardingHint open={route.view === 'drift' && showOnboarding} onDismiss={dismissOnboarding} />
+      </div>
+    </RouterContext.Provider>
   );
 }
 
-type HeaderProps = {
-  route: Route;
-  active?: Artwork;
-  savedCount: number;
-  onNavigate: (route: Route) => void;
-  onSettings: () => void;
-};
+const exploreViews: Route['view'][] = ['drift', 'chromatic', 'mood', 'atlas'];
+const exhibitionViews: Route['view'][] = ['exhibitions', 'journey', 'exhibition', 'walk'];
 
-function Header({ route, active, savedCount, onNavigate, onSettings }: HeaderProps) {
+function navState(route: Route, section: 'collection' | 'explore' | 'exhibitions' | 'saved' | 'about') {
+  const on = section === 'collection' ? route.view === 'collection' || route.view === 'detail'
+    : section === 'explore' ? exploreViews.includes(route.view)
+      : section === 'exhibitions' ? exhibitionViews.includes(route.view)
+        : section === 'saved' ? route.view === 'saved'
+          : route.view === 'about';
+  return {
+    className: on ? 'is-active' : '',
+    'aria-current': on ? ('page' as const) : undefined,
+  };
+}
+
+function Header({ route, savedCount, onSettings }: { route: Route; savedCount: number; onSettings: () => void }) {
   return (
     <header className="site-header">
-      <button className="wordmark" onClick={() => onNavigate({ view: 'portal' })} aria-label="LUMEN home">
-        LU<span>•</span>MEN
-      </button>
+      <Link to={{ view: 'portal' }} className="wordmark">
+        <span aria-hidden="true">LU<span>•</span>MEN</span><span className="sr-only">LUMEN home</span>
+      </Link>
       <nav aria-label="Primary navigation">
-        <button className={route.view === 'drift' || route.view === 'grid' || route.view === 'chromatic' || route.view === 'mood' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}>Explore</button>
-        <button className={route.view === 'exhibitions' || route.view === 'journey' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'exhibitions' })}>Exhibitions</button>
-        <button className={route.view === 'saved' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'saved' })}>Collection</button>
-        <button
-          className={route.view === 'atlas' ? 'is-active' : ''}
-          onClick={() => onNavigate({ view: 'atlas', id: active?.id || 'abstract-0008' })}
-        >
-          Atlas
-        </button>
-        <button className={route.view === 'about' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'about' })}>About</button>
+        <Link to={{ view: 'collection', query: '' }} {...navState(route, 'collection')}>Collection</Link>
+        <Link to={{ view: 'drift' }} {...navState(route, 'explore')}>Explore</Link>
+        <Link to={{ view: 'exhibitions' }} {...navState(route, 'exhibitions')}>Exhibitions</Link>
+        <Link to={{ view: 'about' }} {...navState(route, 'about')}>About</Link>
       </nav>
       <div className="header-tools">
-        <button
-          className="saved-count saved-button"
-          aria-label={savedCount + ' saved artworks'}
-          onClick={() => onNavigate({ view: 'saved' })}
+        <Link
+          to={{ view: 'saved' }}
+          className={'saved-count saved-button ' + navState(route, 'saved').className}
+          aria-current={navState(route, 'saved')['aria-current']}
         >
-          {String(savedCount).padStart(2, '0')} saved
-        </button>
-        <button className="motion-toggle" onClick={onSettings} aria-label="Open accessibility settings">
+          My collection <b>{String(savedCount).padStart(2, '0')}</b><span className="sr-only"> saved</span>
+        </Link>
+        <button type="button" className="motion-toggle" onClick={onSettings} aria-label="Access: open accessibility settings">
           Access
         </button>
       </div>
@@ -371,330 +437,17 @@ function Header({ route, active, savedCount, onNavigate, onSettings }: HeaderPro
   );
 }
 
-function MobileDock({
-  route,
-  savedCount,
-  onNavigate,
-}: {
-  route: Route;
-  savedCount: number;
-  onNavigate: (route: Route) => void;
-}) {
-  const activeExplore = route.view === 'drift' || route.view === 'grid' || route.view === 'chromatic' || route.view === 'mood';
+function MobileDock({ route, savedCount }: { route: Route; savedCount: number }) {
   return (
-    <nav className="mobile-dock" aria-label="Mobile navigation">
-      <button className={activeExplore ? 'is-active' : ''} onClick={() => onNavigate({ view: 'drift' })}><span>Explore</span></button>
-      <button className={route.view === 'exhibitions' || route.view === 'journey' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'exhibitions' })}><span>Shows</span></button>
-      <button className={route.view === 'saved' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'saved' })}><span>Saved</span><small>{String(savedCount).padStart(2, '0')}</small></button>
-      <button className={route.view === 'about' ? 'is-active' : ''} onClick={() => onNavigate({ view: 'about' })}><span>About</span></button>
+    <nav className="mobile-dock mobile-dock--five" aria-label="Mobile navigation">
+      <Link to={{ view: 'collection', query: '' }} {...navState(route, 'collection')}><span>Collection</span></Link>
+      <Link to={{ view: 'drift' }} {...navState(route, 'explore')}><span>Explore</span></Link>
+      <Link to={{ view: 'exhibitions' }} {...navState(route, 'exhibitions')}><span>Shows</span></Link>
+      <Link to={{ view: 'saved' }} {...navState(route, 'saved')}>
+        <span>Saved</span><small>{String(savedCount).padStart(2, '0')}<span className="sr-only"> works</span></small>
+      </Link>
+      <Link to={{ view: 'about' }} {...navState(route, 'about')}><span>About</span></Link>
     </nav>
-  );
-}
-
-function Portal({
-  artworks,
-  loading,
-  reducedMotion,
-  onEnter,
-  onExhibition,
-  onMood,
-}: {
-  artworks: Artwork[];
-  loading: boolean;
-  reducedMotion: boolean;
-  onEnter: () => void;
-  onExhibition: () => void;
-  onMood: () => void;
-}) {
-  const [index, setIndex] = useState(0);
-  const frameRef = useRef<HTMLDivElement>(null);
-  const enteredRef = useRef(false);
-  const artwork = artworks[index] || artworks[0];
-
-  useEffect(() => {
-    if (reducedMotion || artworks.length < 2) return;
-    const interval = window.setInterval(() => setIndex((value) => (value + 1) % Math.min(artworks.length, 6)), 6500);
-    return () => window.clearInterval(interval);
-  }, [artworks.length, reducedMotion]);
-
-  useEffect(() => {
-    const onKey = (event: KeyboardEvent) => {
-      if (event.code === 'Space' && !enteredRef.current) {
-        event.preventDefault();
-        enteredRef.current = true;
-        onEnter();
-      }
-    };
-    window.addEventListener('keydown', onKey);
-    return () => window.removeEventListener('keydown', onKey);
-  }, [onEnter]);
-
-  const onPointerMove = (event: React.PointerEvent<HTMLDivElement>) => {
-    if (!frameRef.current || reducedMotion) return;
-    const rect = frameRef.current.getBoundingClientRect();
-    frameRef.current.style.setProperty('--px', String((event.clientX - rect.left) / rect.width - 0.5));
-    frameRef.current.style.setProperty('--py', String((event.clientY - rect.top) / rect.height - 0.5));
-  };
-
-  const onWheel = (event: React.WheelEvent<HTMLElement>) => {
-    if (Math.abs(event.deltaY) > 55 && !enteredRef.current) {
-      enteredRef.current = true;
-      onEnter();
-    }
-  };
-
-  return (
-    <section className="portal portal--expanded" aria-labelledby="portal-title" onWheel={onWheel}>
-      <div className="portal-grid" aria-hidden="true" />
-      <p className="portal-kicker">Digital museum / visual culture / 2026</p>
-      <h1 id="portal-title" className="portal-title">
-        <span>DON'T SEARCH</span>
-        <span>FOR <em>ART.</em></span>
-        <span>DRIFT INTO IT.</span>
-      </h1>
-
-      <div className="portal-frame" ref={frameRef} onPointerMove={onPointerMove}>
-        {artwork ? (
-          <img
-            key={artwork.id}
-            src={artwork.image}
-            alt=""
-            style={artworkTransition(artwork.id)}
-            onError={(event) => { event.currentTarget.style.opacity = '0'; }}
-          />
-        ) : (
-          <div className="artwork-skeleton" />
-        )}
-        <div className="portal-frame-meta">
-          <span>{loading ? 'Loading collection…' : artwork?.title}</span>
-          <span>{artwork?.date}</span>
-        </div>
-      </div>
-
-      <div className="portal-bottom portal-bottom--expanded">
-        <p>Follow a color, a feeling, or a thread between works. There is no wrong way in.</p>
-        <div className="portal-entries">
-          <button className="enter-button" onClick={onEnter}><span>Start drifting</span><span aria-hidden="true">↗</span></button>
-          <button onClick={onExhibition}>Browse exhibitions <span aria-hidden="true">↗</span></button>
-          <button onClick={onMood}>Pick a mood <span aria-hidden="true">↗</span></button>
-        </div>
-      </div>
-
-      <div className="portal-index portal-index--stats" aria-hidden="true">
-        {artworks.length || '—'} works · 9 mood paths · 1 published exhibition · Space / scroll to drift
-      </div>
-    </section>
-  );
-}
-
-function Drift({
-  artworks,
-  loading,
-  reducedMotion,
-  onPreview,
-  onOpenAtlas,
-  onGrid,
-  onChromatic,
-  onMood,
-}: {
-  artworks: Artwork[];
-  loading: boolean;
-  reducedMotion: boolean;
-  onPreview: (artwork: Artwork) => void;
-  onOpenAtlas: (artwork: Artwork) => void;
-  onGrid: () => void;
-  onChromatic: () => void;
-  onMood: () => void;
-}) {
-  const fieldRef = useRef<HTMLDivElement>(null);
-
-  const onGridKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
-    if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown'].includes(event.key)) return;
-    const buttons = Array.from(fieldRef.current?.querySelectorAll<HTMLButtonElement>('.drift-art') || []);
-    const activeIndex = buttons.indexOf(document.activeElement as HTMLButtonElement);
-    if (activeIndex < 0) return;
-    event.preventDefault();
-    const step = event.key === 'ArrowLeft' || event.key === 'ArrowUp' ? -1 : 1;
-    buttons[(activeIndex + step + buttons.length) % buttons.length]?.focus();
-  };
-
-  return (
-    <section className={'drift-section ' + (reducedMotion ? 'is-reduced' : '')} aria-labelledby="drift-title">
-      <div className="drift-atmosphere" aria-hidden="true"><i /><i /><i /></div>
-      <div className="drift-intro">
-        <div>
-          <p className="eyebrow">Explore / Drift</p>
-          <h1 id="drift-title">Follow what catches<br /><em>your eye.</em></h1>
-        </div>
-        <div className="drift-copy">
-          <p>Move by attention, not taxonomy. The room is deliberately small: eight works, enough space to wander, no dashboard between you and the art.</p>
-          <button className="drift-index-link" onClick={onGrid}>Need order? Open the index <span aria-hidden="true">↗</span></button>
-        </div>
-      </div>
-
-      <div className="drift-zone" aria-live="polite">
-        <span>You are drifting through</span>
-        <strong>Cool tones · 2000s · Digital abstraction</strong>
-      </div>
-
-      <div
-        className={'drift-grid ' + (reducedMotion ? 'drift-grid--reduced' : '')}
-        ref={fieldRef}
-        onKeyDown={onGridKeyDown}
-      >
-        {(loading && artworks.length === 0 ? Array.from({ length: 6 }) : artworks.slice(0, 8)).map((item, index) => {
-          if (typeof item === 'undefined') return null;
-          if (loading && artworks.length === 0) {
-            return <div key={index} className={'drift-card skeleton-card drift-card--' + (index % 5)} aria-hidden="true"><div /></div>;
-          }
-          const artwork = item as Artwork;
-          return (
-            <article className={'drift-card drift-card--' + (index % 5)} key={artwork.id}>
-              <button className="drift-art" onClick={() => onPreview(artwork)} aria-label={'Quick preview ' + artwork.title + ' by ' + artwork.artist}>
-                <span className="drift-image-wrap" style={{ '--card-accent': artwork.accent } as CSSProperties}>
-                  <img
-                    src={artwork.image}
-                    alt={artwork.alt}
-                    loading={index > 2 ? 'lazy' : 'eager'}
-                    style={artworkTransition(artwork.id)}
-                    onError={(event) => { event.currentTarget.style.opacity = '0'; }}
-                  />
-                  <span className="drift-enter">Quick preview ↗</span>
-                </span>
-                <span className="drift-meta">
-                  <span>{String(index + 1).padStart(2, '0')}</span>
-                  <span><strong>{artwork.title}</strong>{artwork.artist}</span>
-                  <span>{artwork.paletteName}</span>
-                </span>
-              </button>
-            </article>
-          );
-        })}
-      </div>
-
-      <div className="drift-compass" aria-label="Continue exploring">
-        <div>
-          <span>Change the lens</span>
-          <p>Keep the room quiet. Switch only when another way of looking becomes useful.</p>
-        </div>
-        <div className="drift-compass-actions">
-          <button onClick={onChromatic}>Follow color <span aria-hidden="true">↗</span></button>
-          <button onClick={onMood}>Follow feeling <span aria-hidden="true">↗</span></button>
-          <button onClick={() => artworks[0] && onOpenAtlas(artworks[0])}>Follow a thread <span aria-hidden="true">↗</span></button>
-        </div>
-      </div>
-    </section>
-  );
-}
-
-function Detail({
-  artwork,
-  artworks,
-  isSaved,
-  onBack,
-  onAtlas,
-  onSave,
-  onOpen,
-}: {
-  artwork: Artwork;
-  artworks: Artwork[];
-  isSaved: boolean;
-  onBack: () => void;
-  onAtlas: () => void;
-  onSave: () => void;
-  onOpen: (artwork: Artwork) => void;
-}) {
-  const [zoomed, setZoomed] = useState(false);
-  const others = artworks.filter((item) => item.id !== artwork.id);
-  const colorRelated = [...others].sort((a, b) => Math.abs(parseInt(a.accent.slice(1), 16) - parseInt(artwork.accent.slice(1), 16)) - Math.abs(parseInt(b.accent.slice(1), 16) - parseInt(artwork.accent.slice(1), 16)))[0];
-  const eraRelated = others.find((item) => item.era === artwork.era) || others[1];
-  const moodRelated = others.find((item) => item.mood === artwork.mood) || others[2];
-  const threads = [
-    { label: 'Color', note: 'A neighboring dominant hue with a different visual temperature.', artwork: colorRelated },
-    { label: 'Era', note: 'Another work from the same 2000s digital-making context.', artwork: eraRelated },
-    { label: 'Mood', note: 'A second object carrying the same editorial mood path.', artwork: moodRelated },
-  ].filter((item) => item.artwork);
-
-  return (
-    <article className="detail" aria-labelledby="detail-title">
-      <div className="detail-toolbar">
-        <button onClick={onBack}>← Drift</button>
-        <span>{artwork.classification}</span>
-        <div>
-          <button onClick={() => setZoomed((value) => !value)} aria-pressed={zoomed}>{zoomed ? 'Fit image' : 'Zoom image'}</button>
-          <button onClick={onSave} aria-pressed={isSaved}>{isSaved ? 'Saved ✓' : 'Save +'}</button>
-        </div>
-      </div>
-
-      <div className={'detail-art-stage ' + (zoomed ? 'is-zoomed' : '')}>
-        <div className="detail-art-frame" style={{ '--card-accent': artwork.accent } as CSSProperties}>
-          <img
-            src={artwork.image}
-            alt={artwork.alt}
-            style={artworkTransition(artwork.id)}
-            onError={(event) => { event.currentTarget.style.opacity = '0'; }}
-          />
-        </div>
-        <div className="detail-counter">Object / {artwork.id}</div>
-      </div>
-
-      <div className="detail-heading">
-        <div>
-          <p className="eyebrow">Collection object</p>
-          <h1 id="detail-title">{artwork.title}</h1>
-          <p className="artist-line">{artwork.artist}</p>
-          <div className="detail-tags">
-            <span>{artwork.movement}</span>
-            <span>{artwork.medium}</span>
-            <span><i style={{ background: artwork.accent }} />{artwork.paletteName}</span>
-            <span>{artwork.mood}</span>
-          </div>
-        </div>
-        <dl>
-          <div><dt>Date</dt><dd>{artwork.date}</dd></div>
-          <div><dt>Origin</dt><dd>{artwork.origin}</dd></div>
-          <div><dt>Theme</dt><dd>{artwork.theme}</dd></div>
-        </dl>
-      </div>
-
-      <section className="detail-story" aria-labelledby="notice-title">
-        <div>
-          <p className="eyebrow">Editorial reading</p>
-          <h2 id="notice-title">Look once.<br /><em>Then look again.</em></h2>
-        </div>
-        <div className="detail-story-copy">
-          <p>
-            {artwork.editorial} LUMEN treats this note as a prompt for attention rather than a definitive interpretation.
-            The source object remains intact while color, mood and thematic metadata offer optional ways to continue.
-          </p>
-          <p className="evidence-note">Mood, palette names, themes and relationship explanations are LUMEN prototype metadata, not museum-authored scholarship.</p>
-          <button className="atlas-cta" onClick={onAtlas}>Show connections <span>↗</span></button>
-        </div>
-      </section>
-
-      <section className="detail-specs" aria-label="Artwork technical details">
-        <div><span>Dimensions</span><p>{artwork.dimensions}</p></div>
-        <div><span>License</span><p>{artwork.license}</p></div>
-        <div><span>Source</span><p><a href={artwork.sourceUrl} target="_blank" rel="noreferrer">Wikimedia Commons ↗</a></p></div>
-      </section>
-
-      <section className="detail-threads" aria-labelledby="threads-title">
-        <div>
-          <p className="eyebrow">Threads</p>
-          <h2 id="threads-title">If you like this,<br /><em>drift toward…</em></h2>
-        </div>
-        <div className="thread-list">
-          {threads.map((thread) => (
-            <button key={thread.label} onClick={() => thread.artwork && onOpen(thread.artwork)}>
-              <span>{thread.label}</span>
-              <strong>{thread.artwork?.title}</strong>
-              <small>{thread.note}</small>
-              <i>↗</i>
-            </button>
-          ))}
-        </div>
-      </section>
-    </article>
   );
 }
 
@@ -721,25 +474,10 @@ function Atlas({
   });
   const [notice, setNotice] = useState('');
 
-  const candidates = artworks.filter((item) => item.id !== artwork.id);
-  const nearestColor = [...candidates].sort(
-    (a, b) => Math.abs(parseInt(a.accent.slice(1), 16) - parseInt(artwork.accent.slice(1), 16)) -
-      Math.abs(parseInt(b.accent.slice(1), 16) - parseInt(artwork.accent.slice(1), 16)),
-  )[0];
-  const sameEra = candidates.find((item) => item.era === artwork.era && item.id !== nearestColor?.id) || candidates[1];
-  const sameMovement = candidates.find((item) => item.movement === artwork.movement && item.id !== nearestColor?.id && item.id !== sameEra?.id) || candidates[2];
-  const sameTheme = candidates.find((item) => item.theme === artwork.theme && ![nearestColor?.id, sameEra?.id, sameMovement?.id].includes(item.id)) || candidates[3];
-
-  const nodes: Array<{ type: RelationType; artwork?: Artwork; explanation: string }> = [
-    { type: 'Color', artwork: nearestColor, explanation: 'Both sit close in the current prototype dominant-color map.' },
-    { type: 'Era', artwork: sameEra, explanation: 'Both were created in the same 2000s digital-making context.' },
-    { type: 'Movement', artwork: sameMovement, explanation: 'Both are grouped here under digital abstraction.' },
-    { type: 'Theme', artwork: sameTheme, explanation: 'Both carry the same LUMEN editorial theme or its closest available echo.' },
-  ];
-
-  const visible = nodes.filter((node) => filters[node.type]);
+  const nodes = relationsFor(artwork, artworks, ['Color', 'Era', 'Movement', 'Theme']);
+  const visible = nodes.filter((node) => filters[node.type as RelationType]);
   const trace = () => {
-    onTrace([artwork.id, ...visible.map((node) => node.artwork!.id)]);
+    onTrace([artwork.id, ...visible.map((node) => node.artwork.id)]);
     setNotice('Path saved to your collection');
   };
 
@@ -790,10 +528,10 @@ function Atlas({
           <button
             key={node.type}
             className={'atlas-node atlas-node--' + (index + 1) + ' atlas-node--typed'}
-            onClick={() => node.artwork && onRecenter(node.artwork)}
+            onClick={() => onRecenter(node.artwork)}
           >
             <span>{node.type}</span>
-            <strong>{node.artwork?.title}</strong>
+            <strong>{node.artwork.title}</strong>
             <small>{node.explanation}</small>
           </button>
         ))}
@@ -805,8 +543,8 @@ function Atlas({
           {visible.map((node) => (
             <li key={node.type}>
               <span>{node.type}</span>
-              <div><strong>{node.artwork?.title}</strong><small>{node.explanation}</small></div>
-              <button onClick={() => node.artwork && onRecenter(node.artwork)}>Recenter ↗</button>
+              <div><strong>{node.artwork.title}</strong><small>{node.explanation}</small></div>
+              <button onClick={() => onRecenter(node.artwork)}>Recenter ↗</button>
             </li>
           ))}
         </ol>

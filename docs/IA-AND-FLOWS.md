@@ -262,3 +262,28 @@ Navigation rule:
 - the index owns the decision to enter VINCENT;
 - future exhibitions are not represented as real until their content and provenance exist;
 - Explore / Collection / Atlas / About remain independent platform capabilities rather than children of VINCENT.
+
+## Multi-view museum IA — 2026-11-12
+
+Goal: make LUMEN behave like a real digital-museum website while keeping the drift-first identity. Only the backend is missing.
+
+**Primary navigation:** Collection · Explore · Exhibitions · About, plus My collection (with saved count) and Access. Mobile dock: Collection, Explore, Shows, Saved, About.
+
+**Changes to the route map**
+
+- `#/collection` is now the browsable museum Collection. It absorbs the old Grid mode (`#/grid` redirects here).
+- Saved works moved to `#/my-collection` (`#/saved` still resolves). Sets live at `#/my-collection/:setId`.
+- `#/exhibition/:slug` is an exhibition overview; `#/exhibition/:slug/:stop` is one stop of the walk-through. `#/exhibition/vincent` remains the immersive room sequence and `#/exhibition` still resolves to it.
+- The open collection now includes the seven Van Gogh paintings already used by VINCENT, so every object has one record shared by collection, detail pages and exhibitions.
+
+**Exhibitions (curatorial writing is LUMEN-authored):** 01 VINCENT, 02 Signals from a Quiet Machine (the previously unrouted six-chapter journey), 03 Between Blue and Yellow (color as relationship across Van Gogh and the 2009 digital works, framed as a visual reading, not influence), 04 Rooms After Everyone Left (Quiet / Melancholy / Tender mood paths).
+
+**Key flows**
+
+1. Collection → filter → artwork → Save / Add to set → My collection.
+2. Exhibitions → overview → walk-through stop by stop → Save as set at the end.
+3. Artwork → related works / documented thread / previous–next → Atlas.
+4. My collection → create set → add from saved → rename → delete (confirmation sheet with Cancel).
+5. Footer → Reset demo data (confirmation sheet) → toast result.
+
+**History rules:** page changes push a history entry, move focus to the page `h1` and reset or restore scroll. Filter changes and stop-to-stop moves replace the entry so Back returns to the previous page rather than the previous filter.

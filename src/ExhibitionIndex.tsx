@@ -1,7 +1,10 @@
 import { CSSProperties, type PointerEvent } from 'react';
+import { Artwork, thumb } from './artworks';
+import { exhibitions } from './exhibitions';
+import { Link } from './router';
 
 const commons = (name: string) =>
-  'https://commons.wikimedia.org/wiki/Special:Redirect/file/' + encodeURIComponent(name);
+  'https://commons.wikimedia.org/wiki/Special:Redirect/file/' + encodeURIComponent(name) + '?width=1600';
 
 const vincentFrames = [
   {
@@ -12,7 +15,7 @@ const vincentFrames = [
   {
     title: 'Café Terrace at Night',
     year: '1888',
-    image: commons('Vincent van Gogh - Cafe Terrace at Night (1888).jpg'),
+    image: commons('Vincent Willem van Gogh - Cafe Terrace at Night (Yorck).jpg'),
   },
   {
     title: 'Wheat Field with Cypresses',
@@ -23,13 +26,17 @@ const vincentFrames = [
 
 export function ExhibitionIndex({
   reducedMotion,
+  artworks,
   onEnterVincent,
   onExplore,
 }: {
   reducedMotion: boolean;
+  artworks: Artwork[];
   onEnterVincent: () => void;
   onExplore: () => void;
 }) {
+  const published = String(exhibitions.length).padStart(2, '0');
+  const others = exhibitions.filter((exhibition) => exhibition.kind === 'walk');
   const onPointerMove = (event: PointerEvent<HTMLElement>) => {
     if (reducedMotion || event.pointerType === 'touch') return;
     const rect = event.currentTarget.getBoundingClientRect();
@@ -55,7 +62,7 @@ export function ExhibitionIndex({
         <div className="museum-index-meta">
           <span>LUMEN / EXHIBITIONS</span>
           <span>Digital Museum of Visual Culture</span>
-          <span>01 published / archive growing</span>
+          <span>{published} published / archive growing</span>
         </div>
         <h1 id="museum-index-title">
           A museum is not<br />
@@ -88,9 +95,9 @@ export function ExhibitionIndex({
           type="button"
           onClick={onEnterVincent}
           onPointerMove={onMediaPointerMove}
-          aria-label="Enter VINCENT — The Painted Night"
         >
-          <div className="museum-feature-strip">
+          <span className="sr-only">Enter VINCENT — The Painted Night</span>
+          <div className="museum-feature-strip" aria-hidden="true">
             {vincentFrames.map((frame, index) => (
               <figure
                 key={frame.title}
@@ -131,11 +138,40 @@ export function ExhibitionIndex({
             <div><dt>Modes</dt><dd>Sound / letters / threads</dd></div>
             <div><dt>Sources</dt><dd>Public-domain art + scholarly letters</dd></div>
           </dl>
-          <button className="museum-enter" type="button" onClick={onEnterVincent}>
-            <span>Enter exhibition</span><span aria-hidden="true">↗</span>
-          </button>
+          <div className="museum-feature-actions">
+            <button className="museum-enter" type="button" onClick={onEnterVincent}>
+              <span>Enter exhibition</span><span aria-hidden="true">↗</span>
+            </button>
+            <Link className="museum-walk-link" to={{ view: 'walk', slug: 'vincent', stop: 1 }}>Walk the seven works ↗</Link>
+          </div>
         </div>
       </article>
+
+      <section className="museum-onview" aria-labelledby="museum-onview-title">
+        <header>
+          <p>ALSO ON VIEW / {String(others.length).padStart(2, '0')} WALK-THROUGHS</p>
+          <h2 id="museum-onview-title">Smaller rooms.<br /><em>Sharper arguments.</em></h2>
+        </header>
+        <ol>
+          {others.map((exhibition) => {
+            const cover = artworks.find((artwork) => artwork.id === exhibition.coverId);
+            return (
+              <li key={exhibition.slug} style={{ '--onview-accent': exhibition.accent } as CSSProperties}>
+                <Link to={{ view: 'exhibition', slug: exhibition.slug }} className="museum-onview-link">
+                  <span className="museum-onview-number">{exhibition.number}</span>
+                  <span className="museum-onview-media">{cover && <img src={thumb(cover)} alt="" loading="lazy" />}</span>
+                  <span className="museum-onview-copy">
+                    <strong>{exhibition.title}</strong>
+                    <span>{exhibition.subtitle}</span>
+                    <small>{exhibition.thesis}</small>
+                  </span>
+                  <span className="museum-onview-meta">{String(exhibition.stops.length).padStart(2, '0')} stops <i aria-hidden="true">↗</i></span>
+                </Link>
+              </li>
+            );
+          })}
+        </ol>
+      </section>
 
       <section className="museum-platform" aria-labelledby="museum-platform-title">
         <div>
@@ -187,7 +223,7 @@ export function ExhibitionIndex({
       </section>
 
       <section className="museum-next" aria-labelledby="museum-next-title">
-        <div className="museum-next-index">02</div>
+        <div className="museum-next-index">{String(exhibitions.length + 1).padStart(2, '0')}</div>
         <div>
           <p>ARCHIVE STATUS / UNPUBLISHED</p>
           <h2 id="museum-next-title">The next room has not been invented yet.</h2>
