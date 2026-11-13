@@ -211,13 +211,13 @@ export function ExhibitionIndex({
             <span>01 / LIVE</span><strong>CANVAS</strong><small>Painting · drift through color</small><i aria-hidden="true">↗</i>
           </button>
           <article className="museum-wing">
-            <span>02 / CONCEPT</span><strong>RESONANCE</strong><small>Music · move through time</small><i aria-hidden="true">~</i>
+            <span>02 / IN PREPARATION</span><strong>RESONANCE</strong><small>Music · move through time</small><i aria-hidden="true">~</i>
           </article>
           <article className="museum-wing">
-            <span>03 / CONCEPT</span><strong>FRAME</strong><small>Cinema · scrub through light</small><i aria-hidden="true">▱</i>
+            <span>03 / IN PREPARATION</span><strong>FRAME</strong><small>Cinema · scrub through light</small><i aria-hidden="true">▱</i>
           </article>
           <article className="museum-wing">
-            <span>04 / CONCEPT</span><strong>THRESHOLD</strong><small>Space · move through scale</small><i aria-hidden="true">□</i>
+            <span>04 / IN PREPARATION</span><strong>THRESHOLD</strong><small>Space · move through scale</small><i aria-hidden="true">□</i>
           </article>
         </div>
       </section>

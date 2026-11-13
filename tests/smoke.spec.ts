@@ -234,7 +234,7 @@ test('VINCENT cultural threads connect artwork, place and letter and persist sav
   await expect(drawer).toContainText('Wheatfield and cypresses');
 
   await drawer.getByRole('button', { name: /Save this thread/i }).click();
-  await expect(drawer.getByRole('status')).toContainText('Saved for this session');
+  await expect(drawer.getByRole('status')).toContainText('Thread saved');
   await expect.poll(async () => page.evaluate(() => sessionStorage.getItem('lumen-vincent-threads'))).toContain('saint-remy-field');
 
   await drawer.getByRole('button', { name: /Enter place room/i }).click();

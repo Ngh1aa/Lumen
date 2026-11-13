@@ -62,11 +62,10 @@ function RenameForm({ set, sets, onRename, onCancel }: { set: ArtworkSet; sets: 
   );
 }
 
-export function MyCollection({ artworks, data, setId, onResetRequest }: {
+export function MyCollection({ artworks, data, setId }: {
   artworks: Artwork[];
   data: MuseumData;
   setId?: string;
-  onResetRequest: () => void;
 }) {
   const { navigate } = useRouter();
   const savedArtworks = data.saved.map((id) => artworks.find((artwork) => artwork.id === id)).filter((artwork): artwork is Artwork => Boolean(artwork));
@@ -121,7 +120,6 @@ export function MyCollection({ artworks, data, setId, onResetRequest }: {
           navigate({ view: 'saved', setId: set.id });
         }}
       />
-      <button type="button" className="my-sets-reset" onClick={onResetRequest}>Reset demo data</button>
     </aside>
   );
 
@@ -131,7 +129,7 @@ export function MyCollection({ artworks, data, setId, onResetRequest }: {
       <div className="saved-empty">
         <span>Set not found</span>
         <h2 ref={panelHeadingRef}>This set no longer<br /><em>exists.</em></h2>
-        <p>It may have been deleted, or the link belongs to another browser tab. Your saved works are still here.</p>
+        <p>It may have been deleted, or the link was made on another visit. Your saved works are still here.</p>
         <Link className="button-link" to={{ view: 'saved' }}>Show all saved</Link>
       </div>
     );
@@ -282,7 +280,7 @@ export function MyCollection({ artworks, data, setId, onResetRequest }: {
         </div>
         <p>
           {savedArtworks.length} saved {savedArtworks.length === 1 ? 'work' : 'works'} in {data.sets.length} {data.sets.length === 1 ? 'set' : 'sets'}.
-          Kept in this browser tab until you close it.
+          No account needed. Copy a share link to keep your saved works beyond this visit.
         </p>
       </div>
       <div className="my-layout">

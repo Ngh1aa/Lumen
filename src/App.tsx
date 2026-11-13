@@ -20,7 +20,7 @@ import { MyCollection } from './MyCollection';
 import { ConfirmDialog } from './MuseumControls';
 import { exhibitions, findExhibition } from './exhibitions';
 import { Link, NavigateOptions, pageKey, parseHash, Route, RouterContext, toHash } from './router';
-import { readSession, SESSION_KEYS, useMuseumData } from './store';
+import { readDemoFlag, readSession, SESSION_KEYS, useMuseumData } from './store';
 
 function artworkTransition(id: string): CSSProperties {
   return { viewTransitionName: 'artwork-' + id } as CSSProperties;
@@ -87,6 +87,7 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [toast, setToast] = useState('');
+  const [demoTools, setDemoTools] = useState(readDemoFlag);
   const [showOnboarding, setShowOnboarding] = useState(() => readLocal('lumen-onboarded') !== 'yes');
   const systemReduced = useSystemReducedMotion();
   const reducedMotion = systemReduced || forcedReduced;
@@ -185,6 +186,8 @@ function App() {
     document.title = titleFor(route);
   }, [route]);
 
+  useEffect(() => { setDemoTools(readDemoFlag()); }, [route]);
+
   /* ---------- preferences ---------- */
   useEffect(() => {
     document.documentElement.dataset.motion = reducedMotion ? 'reduced' : 'full';
@@ -216,7 +219,7 @@ function App() {
   const confirmReset = () => {
     data.resetDemoData();
     setResetOpen(false);
-    setToast('Demo data reset. Saved works, sets and notes were cleared from this tab.');
+    setToast('Demo data reset. Saved works, sets and notes were cleared.');
   };
 
   const routerValue = useMemo(() => ({ route, navigate }), [route, navigate]);
@@ -298,7 +301,7 @@ function App() {
         return <ExhibitionWalk exhibition={exhibition} stopNumber={route.stop} artworks={artworks} data={data} />;
       }
       case 'saved':
-        return <MyCollection artworks={artworks} data={data} setId={route.setId} onResetRequest={() => setResetOpen(true)} />;
+        return <MyCollection artworks={artworks} data={data} setId={route.setId} />;
       case 'about':
         return (
           <AboutView
@@ -349,11 +352,10 @@ function App() {
             <Link to={{ view: 'saved' }}>My collection</Link>
             <Link to={{ view: 'about' }}>About</Link>
           </nav>
-          <div className="footer-session">
-            <p>Saved works and sets stay in this browser tab and clear when it closes.</p>
-            <button type="button" onClick={() => setResetOpen(true)}>Reset demo data</button>
-          </div>
+          <p className="footer-credit">Concept product designed by Đỗ Anh Nghĩa.</p>
         </footer>
+
+        {demoTools && <DemoTools onReset={() => setResetOpen(true)} />}
 
         <div className="app-toast" aria-live="polite">{toast && <p>{toast}</p>}</div>
 
@@ -383,7 +385,7 @@ function App() {
         >
           <p>
             This clears {data.saved.length} saved {data.saved.length === 1 ? 'work' : 'works'}, {data.sets.length} {data.sets.length === 1 ? 'set' : 'sets'},
-            {' '}{noteCount} {noteCount === 1 ? 'note' : 'notes'} and {vincentThreadCount} saved VINCENT {vincentThreadCount === 1 ? 'thread' : 'threads'} from this tab.
+            {' '}{noteCount} {noteCount === 1 ? 'note' : 'notes'} and {vincentThreadCount} saved VINCENT {vincentThreadCount === 1 ? 'thread' : 'threads'} in this browser.
             Display settings are kept.
           </p>
         </ConfirmDialog>
@@ -391,6 +393,23 @@ function App() {
         <OnboardingHint open={route.view === 'drift' && showOnboarding} onDismiss={dismissOnboarding} />
       </div>
     </RouterContext.Provider>
+  );
+}
+
+function DemoTools({ onReset }: { onReset: () => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <aside className={'demo-tools' + (open ? ' is-open' : '')} aria-label="Demo tools">
+      <button type="button" className="demo-tools-toggle" aria-expanded={open} aria-controls="demo-tools-panel" onClick={() => setOpen((value) => !value)}>
+        Demo tools
+      </button>
+      {open && (
+        <div id="demo-tools-panel" className="demo-tools-panel">
+          <button type="button" onClick={onReset}>Reset demo data</button>
+          <p>Add ?demo=0 to the address to hide these tools.</p>
+        </div>
+      )}
+    </aside>
   );
 }
 

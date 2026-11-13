@@ -51,13 +51,17 @@ main h1[tabindex="-1"]:focus { outline: none; }
 .footer-nav { display: flex; flex-wrap: wrap; gap: 4px 20px; }
 .footer-nav a { min-height: 44px; display: inline-flex; align-items: center; color: var(--gallery-ivory); text-decoration: none; text-transform: uppercase; letter-spacing: .08em; font-size: 11px; }
 .footer-nav a:hover { color: color-mix(in srgb, var(--accent) 55%, #f6f3eb); }
-.footer-session { justify-self: end; display: flex; align-items: center; gap: 16px; }
-.site-footer--museum .footer-session p { max-width: 34ch; margin: 0; justify-self: auto; }
-.footer-session button {
-  min-height: 44px; padding: 0 14px; border: 1px solid rgba(255,255,255,.24); background: transparent; color: var(--gallery-ivory);
-  cursor: pointer; font-size: 11px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
+.site-footer--museum .footer-credit { justify-self: end; max-width: 34ch; margin: 0; color: var(--muted); text-align: right; }
+
+/* ---------- demo tools (only with ?demo=1) ---------- */
+.demo-tools { position: fixed; z-index: 140; right: 16px; bottom: 16px; display: grid; justify-items: end; gap: 8px; font-size: 12px; }
+.demo-tools-toggle, .demo-tools-panel button {
+  min-height: 36px; padding: 0 12px; border: 1px solid rgba(255,255,255,.24); background: rgba(9,9,9,.88); color: var(--gallery-ivory);
+  cursor: pointer; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap;
 }
-.footer-session button:hover { border-color: var(--gallery-ivory); }
+.demo-tools-toggle:hover, .demo-tools-panel button:hover { border-color: var(--gallery-ivory); }
+.demo-tools-panel { order: -1; display: grid; gap: 8px; width: 220px; padding: 12px; background: #121212; border: 1px solid rgba(255,255,255,.18); box-shadow: 0 16px 50px rgba(0,0,0,.45); }
+.demo-tools-panel p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.45; }
 
 /* ---------- toast ---------- */
 .app-toast { position: fixed; z-index: 150; left: 50%; bottom: 24px; transform: translateX(-50%); width: min(560px, calc(100% - 32px)); pointer-events: none; }
@@ -353,8 +357,6 @@ button.detail-art-frame { padding: 0; border: 0; color: inherit; cursor: zoom-in
 .my-sets li a small { color: var(--muted); font-size: 12px; }
 .my-sets li a:hover, .my-sets li a.is-active { color: var(--gallery-ivory); }
 .my-sets li a.is-active span { text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--accent) 55%, #f6f3eb); text-decoration-thickness: 2px; text-underline-offset: 6px; }
-.my-sets-reset { justify-self: start; min-height: 44px; padding: 0; border: 0; background: none; color: var(--muted); cursor: pointer; font-size: 12px; text-decoration: underline; text-underline-offset: 4px; }
-.my-sets-reset:hover { color: var(--gallery-ivory); }
 .my-panel-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-end; gap: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--line); }
 .my-panel-head .eyebrow { margin-bottom: 10px; }
 .my-panel-title { margin: 0; font-family: var(--serif); font-weight: 500; font-size: clamp(36px, 4vw, 60px); line-height: 1; letter-spacing: -.02em; overflow-wrap: anywhere; }
@@ -425,7 +427,8 @@ button.detail-art-frame { padding: 0; border: 0; color: inherit; cursor: zoom-in
   .mobile-dock a.is-active { background: rgba(255,255,255,.1); color: var(--gallery-ivory); }
   .mobile-dock a small { font-size: 10px; color: color-mix(in srgb, var(--accent) 55%, #f6f3eb); }
   .site-footer--museum { grid-template-columns: 1fr; gap: 20px; padding-bottom: 110px; }
-  .footer-session { justify-self: start; flex-wrap: wrap; }
+  .site-footer--museum .footer-credit { justify-self: start; text-align: left; }
+  .demo-tools { bottom: 92px; right: 8px; }
   .app-toast { bottom: 92px; }
 
   .collection-toolbar { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }

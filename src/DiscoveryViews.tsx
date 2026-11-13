@@ -91,8 +91,8 @@ export function ChromaticView({ artworks, onOpen, onDrift, onGrid, onChromatic }
           <p>{primary.artist} · {primary.date}</p>
           <p className="chromatic-note">
             {secondary
-              ? 'Works below are ranked by their average distance from both selected prototype swatches.'
-              : 'Works below are ranked by visual proximity to this prototype dominant-color swatch.'}
+              ? 'Works below are ranked by their average distance from both selected swatches.'
+              : 'Works below are ranked by visual proximity to this dominant-color swatch.'}
           </p>
           <button className="chromatic-open" onClick={() => onOpen(primary)}>
             Open object <span aria-hidden="true">↗</span>

@@ -115,7 +115,7 @@ export function MoodView({
           <h1 id="mood-title">Start with<br /><em>a feeling.</em></h1>
         </div>
         <p>
-          Mood is an editorial discovery layer for weak intent. Each path is manually authored for this prototype,
+          Mood is for the days you arrive without a name or a keyword. Each path is chosen by LUMEN's editors,
           with a visible reason for why an object was included.
         </p>
       </div>
@@ -161,8 +161,8 @@ export function MoodView({
       </div>
 
       <p className="mood-evidence-note">
-        Editorial prototype taxonomy: mood labels, sequences and explanations are authored by LUMEN for interaction
-        testing. They are not claims from the source archive.
+        Mood labels, sequences and explanations are LUMEN's editorial reading. They are not claims from the source
+        archive.
       </p>
     </section>
   );
@@ -319,7 +319,7 @@ export function CuratedJourney({
           <h1 id="journey-title">Signals from<br />a quiet <em>machine.</em></h1>
           <p>
             Six chapters about repetition, networks, overload, pause and reception. Curatorial writing is original
-            LUMEN prototype content; source artworks keep their own provenance.
+            to LUMEN; source artworks keep their own provenance.
           </p>
         </div>
         {artworks[3] && (
@@ -396,7 +396,7 @@ export function CuratedJourney({
       <footer className="journey-credits">
         <span>Exhibition 01 / Signals from a Quiet Machine</span>
         <p>
-          Curatorial writing is original prototype content for LUMEN. Artwork files remain public-domain media
+          Curatorial writing is original to LUMEN. Artwork files remain public-domain media
           from Wikimedia Commons and retain their source links in object detail.
         </p>
       </footer>

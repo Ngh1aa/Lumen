@@ -31,7 +31,13 @@ Navigation uses real links, so browser back and forward work. On every page chan
 
 ### Data rule: no backend, sessionStorage only
 
-Saved works, sets, private notes and saved VINCENT threads are kept in **sessionStorage** (`lumen-saved`, `lumen-sets`, `lumen-notes`, `lumen-vincent-threads`). They survive route changes and reloads in the same tab and are cleared when the tab closes. **Reset demo data** (footer, and the My collection sidebar) clears them after a confirmation. Display preferences (reduced motion, contrast, onboarding) stay in localStorage because they belong to the device, not the visit.
+Saved works, sets, private notes and saved VINCENT threads are kept in **sessionStorage** (`lumen-saved`, `lumen-sets`, `lumen-notes`, `lumen-vincent-threads`). They survive route changes and reloads in the same tab and are cleared when the tab closes. **Reset demo data** clears them after a confirmation; it lives in the hidden demo tools (see below). Display preferences (reduced motion, contrast, onboarding) stay in localStorage because they belong to the device, not the visit.
+
+### Entry URL and demo tools
+
+Live entry: <https://ngh1aa.github.io/Lumen/> (opens the home Portal; there is no sign-in).
+
+Visitors never see demo tooling. Open any page with `?demo=1` (e.g. `https://ngh1aa.github.io/Lumen/?demo=1#/my-collection`) to show a small floating **Demo tools** menu with **Reset demo data**. The flag is kept in sessionStorage for that tab; `?demo=0` hides it again. The footer carries one line: "Concept product designed by Đỗ Anh Nghĩa."
 
 ### Running tests locally
 

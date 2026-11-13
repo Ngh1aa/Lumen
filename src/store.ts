@@ -31,6 +31,23 @@ export function writeSession(key: string, value: string) {
   }
 }
 
+/**
+ * Demo tools (reset) are hidden from visitors. `?demo=1` (in the query string or after the hash
+ * route) turns them on for this tab, `?demo=0` turns them off. The flag lives outside
+ * SESSION_KEYS so resetting visitor data keeps the tools open.
+ */
+const DEMO_FLAG_KEY = 'lumen-demo-tools';
+
+export function readDemoFlag(): boolean {
+  const hashQuery = window.location.hash.split('?')[1] || '';
+  const value = new URLSearchParams(window.location.search).get('demo') ?? new URLSearchParams(hashQuery).get('demo');
+  if (value === '1') writeSession(DEMO_FLAG_KEY, '1');
+  if (value === '0') {
+    try { window.sessionStorage.removeItem(DEMO_FLAG_KEY); } catch { /* ignore */ }
+  }
+  return readSession(DEMO_FLAG_KEY) === '1';
+}
+
 function readJson<T>(key: string, fallback: T): T {
   const raw = readSession(key);
   if (!raw) return fallback;

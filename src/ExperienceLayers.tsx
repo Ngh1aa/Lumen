@@ -39,7 +39,7 @@ export function AboutView({
         <article>
           <span>03 / Mood</span>
           <h2>Follow a feeling.</h2>
-          <p>Mood paths are editorially assigned prototype metadata. They are invitations, not algorithmic claims about artworks.</p>
+          <p>Mood paths are assigned by LUMEN's editors. They are invitations, not algorithmic claims about artworks.</p>
           <button onClick={onMood}>Choose a mood ↗</button>
         </article>
         <article>
@@ -56,13 +56,12 @@ export function AboutView({
         </div>
         <div className="about-copy">
           <p>
-            The prototype uses manually authored mood labels, editorial notes and relationship explanations.
-            Dominant color and metadata can be semi-automated later, but the experience keeps curatorial intent visible.
+            Mood labels, editorial notes and relationship explanations are written by people, not generated.
+            Dominant color and metadata support the search, but the experience keeps curatorial intent visible.
           </p>
           <p>
-            Current prototype imagery is public-domain work hosted by Wikimedia Commons. The data layer is intentionally
-            shaped so museum open-access sources such as The Met, Art Institute of Chicago, Rijksmuseum and Cleveland
-            Museum of Art can replace or extend it without rewriting the interaction model.
+            The collection shows public-domain work hosted by Wikimedia Commons. Every object keeps its source record,
+            licence and credit line, so you can always trace a reproduction back to where it came from.
           </p>
         </div>
       </section>
@@ -90,11 +89,11 @@ export function AboutView({
           <h2 id="sources-title">The object keeps<br /><em>its source.</em></h2>
         </div>
         <div>
-          <p>Every artwork detail links back to its source record and states the prototype license/provenance model.</p>
+          <p>Every artwork detail links back to its source record and states its licence and provenance.</p>
           <ul>
-            <li><strong>Prototype media</strong><span>Wikimedia Commons / public-domain records</span></li>
-            <li><strong>Expansion candidates</strong><span>The Met Open Access · AIC API · Rijksmuseum · Cleveland Museum of Art</span></li>
-            <li><strong>Interaction research</strong><span>21st.dev pattern registry · museum collection interfaces · open-source references logged in project docs</span></li>
+            <li><strong>Media</strong><span>Wikimedia Commons / public-domain records</span></li>
+            <li><strong>Letters</strong><span>Vincent van Gogh letters, linked to vangoghletters.org</span></li>
+            <li><strong>Editorial</strong><span>Mood, palette names, themes and pairings are LUMEN's reading, not museum-authored scholarship</span></li>
           </ul>
         </div>
       </section>

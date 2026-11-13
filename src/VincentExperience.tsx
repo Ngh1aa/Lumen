@@ -514,7 +514,7 @@ export function VincentExperience({
         </div>
         <div className="vincent-rights-note">
           <span>PROVENANCE</span>
-          <p>Public-domain artwork reproductions are linked to their source records. Editorial readings and sensory labels are authored for this LUMEN prototype.</p>
+          <p>Public-domain artwork reproductions are linked to their source records. Editorial readings and sensory labels are authored by LUMEN.</p>
         </div>
       </section>
 
@@ -973,7 +973,7 @@ function ThreadDrawer({
             </button>
             <button className="vincent-thread-atlas-link" onClick={onAtlas}>Open full Atlas ✦</button>
           </div>
-          <span role="status">{isSaved ? 'Saved for this session.' : 'Keep a path through the exhibition.'}</span>
+          <span role="status">{isSaved ? 'Thread saved.' : 'Keep a path through the exhibition.'}</span>
         </footer>
       </aside>
     </div>

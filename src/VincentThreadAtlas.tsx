@@ -259,7 +259,7 @@ export function VincentThreadAtlas({
             <strong>Evidence before spectacle.</strong>
           </div>
           <p>
-            Place and time derive from the artwork/letter records used in this prototype. Theme labels are
+            Place and time derive from the artwork/letter records shown in LUMEN. Theme labels are
             a LUMEN-authored editorial index and are shown as interpretation, not museum taxonomy.
           </p>
         </footer>

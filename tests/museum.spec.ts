@@ -197,19 +197,25 @@ test.describe('multi-view museum', () => {
     await expect(page.locator('.grid-card')).toHaveCount(20);
   });
 
-  test('reset demo data clears session data after confirmation', async ({ page }) => {
-    await page.goto('/#/exhibition/signals');
+  test('reset demo data (behind ?demo=1) clears session data after confirmation', async ({ page }) => {
+    await page.goto('/?demo=1#/exhibition/signals');
     await page.getByRole('button', { name: 'Save as set' }).click();
     await expect(savedCount(page)).toHaveText('08');
 
-    await page.locator('.site-footer').getByRole('button', { name: 'Reset demo data' }).click();
+    const openReset = async () => {
+      const tools = page.getByRole('complementary', { name: 'Demo tools' });
+      const toggle = tools.getByRole('button', { name: 'Demo tools' });
+      if ((await toggle.getAttribute('aria-expanded')) !== 'true') await toggle.click();
+      await tools.getByRole('button', { name: 'Reset demo data' }).click();
+    };
+    await openReset();
     const dialog = page.getByRole('alertdialog', { name: 'Reset demo data?' });
     await expect(dialog).toContainText('8 saved works, 1 set');
     await page.keyboard.press('Escape');
     await expect(dialog).toHaveCount(0);
     await expect(savedCount(page)).toHaveText('08');
 
-    await page.locator('.site-footer').getByRole('button', { name: 'Reset demo data' }).click();
+    await openReset();
     await page.getByRole('alertdialog').getByRole('button', { name: 'Reset demo data' }).click();
     await expect(page.locator('.app-toast')).toContainText('Demo data reset');
     await expect(savedCount(page)).toHaveText('00');
@@ -218,6 +224,29 @@ test.describe('multi-view museum', () => {
     await page.goto('/#/my-collection');
     await expect(page.getByRole('heading', { name: /Nothing here yet/ })).toBeVisible();
     await expect(page.locator('.my-sets li')).toHaveCount(1);
+  });
+
+  test('product pages carry no prototype wording and hide demo tools unless ?demo=1', async ({ page }) => {
+    const banned = /prototype|demo data|sandbox|simulat|fictional|state lab|portfolio review/i;
+    for (const hash of [
+      '#/', '#/collection', '#/artwork/van-gogh-starry-night', '#/exhibitions', '#/exhibition/vincent', '#/exhibition/signals',
+      '#/exhibition/signals/2', '#/my-collection', '#/drift', '#/color', '#/mood', '#/atlas/van-gogh-irises', '#/about',
+    ]) {
+      await page.goto('/' + hash);
+      await expect(page.locator('main h1').first()).toBeVisible();
+      const text = await page.locator('body').innerText();
+      expect(text.match(banned), hash).toBeNull();
+      await expect(page.getByRole('complementary', { name: 'Demo tools' })).toHaveCount(0);
+      await expect(page.getByRole('button', { name: 'Reset demo data' })).toHaveCount(0);
+    }
+    await expect(page.locator('.site-footer')).toContainText('Concept product designed by Đỗ Anh Nghĩa.');
+
+    await page.goto('/?demo=1#/collection');
+    await expect(page.getByRole('button', { name: 'Demo tools' })).toBeVisible();
+    await page.goto('/#/about');
+    await expect(page.getByRole('button', { name: 'Demo tools' })).toBeVisible();
+    await page.goto('/?demo=0#/about');
+    await expect(page.getByRole('button', { name: 'Demo tools' })).toHaveCount(0);
   });
 
   test('axe finds no serious issues on the new views', async ({ page }) => {
